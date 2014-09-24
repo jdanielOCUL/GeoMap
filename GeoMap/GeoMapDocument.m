@@ -9,6 +9,7 @@
 #import "GeoMapDocument.h"
 #import "GeoMapToolbarItem.h"
 #import "GeoMapScrollView.h"
+#import "GeoMapImageView.h"
 
 // Toolbar items.
 #define kImageControlsToolbarItemID @"imagecontrolstoolbaritem"
@@ -42,8 +43,12 @@
                     setDocumentCursor: [NSCursor openHandCursor]];
                 break;
 
-            case kZoomTool:
+            case kZoomInTool:
                 [self.imageScrollView setDocumentCursor: self.zoomInCursor];
+                break;
+
+            case kZoomOutTool:
+                [self.imageScrollView setDocumentCursor: self.zoomOutCursor];
                 break;
         }
     }
@@ -56,7 +61,7 @@
     {
         // Set the inital value here so it gets reset in awakeFromNib and
         // actually sets the initial cursor.
-        myToolMode = kZoomTool;
+        myToolMode = kZoomInTool;
     }
   
     return self;
@@ -182,6 +187,27 @@
     setToolTip: NSLocalizedString(@"Zoom image", NULL)
     forSegment: kZoomSegment];
 
+  self.imageView.document = self;
+  
+  [NSEvent
+    addLocalMonitorForEventsMatchingMask: NSFlagsChangedMask
+    handler:
+        ^NSEvent *(NSEvent * event)
+        {
+            if(self.toolMode == kZoomInTool)
+            {
+                if([NSEvent modifierFlags] & NSAlternateKeyMask)
+                    self.toolMode = kZoomOutTool;
+            }
+            else if(self.toolMode == kZoomOutTool)
+            {
+                if(!([NSEvent modifierFlags] & NSAlternateKeyMask))
+                    self.toolMode = kZoomInTool;
+            }
+        
+            return event;
+        }];
+  
   //NSRect frame = [self.imageView frame];
   
   //frame.size = self.imageSize;

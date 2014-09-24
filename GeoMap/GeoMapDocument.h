@@ -9,8 +9,9 @@
 #import <Cocoa/Cocoa.h>
 
 // Tool modes.
-#define kPanTool  0
-#define kZoomTool 1
+#define kPanTool     0
+#define kZoomInTool  1
+#define kZoomOutTool 2
 
 @class GeoMapScrollView;
 @class GeoMapImageView;

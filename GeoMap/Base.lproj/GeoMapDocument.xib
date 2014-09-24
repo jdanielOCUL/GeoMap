@@ -73,16 +73,16 @@
             </connections>
         </window>
         <customView id="HFD-sA-8aM">
-            <rect key="frame" x="0.0" y="0.0" width="67" height="22"/>
+            <rect key="frame" x="0.0" y="0.0" width="71" height="22"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <segmentedControl verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JVk-5Q-bkp">
-                    <rect key="frame" x="-2" y="-1" width="71" height="24"/>
+                    <rect key="frame" x="0.0" y="-1" width="71" height="23"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <segmentedCell key="cell" alignment="left" style="rounded" trackingMode="selectOne" id="hCW-Do-UoB">
+                    <segmentedCell key="cell" alignment="left" style="capsule" trackingMode="momentary" id="hCW-Do-UoB">
                         <font key="font" metaFont="system"/>
                         <segments>
-                            <segment image="NSActionTemplate" imageScaling="none" width="32" selected="YES">
+                            <segment image="NSActionTemplate" imageScaling="none" width="32">
                                 <nil key="label"/>
                             </segment>
                             <segment image="NSAddTemplate" imageScaling="none" width="32" tag="1">

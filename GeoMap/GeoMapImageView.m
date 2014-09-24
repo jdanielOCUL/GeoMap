@@ -7,6 +7,7 @@
 //
 
 #import "GeoMapImageView.h"
+#import "GeoMapDocument.h"
 
 @implementation GeoMapImageView
 {

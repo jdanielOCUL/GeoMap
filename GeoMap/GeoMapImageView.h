@@ -8,6 +8,10 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class GeoMapDocument;
+
 @interface GeoMapImageView : NSImageView
+
+@property (strong) GeoMapDocument * document;
 
 @end
