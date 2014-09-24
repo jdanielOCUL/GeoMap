@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		278CC20D19D33C04002E34C7 /* GeoMapImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 278CC20C19D33C04002E34C7 /* GeoMapImageView.m */; };
 		27B55CF619C9D4AE0018F328 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27B55CF519C9D4AE0018F328 /* Cocoa.framework */; };
 		27B55D0019C9D4AE0018F328 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 27B55CFE19C9D4AE0018F328 /* InfoPlist.strings */; };
 		27B55D0219C9D4AE0018F328 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 27B55D0119C9D4AE0018F328 /* main.m */; };
@@ -19,6 +20,8 @@
 		27B55D1919C9D4AE0018F328 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27B55CF519C9D4AE0018F328 /* Cocoa.framework */; };
 		27B55D2119C9D4AE0018F328 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 27B55D1F19C9D4AE0018F328 /* InfoPlist.strings */; };
 		27B55D2319C9D4AE0018F328 /* GeoMapTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 27B55D2219C9D4AE0018F328 /* GeoMapTests.m */; };
+		27B55D2E19C9D4C60018F328 /* GeoMapToolbarItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 27B55D2D19C9D4C60018F328 /* GeoMapToolbarItem.m */; };
+		27B55D3219C9E6720018F328 /* GeoMapScrollView.m in Sources */ = {isa = PBXBuildFile; fileRef = 27B55D3119C9E6720018F328 /* GeoMapScrollView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,6 +35,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		278CC20B19D33C04002E34C7 /* GeoMapImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeoMapImageView.h; sourceTree = "<group>"; };
+		278CC20C19D33C04002E34C7 /* GeoMapImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeoMapImageView.m; sourceTree = "<group>"; };
 		27B55CF219C9D4AE0018F328 /* GeoMap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GeoMap.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		27B55CF519C9D4AE0018F328 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		27B55CF819C9D4AE0018F328 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -52,6 +57,10 @@
 		27B55D1E19C9D4AE0018F328 /* GeoMapTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GeoMapTests-Info.plist"; sourceTree = "<group>"; };
 		27B55D2019C9D4AE0018F328 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		27B55D2219C9D4AE0018F328 /* GeoMapTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GeoMapTests.m; sourceTree = "<group>"; };
+		27B55D2C19C9D4C60018F328 /* GeoMapToolbarItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeoMapToolbarItem.h; sourceTree = "<group>"; };
+		27B55D2D19C9D4C60018F328 /* GeoMapToolbarItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeoMapToolbarItem.m; sourceTree = "<group>"; };
+		27B55D3019C9E6710018F328 /* GeoMapScrollView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeoMapScrollView.h; sourceTree = "<group>"; };
+		27B55D3119C9E6720018F328 /* GeoMapScrollView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeoMapScrollView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +126,12 @@
 		27B55CFB19C9D4AE0018F328 /* GeoMap */ = {
 			isa = PBXGroup;
 			children = (
+				27B55D2C19C9D4C60018F328 /* GeoMapToolbarItem.h */,
+				27B55D2D19C9D4C60018F328 /* GeoMapToolbarItem.m */,
+				27B55D3019C9E6710018F328 /* GeoMapScrollView.h */,
+				27B55D3119C9E6720018F328 /* GeoMapScrollView.m */,
+				278CC20B19D33C04002E34C7 /* GeoMapImageView.h */,
+				278CC20C19D33C04002E34C7 /* GeoMapImageView.m */,
 				27B55D0719C9D4AE0018F328 /* GeoMapDocument.h */,
 				27B55D0819C9D4AE0018F328 /* GeoMapDocument.m */,
 				27B55D0A19C9D4AE0018F328 /* GeoMapDocument.xib */,
@@ -257,6 +272,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				27B55D3219C9E6720018F328 /* GeoMapScrollView.m in Sources */,
+				278CC20D19D33C04002E34C7 /* GeoMapImageView.m in Sources */,
+				27B55D2E19C9D4C60018F328 /* GeoMapToolbarItem.m in Sources */,
 				27B55D0219C9D4AE0018F328 /* main.m in Sources */,
 				27B55D0919C9D4AE0018F328 /* GeoMapDocument.m in Sources */,
 			);
@@ -479,6 +497,7 @@
 				27B55D2819C9D4AE0018F328 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		27B55D2919C9D4AE0018F328 /* Build configuration list for PBXNativeTarget "GeoMapTests" */ = {
 			isa = XCConfigurationList;
@@ -487,6 +506,7 @@
 				27B55D2B19C9D4AE0018F328 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

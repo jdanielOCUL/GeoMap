@@ -8,6 +8,25 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface GeoMapDocument : NSDocument
+// Tool modes.
+#define kPanTool  0
+#define kZoomTool 1
+
+@class GeoMapScrollView;
+@class GeoMapImageView;
+
+@interface GeoMapDocument : NSDocument <NSToolbarDelegate>
+
+@property (strong) NSImage * image;
+@property (assign) NSSize imageSize;
+@property (strong) IBOutlet GeoMapScrollView * imageScrollView;
+@property (strong) IBOutlet GeoMapImageView * imageView;
+@property (assign) NSUInteger toolMode;
+@property (strong) NSCursor * zoomInCursor;
+@property (strong) NSCursor * zoomOutCursor;
+
+// Toolbars.
+@property (assign) IBOutlet NSView * imageControlsToolbarItemView;
+@property (assign) IBOutlet NSSegmentedControl * imageControls;
 
 @end

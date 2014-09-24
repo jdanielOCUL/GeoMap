@@ -7,15 +7,58 @@
 //
 
 #import "GeoMapDocument.h"
+#import "GeoMapToolbarItem.h"
+#import "GeoMapScrollView.h"
+
+// Toolbar items.
+#define kImageControlsToolbarItemID @"imagecontrolstoolbaritem"
+
+#define kPanSegment  0
+#define kZoomSegment 1
 
 @implementation GeoMapDocument
+
+@synthesize toolMode = myToolMode;
+
+- (NSUInteger) toolMode
+{
+    return myToolMode;
+}
+
+- (void) setToolMode: (NSUInteger) toolMode
+{
+    if(toolMode != myToolMode)
+    {
+        [self willChangeValueForKey: @"toolMode"];
+
+        myToolMode = toolMode;
+
+        [self didChangeValueForKey: @"toolMode"];
+    
+        switch (myToolMode)
+        {
+            case kPanTool:
+                [self.imageScrollView
+                    setDocumentCursor: [NSCursor openHandCursor]];
+                break;
+
+            case kZoomTool:
+                [self.imageScrollView setDocumentCursor: self.zoomInCursor];
+                break;
+        }
+    }
+}
 
 - (id)init
 {
     self = [super init];
-    if (self) {
-    // Add your subclass-specific initialization here.
+    if (self)
+    {
+        // Set the inital value here so it gets reset in awakeFromNib and
+        // actually sets the initial cursor.
+        myToolMode = kZoomTool;
     }
+  
     return self;
 }
 
@@ -39,21 +82,123 @@
 
 - (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError
 {
-  // Insert code here to write your document to data of the specified type. If outError != NULL, ensure that you create and set an appropriate error when returning nil.
-  // You can also choose to override -fileWrapperOfType:error:, -writeToURL:ofType:error:, or -writeToURL:ofType:forSaveOperation:originalContentsURL:error: instead.
-  NSException *exception = [NSException exceptionWithName:@"UnimplementedMethod" reason:[NSString stringWithFormat:@"%@ is unimplemented", NSStringFromSelector(_cmd)] userInfo:nil];
-  @throw exception;
-  return nil;
+  return [self.image TIFFRepresentation];
 }
 
 - (BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError
 {
-  // Insert code here to read your document from the given data of the specified type. If outError != NULL, ensure that you create and set an appropriate error when returning NO.
-  // You can also choose to override -readFromFileWrapper:ofType:error: or -readFromURL:ofType:error: instead.
-  // If you override either of these, you should also override -isEntireFileLoaded to return NO if the contents are lazily loaded.
-  NSException *exception = [NSException exceptionWithName:@"UnimplementedMethod" reason:[NSString stringWithFormat:@"%@ is unimplemented", NSStringFromSelector(_cmd)] userInfo:nil];
-  @throw exception;
+  self.image = [[NSImage alloc] initWithData: data];
+  
+  for(NSImageRep * rep in [self.image representations])
+    {
+    NSSize size;
+    
+    size.width = [rep pixelsWide];
+    size.height = [rep pixelsHigh];
+    
+    if((size.height > self.imageSize.height) && (size.width > self.imageSize.width))
+      self.imageSize = size;
+    }
+  
+  [self.image setSize: self.imageSize];
+  
   return YES;
 }
 
+#pragma mark - NSToolbarDelegate conformance
+
+- (NSToolbarItem *) toolbar: (NSToolbar *) toolbar
+  itemForItemIdentifier: (NSString *) itemIdentifier
+  willBeInsertedIntoToolbar: (BOOL) flag
+  {
+  if([itemIdentifier isEqualToString: kImageControlsToolbarItemID])
+    {
+    // Create the NSToolbarItem and setup its attributes.
+    GeoMapToolbarItem * item =
+      [[GeoMapToolbarItem alloc]
+        initWithItemIdentifier: itemIdentifier];
+    
+    item.control = self.imageControls;
+    [item setLabel: NSLocalizedString(@"Image controls", nil)];
+    [item setPaletteLabel: NSLocalizedString(@"Image controls", nil)];
+    [item setTarget: self];
+    [item setAction: nil];
+    [item setView: self.imageControlsToolbarItemView];
+    
+    return item;
+    }
+    
+  return nil;
+  }
+
+- (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
+  {
+  return
+    @[
+      kImageControlsToolbarItemID,
+      NSToolbarFlexibleSpaceItemIdentifier
+    ];
+    
+  // Since the toolbar is defined from Interface Builder, an additional
+  // separator and customize toolbar items will be automatically added to
+  // the "default" list of items.
+  }
+
+- (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
+  {
+  return
+    @[
+      kImageControlsToolbarItemID,
+      NSToolbarFlexibleSpaceItemIdentifier
+    ];
+
+  // Since the toolbar is defined from Interface Builder, an additional
+  // separator and customize toolbar items will be automatically added to
+  // the "allowed" list of items.
+  }
+
+- (void) awakeFromNib
+  {
+  NSImage * zoomIn = [NSImage imageNamed: @"ZoomIn"];
+  NSImage * zoomOut = [NSImage imageNamed: @"ZoomOut"];
+  
+  self.toolMode = kPanTool;
+  self.zoomInCursor =
+      [[NSCursor alloc]
+          initWithImage: zoomIn hotSpot: NSMakePoint(7, 7)];
+  self.zoomOutCursor =
+      [[NSCursor alloc]
+          initWithImage: zoomOut hotSpot: NSMakePoint(7, 7)];
+  
+  [[self.imageControls cell]
+    setImage: [[NSCursor openHandCursor] image] forSegment: kPanSegment];
+  [[self.imageControls cell]
+    setImage: zoomIn forSegment: kZoomSegment];
+  
+  [[self.imageControls cell]
+    setToolTip: NSLocalizedString(@"Pan image", NULL)
+    forSegment: kPanSegment];
+  [[self.imageControls cell]
+    setToolTip: NSLocalizedString(@"Zoom image", NULL)
+    forSegment: kZoomSegment];
+
+  //NSRect frame = [self.imageView frame];
+  
+  //frame.size = self.imageSize;
+  
+  //[self.imageView setFrame: frame];
+  //[self.imageView setImageScaling: NSImageScaleNone];
+  }
+
+- (IBAction) changeTool: (id)sender
+{
+    // switch the tool mode...
+    
+    if ([sender isKindOfClass: [NSSegmentedControl class]])
+    {
+        self.toolMode = [sender selectedSegment];
+    }
+}
+
 @end
+
