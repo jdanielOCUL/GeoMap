@@ -21,6 +21,11 @@
 
 @synthesize toolMode = myToolMode;
 
+@synthesize GCPs = myGCPs;
+
+@synthesize canPreview = myCanPreview;
+@synthesize canExport = myCanExport;
+
 - (NSUInteger) toolMode
 {
     return myToolMode;
@@ -54,14 +59,16 @@
     }
 }
 
-- (id)init
+- (id) init
 {
     self = [super init];
+  
     if (self)
     {
         // Set the inital value here so it gets reset in awakeFromNib and
         // actually sets the initial cursor.
         myToolMode = kZoomInTool;
+        myGCPs = [NSMutableArray new];
     }
   
     return self;
@@ -78,6 +85,30 @@
 {
   [super windowControllerDidLoadNib:aController];
   // Add any code here that needs to be executed once the windowController has loaded the document's window.
+  
+  [self.GCPController
+      addObserver: self
+      forKeyPath: @"arrangedObjects"
+      options: NSKeyValueObservingOptionNew
+      context: NULL];
+}
+
+- (void) observeValueForKeyPath: (NSString *) keyPath
+    ofObject: (id) object
+    change: (NSDictionary *) change
+    context: (void *) context
+{
+    if(object == self.GCPController)
+        if([keyPath isEqualToString: @"arrangedObjects"])
+        {
+            [self willChangeValueForKey: @"canPreview"];
+            [self willChangeValueForKey: @"canExport"];
+        
+            myCanPreview = myCanExport = ([self.GCPs count] >= 4);
+        
+            [self didChangeValueForKey: @"canExport"];
+            [self didChangeValueForKey: @"canPreview"];
+        }
 }
 
 + (BOOL)autosavesInPlace
@@ -224,6 +255,16 @@
     {
         self.toolMode = [sender selectedSegment];
     }
+}
+
+- (IBAction) previewMap: (id) sender
+{
+    NSLog(@"preview map");
+}
+
+- (IBAction) exportMap: (id) sender
+{
+    NSLog(@"export map");
 }
 
 @end

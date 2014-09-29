@@ -30,4 +30,13 @@
 @property (assign) IBOutlet NSView * imageControlsToolbarItemView;
 @property (assign) IBOutlet NSSegmentedControl * imageControls;
 
+@property (strong) NSMutableArray * GCPs;
+@property (strong) IBOutlet NSArrayController * GCPController;
+
+@property (readonly) BOOL canPreview;
+@property (readonly) BOOL canExport;
+
+- (IBAction) previewMap: (id) sender;
+- (IBAction) exportMap: (id) sender;
+
 @end
