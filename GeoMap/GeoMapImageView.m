@@ -193,6 +193,25 @@
   
     double zoomIn = fmin(zoomInX, zoomInY);
   
+    NSRect idealRect = rect;
+  
+    idealRect.size.width =  self.frame.size.width / zoomIn;
+    idealRect.size.height = self.frame.size.height / zoomIn;
+  
+    if(idealRect.size.width > rect.size.width)
+    {
+        rect.origin.x =
+            rect.origin.x + (rect.size.width / 2) - (idealRect.size.width / 2);
+        rect.size.width = idealRect.size.width;
+    }
+  
+    if(idealRect.size.height > rect.size.height)
+    {
+        rect.origin.y =
+            rect.origin.y + (rect.size.height / 2) - (idealRect.size.height / 2);
+        rect.size.height = idealRect.size.height;
+    }
+
     if(zoomIn > self.scrollView.maxMagnification)
       zoomIn = self.scrollView.maxMagnification;
 
