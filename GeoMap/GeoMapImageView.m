@@ -12,22 +12,49 @@
 #define kZoomInFactor  1.414214
 #define kZoomOutFactor 0.7071068
 
+@interface GeoMapImageView ()
+
+@property (strong) NSColor * selectionFrameColor;
+@property (strong) NSColor * selectionFillColor;
+
+@end
+
 @implementation GeoMapImageView
 {
     NSPoint mouseDownLocation;
     NSRect mouseDownRect;
     double magnification;
+    NSRect selectionMarquee;
 }
 
 - (void) awakeFromNib
-  {
-  magnification = 1.0;
+{
+    magnification = 1.0;
 
-  self.scrollView = [self enclosingScrollView];
+    self.scrollView = [self enclosingScrollView];
+
+    self.scrollView.minMagnification = 1.0;
+    self.scrollView.maxMagnification = 100.0;
+
+    self.selectionFillColor =
+        [NSColor colorWithCalibratedRed: .5 green: .5 blue: .5 alpha: .4];
+}
+
+- (void) drawRect: (NSRect) dirtyRect
+{
+    [super drawRect: dirtyRect];
   
-  self.scrollView.minMagnification = 1.0;
-  self.scrollView.maxMagnification = 100.0;
-  }
+    if(!NSEqualRects(selectionMarquee, NSZeroRect))
+    {
+        NSRect drawRect = NSInsetRect(selectionMarquee, 1, 1);
+    
+        NSBezierPath * marquee =
+          [NSBezierPath bezierPathWithRect: drawRect];
+    
+        [self.selectionFillColor set];
+        [marquee fill];
+    }
+}
 
 - (void) mouseDown: (NSEvent *) event
 {
@@ -40,9 +67,69 @@
             [[NSCursor closedHandCursor] push];
             break;
       
+        case kZoomInTool:
+            [self drawMarquee: event];
+      
         default:
             break;
     }
+}
+
+- (void) drawMarquee: (NSEvent *) event
+{
+    // Dequeue and handle mouse events until the user lets go of the mouse
+    // button.
+    NSPoint originalMouseLocation =
+      [self convertPoint: [event locationInWindow] fromView: nil];
+  
+    selectionMarquee = NSZeroRect;
+  
+    while([event type] != NSLeftMouseUp)
+    {
+        event =
+            [[self window]
+                nextEventMatchingMask:
+                    (NSLeftMouseDraggedMask | NSLeftMouseUpMask)];
+    
+	      [self autoscroll: event];
+	
+        NSPoint currentMouseLocation =
+            [self convertPoint: [event locationInWindow] fromView: nil];
+
+	      // Figure out a new a selection rectangle based on the mouse location.
+	      NSRect newMarqueeSelectionBounds =
+            NSMakeRect(
+                fmin(originalMouseLocation.x, currentMouseLocation.x),
+                fmin(originalMouseLocation.y, currentMouseLocation.y),
+                fabs(currentMouseLocation.x - originalMouseLocation.x),
+                fabs(currentMouseLocation.y - originalMouseLocation.y));
+    
+	      if(!NSEqualRects(newMarqueeSelectionBounds, selectionMarquee))
+        {
+	          // Erase the old selection rectangle and draw the new one.
+	          [self setNeedsDisplayInRect: selectionMarquee];
+        
+            selectionMarquee = newMarqueeSelectionBounds;
+        
+            [self setNeedsDisplayInRect: selectionMarquee];
+        }
+    }
+
+    // Schedule the drawing of the place wherew the rubber band isn't anymore.
+    [self setNeedsDisplayInRect: selectionMarquee];
+
+    NSRect zoomRect = selectionMarquee;
+  
+    dispatch_async(
+        dispatch_get_main_queue(),
+        ^{
+            if(!NSEqualSizes(zoomRect.size, NSZeroSize))
+                [self zoomToRect: zoomRect];
+            else
+                [self mouseUp: event];
+        });
+
+    selectionMarquee = NSZeroRect;
 }
 
 - (void) mouseDragged: (NSEvent *) event
@@ -80,7 +167,7 @@
             if(magnification < self.scrollView.maxMagnification)
             {
                 magnification *= kZoomInFactor;
-                [self.scrollView
+                [[self.scrollView animator]
                     setMagnification: magnification centeredAtPoint: position];
             }
             break;
@@ -89,7 +176,7 @@
             if(magnification > self.scrollView.minMagnification)
             {
                 magnification *= kZoomOutFactor;
-                [self.scrollView
+                [[self.scrollView animator]
                     setMagnification: magnification centeredAtPoint: position];
             }
             break;
@@ -97,6 +184,44 @@
         default:
             break;
     }
+}
+
+- (void) zoomToRect: (NSRect) rect
+{
+    double zoomInX = self.frame.size.width / rect.size.width;
+    double zoomInY = self.frame.size.height / rect.size.height;
+  
+    double zoomIn = fmin(zoomInX, zoomInY);
+  
+    if(zoomIn > self.scrollView.maxMagnification)
+      zoomIn = self.scrollView.maxMagnification;
+
+    magnification = zoomIn;
+  
+    NSPoint centre = rect.origin;
+  
+    centre.x += rect.size.width / 2;
+    centre.y += rect.size.height / 2;
+  
+    NSPoint newOrigin =
+      [[self.scrollView contentView] convertPoint: rect.origin fromView: self];
+  
+    [NSAnimationContext
+        runAnimationGroup:
+            ^(NSAnimationContext * context)
+            {
+                [[self.scrollView animator]
+                    setMagnification: magnification centeredAtPoint: centre];
+            }
+        completionHandler:
+            ^{
+                dispatch_async(
+                    dispatch_get_main_queue(),
+                    ^{
+                        [[[self.scrollView contentView] animator]
+                            scrollToPoint: newOrigin];                  
+                    });
+            }];
 }
 
 @end
