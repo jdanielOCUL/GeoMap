@@ -13,5 +13,6 @@
 @interface GeoMapImageView : NSImageView
 
 @property (strong) GeoMapDocument * document;
+@property (strong) NSScrollView * scrollView;
 
 @end
