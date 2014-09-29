@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		276A598719D9E9AC0013A00F /* GCP.m in Sources */ = {isa = PBXBuildFile; fileRef = 276A598619D9E9AC0013A00F /* GCP.m */; };
 		278CC20D19D33C04002E34C7 /* GeoMapImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 278CC20C19D33C04002E34C7 /* GeoMapImageView.m */; };
 		27B55CF619C9D4AE0018F328 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27B55CF519C9D4AE0018F328 /* Cocoa.framework */; };
 		27B55D0019C9D4AE0018F328 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 27B55CFE19C9D4AE0018F328 /* InfoPlist.strings */; };
@@ -35,6 +36,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		276A598519D9E9AC0013A00F /* GCP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCP.h; sourceTree = "<group>"; };
+		276A598619D9E9AC0013A00F /* GCP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GCP.m; sourceTree = "<group>"; };
 		278CC20B19D33C04002E34C7 /* GeoMapImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeoMapImageView.h; sourceTree = "<group>"; };
 		278CC20C19D33C04002E34C7 /* GeoMapImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeoMapImageView.m; sourceTree = "<group>"; };
 		27B55CF219C9D4AE0018F328 /* GeoMap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GeoMap.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -132,6 +135,8 @@
 				27B55D3119C9E6720018F328 /* GeoMapScrollView.m */,
 				278CC20B19D33C04002E34C7 /* GeoMapImageView.h */,
 				278CC20C19D33C04002E34C7 /* GeoMapImageView.m */,
+				276A598519D9E9AC0013A00F /* GCP.h */,
+				276A598619D9E9AC0013A00F /* GCP.m */,
 				27B55D0719C9D4AE0018F328 /* GeoMapDocument.h */,
 				27B55D0819C9D4AE0018F328 /* GeoMapDocument.m */,
 				27B55D0A19C9D4AE0018F328 /* GeoMapDocument.xib */,
@@ -272,6 +277,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				276A598719D9E9AC0013A00F /* GCP.m in Sources */,
 				27B55D3219C9E6720018F328 /* GeoMapScrollView.m in Sources */,
 				278CC20D19D33C04002E34C7 /* GeoMapImageView.m in Sources */,
 				27B55D2E19C9D4C60018F328 /* GeoMapToolbarItem.m in Sources */,

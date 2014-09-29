@@ -13,6 +13,9 @@
 #define kZoomInTool  1
 #define kZoomOutTool 2
 
+#define kSelectGCPTool 3
+#define kAddGCPTool    4
+
 @class GeoMapScrollView;
 @class GeoMapImageView;
 
@@ -29,6 +32,8 @@
 // Toolbars.
 @property (assign) IBOutlet NSView * imageControlsToolbarItemView;
 @property (assign) IBOutlet NSSegmentedControl * imageControls;
+@property (assign) IBOutlet NSView * GCPControlsToolbarItemView;
+@property (assign) IBOutlet NSSegmentedControl * GCPControls;
 
 @property (strong) NSMutableArray * GCPs;
 @property (strong) IBOutlet NSArrayController * GCPController;

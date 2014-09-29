@@ -69,6 +69,13 @@
       
         case kZoomInTool:
             [self drawMarquee: event];
+            break;
+      
+        case kSelectGCPTool:
+            break;
+      
+        case kAddGCPTool:
+            break;
       
         default:
             break;
@@ -179,6 +186,12 @@
                 [[self.scrollView animator]
                     setMagnification: magnification centeredAtPoint: position];
             }
+            break;
+
+        case kSelectGCPTool:
+            break;
+      
+        case kAddGCPTool:
             break;
 
         default:

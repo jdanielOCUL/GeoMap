@@ -7,6 +7,8 @@
         <customObject id="-2" userLabel="File's Owner" customClass="GeoMapDocument">
             <connections>
                 <outlet property="GCPController" destination="ueB-MD-AHo" id="b6k-2V-zUz"/>
+                <outlet property="GCPControls" destination="qQw-Ph-FzT" id="Hg9-nZ-I5a"/>
+                <outlet property="GCPControlsToolbarItemView" destination="qQw-Ph-FzT" id="wAn-zy-pSC"/>
                 <outlet property="imageControls" destination="JVk-5Q-bkp" id="HZd-Fw-tlg"/>
                 <outlet property="imageControlsToolbarItemView" destination="HFD-sA-8aM" id="uWF-0b-CgY"/>
                 <outlet property="imageScrollView" destination="q2R-me-kjk" id="HrS-8Q-r51"/>
@@ -72,21 +74,24 @@
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                 <tableColumns>
-                                                    <tableColumn width="40" minWidth="40" maxWidth="1000" id="0oc-iy-g4t">
-                                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Point">
+                                                    <tableColumn width="119.44921875" minWidth="40" maxWidth="1000" id="0oc-iy-g4t">
+                                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Latitude">
                                                             <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                                         </tableHeaderCell>
-                                                        <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" placeholderString="Index" id="SnO-cP-Otl">
+                                                        <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" alignment="left" title="Text Cell" placeholderString="Index" id="SnO-cP-Otl">
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                            <connections>
+                                                                <binding destination="ueB-MD-AHo" name="value" keyPath="selection.latitude" id="wNA-44-Rva"/>
+                                                            </connections>
                                                         </textFieldCell>
                                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     </tableColumn>
-                                                    <tableColumn width="88.59375" minWidth="40" maxWidth="1000" id="2tq-WC-dSm">
-                                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Latitude">
+                                                    <tableColumn width="124.59375" minWidth="40" maxWidth="1000" id="2tq-WC-dSm">
+                                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Longitude">
                                                             <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
@@ -95,19 +100,9 @@
                                                             <font key="font" metaFont="system"/>
                                                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                             <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
-                                                        </textFieldCell>
-                                                        <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
-                                                    </tableColumn>
-                                                    <tableColumn width="112" minWidth="10" maxWidth="3.4028234663852886e+38" id="XOD-XB-V2a">
-                                                        <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Longitude">
-                                                            <font key="font" metaFont="smallSystem"/>
-                                                            <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
-                                                        </tableHeaderCell>
-                                                        <textFieldCell key="dataCell" lineBreakMode="truncatingTail" selectable="YES" editable="YES" alignment="left" title="Text Cell" placeholderString="Longitude" id="Rez-vs-ePm">
-                                                            <font key="font" metaFont="system"/>
-                                                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
-                                                            <color key="backgroundColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                                            <connections>
+                                                                <binding destination="ueB-MD-AHo" name="value" keyPath="selection.longitude" id="TYT-Sf-qWi"/>
+                                                            </connections>
                                                         </textFieldCell>
                                                         <tableColumnResizingMask key="resizingMask" resizeWithTable="YES" userResizable="YES"/>
                                                     </tableColumn>
@@ -134,20 +129,8 @@
                                         <autoresizingMask key="autoresizingMask"/>
                                     </tableHeaderView>
                                 </scrollView>
-                                <button verticalHuggingPriority="750" id="Zz0-vQ-uyT" userLabel="Add Button">
-                                    <rect key="frame" x="0.0" y="49" width="21" height="23"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSAddTemplate" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="9EB-Ft-VEW">
-                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="system"/>
-                                    </buttonCell>
-                                    <connections>
-                                        <action selector="add:" target="ueB-MD-AHo" id="gx5-1k-FAL"/>
-                                        <binding destination="ueB-MD-AHo" name="enabled" keyPath="self.canAdd" id="Jxp-N3-7HS"/>
-                                    </connections>
-                                </button>
                                 <button verticalHuggingPriority="750" id="zwp-DI-4mx" userLabel="Remove Button">
-                                    <rect key="frame" x="20" y="49" width="21" height="23"/>
+                                    <rect key="frame" x="0.0" y="49" width="21" height="23"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSRemoveTemplate" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="WTm-Hv-65N">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -209,20 +192,20 @@
             </connections>
             <point key="canvasLocation" x="147" y="24.5"/>
         </window>
-        <customView id="HFD-sA-8aM">
-            <rect key="frame" x="0.0" y="0.0" width="71" height="22"/>
+        <customView id="HFD-sA-8aM" userLabel="View Controls">
+            <rect key="frame" x="0.0" y="0.0" width="66" height="22"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
                 <segmentedControl verticalHuggingPriority="750" id="JVk-5Q-bkp">
-                    <rect key="frame" x="0.0" y="-1" width="71" height="23"/>
+                    <rect key="frame" x="0.0" y="-1" width="66" height="23"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
                     <segmentedCell key="cell" borderStyle="border" alignment="left" style="capsule" trackingMode="momentary" id="hCW-Do-UoB">
                         <font key="font" metaFont="system"/>
                         <segments>
-                            <segment image="NSActionTemplate" imageScaling="none" width="32">
+                            <segment image="NSActionTemplate" imageScaling="none" width="30">
                                 <nil key="label"/>
                             </segment>
-                            <segment image="NSAddTemplate" imageScaling="none" width="32" tag="1">
+                            <segment image="NSAddTemplate" imageScaling="none" width="29" tag="1">
                                 <nil key="label"/>
                             </segment>
                         </segments>
@@ -232,8 +215,34 @@
                     </connections>
                 </segmentedControl>
             </subviews>
+            <point key="canvasLocation" x="13" y="319"/>
         </customView>
-        <arrayController id="ueB-MD-AHo" userLabel="GCPController">
+        <customView id="z0o-OP-vYk" userLabel="GCP Controls">
+            <rect key="frame" x="0.0" y="0.0" width="66" height="22"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+            <subviews>
+                <segmentedControl verticalHuggingPriority="750" id="qQw-Ph-FzT">
+                    <rect key="frame" x="0.0" y="-1" width="66" height="23"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                    <segmentedCell key="cell" borderStyle="border" alignment="left" style="capsule" trackingMode="momentary" id="ZhD-3y-XR5">
+                        <font key="font" metaFont="system"/>
+                        <segments>
+                            <segment image="NSActionTemplate" imageScaling="none" width="30">
+                                <nil key="label"/>
+                            </segment>
+                            <segment image="NSAddTemplate" imageScaling="none" width="29" tag="1">
+                                <nil key="label"/>
+                            </segment>
+                        </segments>
+                    </segmentedCell>
+                    <connections>
+                        <action selector="changeTool:" target="-2" id="e3Q-rL-ViN"/>
+                    </connections>
+                </segmentedControl>
+            </subviews>
+            <point key="canvasLocation" x="181" y="352"/>
+        </customView>
+        <arrayController objectClassName="GCP" id="ueB-MD-AHo" userLabel="GCPController">
             <connections>
                 <binding destination="-2" name="contentArray" keyPath="self.GCPs" id="4at-1V-8wS"/>
             </connections>

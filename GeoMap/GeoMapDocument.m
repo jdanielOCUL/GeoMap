@@ -13,9 +13,13 @@
 
 // Toolbar items.
 #define kImageControlsToolbarItemID @"imagecontrolstoolbaritem"
+#define kGCPControlsToolbarItemID @"gcpcontrolstoolbaritem"
 
 #define kPanSegment  0
 #define kZoomSegment 1
+
+#define kSelectGCPSegment 0
+#define kAddGCPSegment    1
 
 @implementation GeoMapDocument
 
@@ -54,6 +58,16 @@
 
             case kZoomOutTool:
                 [self.imageScrollView setDocumentCursor: self.zoomOutCursor];
+                break;
+          
+            case kSelectGCPTool:
+                [self.imageScrollView
+                    setDocumentCursor: [NSCursor arrowCursor]];
+                break;
+
+            case kAddGCPTool:
+                [self.imageScrollView
+                    setDocumentCursor: [NSCursor crosshairCursor]];
                 break;
         }
     }
@@ -164,6 +178,23 @@
     return item;
     }
     
+  if([itemIdentifier isEqualToString: kGCPControlsToolbarItemID])
+    {
+    // Create the NSToolbarItem and setup its attributes.
+    GeoMapToolbarItem * item =
+      [[GeoMapToolbarItem alloc]
+        initWithItemIdentifier: itemIdentifier];
+    
+    item.control = self.GCPControls;
+    [item setLabel: NSLocalizedString(@"GCP controls", nil)];
+    [item setPaletteLabel: NSLocalizedString(@"GCP controls", nil)];
+    [item setTarget: self];
+    [item setAction: nil];
+    [item setView: self.GCPControlsToolbarItemView];
+    
+    return item;
+    }
+
   return nil;
   }
 
@@ -172,6 +203,7 @@
   return
     @[
       kImageControlsToolbarItemID,
+      kGCPControlsToolbarItemID,
       NSToolbarFlexibleSpaceItemIdentifier
     ];
     
@@ -185,6 +217,7 @@
   return
     @[
       kImageControlsToolbarItemID,
+      kGCPControlsToolbarItemID,
       NSToolbarFlexibleSpaceItemIdentifier
     ];
 
@@ -211,11 +244,21 @@
   [[self.imageControls cell]
     setImage: zoomIn forSegment: kZoomSegment];
   
+  [[self.GCPControls cell]
+    setImage: [[NSCursor arrowCursor] image] forSegment: kPanSegment];
+
   [[self.imageControls cell]
     setToolTip: NSLocalizedString(@"Pan image", NULL)
     forSegment: kPanSegment];
   [[self.imageControls cell]
     setToolTip: NSLocalizedString(@"Zoom image", NULL)
+    forSegment: kZoomSegment];
+
+  [[self.GCPControls cell]
+    setToolTip: NSLocalizedString(@"Select GCP", NULL)
+    forSegment: kPanSegment];
+  [[self.GCPControls cell]
+    setToolTip: NSLocalizedString(@"Add GCP", NULL)
     forSegment: kZoomSegment];
 
   self.imageView.document = self;
@@ -253,7 +296,11 @@
     
     if ([sender isKindOfClass: [NSSegmentedControl class]])
     {
-        self.toolMode = [sender selectedSegment];
+        if(sender == self.imageControls)
+            self.toolMode = [sender selectedSegment];
+    
+        else if(sender == self.GCPControls)
+            self.toolMode = [sender selectedSegment] + kSelectGCPTool;
     }
 }
 
