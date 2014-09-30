@@ -19,7 +19,9 @@
 @class GeoMapScrollView;
 @class GeoMapImageView;
 
-@interface GeoMapDocument : NSDocument <NSToolbarDelegate>
+@interface GeoMapDocument : NSDocument
+    <NSToolbarDelegate,
+    NSTableViewDelegate>
 
 @property (strong) NSImage * image;
 @property (assign) NSSize imageSize;
@@ -28,20 +30,33 @@
 @property (assign) NSUInteger toolMode;
 @property (strong) NSCursor * zoomInCursor;
 @property (strong) NSCursor * zoomOutCursor;
+@property (strong) NSCursor * addGCPCursor;
 
 // Toolbars.
 @property (assign) IBOutlet NSView * imageControlsToolbarItemView;
-@property (assign) IBOutlet NSSegmentedControl * imageControls;
+@property (assign) IBOutlet NSButton * panModeButton;
+@property (assign) IBOutlet NSButton * zoomModeButton;
 @property (assign) IBOutlet NSView * GCPControlsToolbarItemView;
-@property (assign) IBOutlet NSSegmentedControl * GCPControls;
+@property (assign) IBOutlet NSButton * selectGCPModeButton;
+@property (assign) IBOutlet NSButton * addGCPModeButton;
 
+// GCPs.
 @property (strong) NSMutableArray * GCPs;
 @property (strong) IBOutlet NSArrayController * GCPController;
+@property (strong) IBOutlet NSTableView * GCPTableView;
+@property (assign) BOOL adding;
 
+@property (readonly) NSString * actionButtonTitle;
 @property (readonly) BOOL canPreview;
-@property (readonly) BOOL canExport;
+
+- (IBAction) setTool: (id) sender;
 
 - (IBAction) previewMap: (id) sender;
 - (IBAction) exportMap: (id) sender;
+
+- (void) addGCP;
+
+- (IBAction) commitLatitude: (id) sender;
+- (IBAction) commitLongitude: (id) sender;
 
 @end

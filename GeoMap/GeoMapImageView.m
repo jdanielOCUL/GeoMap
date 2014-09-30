@@ -192,6 +192,7 @@
             break;
       
         case kAddGCPTool:
+            [self.document addGCP];
             break;
 
         default:

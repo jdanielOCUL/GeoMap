@@ -8,8 +8,12 @@
 
 #import <Foundation/Foundation.h>
 
-@interface GCP : NSObject
+@interface GeoMapGCP : NSObject
 
+@property (assign) double x;
+@property (assign) double y;
+@property (assign) double lat;
+@property (assign) double lon;
 @property (strong) NSString * latitude;
 @property (strong) NSString * longitude;
 

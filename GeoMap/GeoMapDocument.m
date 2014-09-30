@@ -10,16 +10,11 @@
 #import "GeoMapToolbarItem.h"
 #import "GeoMapScrollView.h"
 #import "GeoMapImageView.h"
+#import "GeoMapGCPTableCellView.h"
 
 // Toolbar items.
 #define kImageControlsToolbarItemID @"imagecontrolstoolbaritem"
 #define kGCPControlsToolbarItemID @"gcpcontrolstoolbaritem"
-
-#define kPanSegment  0
-#define kZoomSegment 1
-
-#define kSelectGCPSegment 0
-#define kAddGCPSegment    1
 
 @implementation GeoMapDocument
 
@@ -27,8 +22,8 @@
 
 @synthesize GCPs = myGCPs;
 
+@dynamic actionButtonTitle;
 @synthesize canPreview = myCanPreview;
-@synthesize canExport = myCanExport;
 
 - (NSUInteger) toolMode
 {
@@ -48,11 +43,21 @@
         switch (myToolMode)
         {
             case kPanTool:
+                self.panModeButton.state = NSOnState;
+                self.zoomModeButton.state = NSOffState;
+                self.selectGCPModeButton.state = NSOffState;
+                self.addGCPModeButton.state = NSOffState;
+          
                 [self.imageScrollView
                     setDocumentCursor: [NSCursor openHandCursor]];
                 break;
 
             case kZoomInTool:
+                self.panModeButton.state = NSOffState;
+                self.zoomModeButton.state = NSOnState;
+                self.selectGCPModeButton.state = NSOffState;
+                self.addGCPModeButton.state = NSOffState;
+          
                 [self.imageScrollView setDocumentCursor: self.zoomInCursor];
                 break;
 
@@ -61,16 +66,30 @@
                 break;
           
             case kSelectGCPTool:
+                self.panModeButton.state = NSOffState;
+                self.zoomModeButton.state = NSOffState;
+                self.selectGCPModeButton.state = NSOnState;
+                self.addGCPModeButton.state = NSOffState;
+          
                 [self.imageScrollView
                     setDocumentCursor: [NSCursor arrowCursor]];
                 break;
 
             case kAddGCPTool:
-                [self.imageScrollView
-                    setDocumentCursor: [NSCursor crosshairCursor]];
+                self.panModeButton.state = NSOffState;
+                self.zoomModeButton.state = NSOffState;
+                self.selectGCPModeButton.state = NSOffState;
+                self.addGCPModeButton.state = NSOnState;
+          
+                [self.imageScrollView setDocumentCursor: self.addGCPCursor];
                 break;
         }
     }
+}
+
+- (NSString *) actionButtonTitle
+{
+    return NSLocalizedString(@"Preview", NULL);
 }
 
 - (id) init
@@ -99,30 +118,6 @@
 {
   [super windowControllerDidLoadNib:aController];
   // Add any code here that needs to be executed once the windowController has loaded the document's window.
-  
-  [self.GCPController
-      addObserver: self
-      forKeyPath: @"arrangedObjects"
-      options: NSKeyValueObservingOptionNew
-      context: NULL];
-}
-
-- (void) observeValueForKeyPath: (NSString *) keyPath
-    ofObject: (id) object
-    change: (NSDictionary *) change
-    context: (void *) context
-{
-    if(object == self.GCPController)
-        if([keyPath isEqualToString: @"arrangedObjects"])
-        {
-            [self willChangeValueForKey: @"canPreview"];
-            [self willChangeValueForKey: @"canExport"];
-        
-            myCanPreview = myCanExport = ([self.GCPs count] >= 4);
-        
-            [self didChangeValueForKey: @"canExport"];
-            [self didChangeValueForKey: @"canPreview"];
-        }
 }
 
 + (BOOL)autosavesInPlace
@@ -135,7 +130,7 @@
   return [self.image TIFFRepresentation];
 }
 
-- (BOOL)readFromData:(NSData *)data ofType:(NSString *)typeName error:(NSError **)outError
+- (BOOL) readFromData: (NSData *) data ofType: (NSString *) typeName error: (NSError **) outError
 {
   self.image = [[NSImage alloc] initWithData: data];
   
@@ -168,7 +163,6 @@
       [[GeoMapToolbarItem alloc]
         initWithItemIdentifier: itemIdentifier];
     
-    item.control = self.imageControls;
     [item setLabel: NSLocalizedString(@"Image controls", nil)];
     [item setPaletteLabel: NSLocalizedString(@"Image controls", nil)];
     [item setTarget: self];
@@ -185,7 +179,6 @@
       [[GeoMapToolbarItem alloc]
         initWithItemIdentifier: itemIdentifier];
     
-    item.control = self.GCPControls;
     [item setLabel: NSLocalizedString(@"GCP controls", nil)];
     [item setPaletteLabel: NSLocalizedString(@"GCP controls", nil)];
     [item setTarget: self];
@@ -203,6 +196,7 @@
   return
     @[
       kImageControlsToolbarItemID,
+      NSToolbarSpaceItemIdentifier,
       kGCPControlsToolbarItemID,
       NSToolbarFlexibleSpaceItemIdentifier
     ];
@@ -217,6 +211,7 @@
   return
     @[
       kImageControlsToolbarItemID,
+      NSToolbarSpaceItemIdentifier,
       kGCPControlsToolbarItemID,
       NSToolbarFlexibleSpaceItemIdentifier
     ];
@@ -230,6 +225,7 @@
   {
   NSImage * zoomIn = [NSImage imageNamed: @"ZoomIn"];
   NSImage * zoomOut = [NSImage imageNamed: @"ZoomOut"];
+  NSImage * addGCP = [NSImage imageNamed: @"GCP"];
   
   self.toolMode = kPanTool;
   self.zoomInCursor =
@@ -238,28 +234,18 @@
   self.zoomOutCursor =
       [[NSCursor alloc]
           initWithImage: zoomOut hotSpot: NSMakePoint(7, 7)];
+  self.addGCPCursor =
+      [[NSCursor alloc]
+          initWithImage: addGCP hotSpot: NSMakePoint(12.5, 12.5)];
   
-  [[self.imageControls cell]
-    setImage: [[NSCursor openHandCursor] image] forSegment: kPanSegment];
-  [[self.imageControls cell]
-    setImage: zoomIn forSegment: kZoomSegment];
+  NSImage * zoomInToolbar = [NSImage imageNamed: @"ZoomInToolbar"];
+  NSImage * GCPToolbar = [NSImage imageNamed: @"GCPToolbar"];
+
+  [self.panModeButton setImage: [[NSCursor openHandCursor] image]];
+  [self.zoomModeButton setImage: zoomInToolbar];
+  [self.addGCPModeButton setImage: GCPToolbar];
   
-  [[self.GCPControls cell]
-    setImage: [[NSCursor arrowCursor] image] forSegment: kPanSegment];
-
-  [[self.imageControls cell]
-    setToolTip: NSLocalizedString(@"Pan image", NULL)
-    forSegment: kPanSegment];
-  [[self.imageControls cell]
-    setToolTip: NSLocalizedString(@"Zoom image", NULL)
-    forSegment: kZoomSegment];
-
-  [[self.GCPControls cell]
-    setToolTip: NSLocalizedString(@"Select GCP", NULL)
-    forSegment: kPanSegment];
-  [[self.GCPControls cell]
-    setToolTip: NSLocalizedString(@"Add GCP", NULL)
-    forSegment: kZoomSegment];
+  [self.selectGCPModeButton setImage: [[NSCursor arrowCursor] image]];
 
   self.imageView.document = self;
   
@@ -290,18 +276,16 @@
   //[self.imageView setImageScaling: NSImageScaleNone];
   }
 
-- (IBAction) changeTool: (id)sender
+- (IBAction) setTool: (id) sender
 {
-    // switch the tool mode...
-    
-    if ([sender isKindOfClass: [NSSegmentedControl class]])
-    {
-        if(sender == self.imageControls)
-            self.toolMode = [sender selectedSegment];
-    
-        else if(sender == self.GCPControls)
-            self.toolMode = [sender selectedSegment] + kSelectGCPTool;
-    }
+    if(sender == self.panModeButton)
+        self.toolMode = kPanTool;
+    else if(sender == self.zoomModeButton)
+        self.toolMode = kZoomInTool;
+    else if(sender == self.selectGCPModeButton)
+        self.toolMode = kSelectGCPTool;
+    else if(sender ==self.addGCPModeButton)
+        self.toolMode = kAddGCPTool;
 }
 
 - (IBAction) previewMap: (id) sender
@@ -312,6 +296,54 @@
 - (IBAction) exportMap: (id) sender
 {
     NSLog(@"export map");
+}
+
+- (void) addGCP
+{
+    [self.GCPController add: self];
+}
+
+- (NSView *) tableView: (NSTableView *) tableView
+    viewForTableColumn: (NSTableColumn *) tableColumn
+    row: (NSInteger) row
+    {
+    if([tableColumn.identifier isEqualToString: @"GCP"])
+    {
+        GeoMapGCPTableCellView * GCPCellView =
+            [tableView
+                makeViewWithIdentifier: tableColumn.identifier owner: self];
+    
+        [GCPCellView.latitudeField setEditable: YES];
+        [GCPCellView.longitudeField setEditable: YES];
+    
+        return GCPCellView;
+    }
+    
+    return nil;
+}
+
+- (void) tableView: (NSTableView *) tableView
+    didAddRowView: (NSTableRowView *) rowView
+    forRow: (NSInteger) row
+{
+    myCanPreview = ([self.GCPs count] >= 4);
+  
+    self.adding = YES;
+  
+    [self.GCPTableView
+        editColumn: 0
+        row: [self.GCPs count] - 1
+        withEvent: nil
+        select: YES];
+}
+
+- (IBAction) commitLatitude: (id) sender;
+{
+}
+
+- (IBAction) commitLongitude: (id) sender
+{
+    self.adding = NO;
 }
 
 @end

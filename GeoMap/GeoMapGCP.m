@@ -6,8 +6,8 @@
 //  Copyright (c) 2014 John Daniel. All rights reserved.
 //
 
-#import "GCP.h"
+#import "GeoMapGCP.h"
 
-@implementation GCP
+@implementation GeoMapGCP
 
 @end
