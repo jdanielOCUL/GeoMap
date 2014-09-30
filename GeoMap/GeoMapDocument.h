@@ -44,7 +44,6 @@
 @property (strong) NSMutableArray * GCPs;
 @property (strong) IBOutlet NSArrayController * GCPController;
 @property (strong) IBOutlet NSTableView * GCPTableView;
-@property (assign) BOOL adding;
 
 @property (readonly) NSString * actionButtonTitle;
 @property (readonly) BOOL canPreview;

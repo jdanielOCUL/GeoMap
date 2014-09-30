@@ -111,6 +111,7 @@
                                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                         </textFieldCell>
                                                                         <connections>
+                                                                            <action selector="commitLatitude:" target="-2" id="7MW-qK-40a"/>
                                                                             <binding destination="xUL-Sf-yb4" name="value" keyPath="objectValue.latitude" id="dOL-ZC-g6Z"/>
                                                                             <outlet property="nextKeyView" destination="GwY-MV-PyU" id="hVn-AT-kKP"/>
                                                                         </connections>
@@ -124,6 +125,7 @@
                                                                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                                                         </textFieldCell>
                                                                         <connections>
+                                                                            <action selector="commitLongitude:" target="-2" id="tGo-Bp-ifO"/>
                                                                             <binding destination="xUL-Sf-yb4" name="value" keyPath="objectValue.longitude" id="A6E-Tx-qYa"/>
                                                                         </connections>
                                                                     </textField>

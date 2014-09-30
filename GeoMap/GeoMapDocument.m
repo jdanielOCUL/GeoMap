@@ -316,6 +316,8 @@
         [GCPCellView.latitudeField setEditable: YES];
         [GCPCellView.longitudeField setEditable: YES];
     
+        GCPCellView.latitudeField.nextKeyView = GCPCellView.longitudeField;
+    
         return GCPCellView;
     }
     
@@ -328,8 +330,6 @@
 {
     myCanPreview = ([self.GCPs count] >= 4);
   
-    self.adding = YES;
-  
     [self.GCPTableView
         editColumn: 0
         row: [self.GCPs count] - 1
@@ -339,11 +339,11 @@
 
 - (IBAction) commitLatitude: (id) sender;
 {
+    [self.windowForSheet makeFirstResponder: [sender nextKeyView]];
 }
 
 - (IBAction) commitLongitude: (id) sender
 {
-    self.adding = NO;
 }
 
 @end
