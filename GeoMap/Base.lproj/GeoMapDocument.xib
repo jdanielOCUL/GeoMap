@@ -39,9 +39,9 @@
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" id="ta4-xg-sds" customClass="GeoMapImageView">
-                                    <rect key="frame" x="0.0" y="0.0" width="487" height="414"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="488" height="414"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyUpOrDown" id="OuV-q2-d50"/>
+                                    <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageAlignment="bottomLeft" imageScaling="proportionallyDown" id="OuV-q2-d50"/>
                                     <connections>
                                         <binding destination="-2" name="value" keyPath="self.image" id="Pfi-a5-ruP"/>
                                     </connections>
@@ -72,13 +72,12 @@
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                         <subviews>
                                             <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" columnAutoresizingStyle="lastColumnOnly" columnSelection="YES" multipleSelection="NO" autosaveColumns="NO" rowSizeStyle="automatic" viewBased="YES" id="s5d-Y2-UFh">
-                                                <rect key="frame" x="0.0" y="0.0" width="250" height="19"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <size key="intercellSpacing" width="3" height="2"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                                 <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                                 <tableColumns>
-                                                    <tableColumn identifier="GCP" width="244.59765625" minWidth="40" maxWidth="1000" id="0oc-iy-g4t" userLabel="GCP">
+                                                    <tableColumn identifier="GCP" width="246.59765625" minWidth="40" maxWidth="1000" id="0oc-iy-g4t" userLabel="GCP">
                                                         <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Latitude - Longitude">
                                                             <font key="font" metaFont="smallSystem"/>
                                                             <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
@@ -178,8 +177,8 @@
                                     </buttonCell>
                                     <connections>
                                         <action selector="previewMap:" target="-2" id="Fon-5Q-y8t"/>
-                                        <binding destination="-2" name="enabled" keyPath="self.canPreview" id="Db4-Xc-SZC"/>
                                         <binding destination="-2" name="title" keyPath="self.actionButtonTitle" id="dg3-qo-3uF"/>
+                                        <binding destination="-2" name="enabled" keyPath="self.canPreview" id="Db4-Xc-SZC"/>
                                     </connections>
                                 </button>
                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="mjQ-Dl-TO3">

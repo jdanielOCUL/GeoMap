@@ -11,6 +11,7 @@
 #import "GeoMapScrollView.h"
 #import "GeoMapImageView.h"
 #import "GeoMapGCPTableCellView.h"
+#import "GeoMapGCP.h"
 
 // Toolbar items.
 #define kImageControlsToolbarItemID @"imagecontrolstoolbaritem"
@@ -222,59 +223,70 @@
   }
 
 - (void) awakeFromNib
-  {
-  NSImage * zoomIn = [NSImage imageNamed: @"ZoomIn"];
-  NSImage * zoomOut = [NSImage imageNamed: @"ZoomOut"];
-  NSImage * addGCP = [NSImage imageNamed: @"GCP"];
+{
+    static dispatch_once_t onceToken;
   
-  self.toolMode = kPanTool;
-  self.zoomInCursor =
-      [[NSCursor alloc]
-          initWithImage: zoomIn hotSpot: NSMakePoint(7, 7)];
-  self.zoomOutCursor =
-      [[NSCursor alloc]
-          initWithImage: zoomOut hotSpot: NSMakePoint(7, 7)];
-  self.addGCPCursor =
-      [[NSCursor alloc]
-          initWithImage: addGCP hotSpot: NSMakePoint(12.5, 12.5)];
-  
-  NSImage * zoomInToolbar = [NSImage imageNamed: @"ZoomInToolbar"];
-  NSImage * GCPToolbar = [NSImage imageNamed: @"GCPToolbar"];
+    dispatch_once(
+        & onceToken,
+        ^{
+            [self setup];
+        });
+}
 
-  [self.panModeButton setImage: [[NSCursor openHandCursor] image]];
-  [self.zoomModeButton setImage: zoomInToolbar];
-  [self.addGCPModeButton setImage: GCPToolbar];
-  
-  [self.selectGCPModeButton setImage: [[NSCursor arrowCursor] image]];
+- (void) setup
+{
+    NSImage * zoomIn = [NSImage imageNamed: @"ZoomIn"];
+    NSImage * zoomOut = [NSImage imageNamed: @"ZoomOut"];
+    NSImage * addGCP = [NSImage imageNamed: @"GCP"];
+    
+    self.toolMode = kPanTool;
+    self.zoomInCursor =
+        [[NSCursor alloc]
+            initWithImage: zoomIn hotSpot: NSMakePoint(7, 7)];
+    self.zoomOutCursor =
+        [[NSCursor alloc]
+            initWithImage: zoomOut hotSpot: NSMakePoint(7, 7)];
+    self.addGCPCursor =
+        [[NSCursor alloc]
+            initWithImage: addGCP hotSpot: NSMakePoint(12.5, 12.5)];
+    
+    NSImage * zoomInToolbar = [NSImage imageNamed: @"ZoomInToolbar"];
+    NSImage * GCPToolbar = [NSImage imageNamed: @"GCPToolbar"];
 
-  self.imageView.document = self;
-  
-  [NSEvent
-    addLocalMonitorForEventsMatchingMask: NSFlagsChangedMask
-    handler:
-        ^NSEvent *(NSEvent * event)
-        {
-            if(self.toolMode == kZoomInTool)
-            {
-                if([NSEvent modifierFlags] & NSAlternateKeyMask)
-                    self.toolMode = kZoomOutTool;
-            }
-            else if(self.toolMode == kZoomOutTool)
-            {
-                if(!([NSEvent modifierFlags] & NSAlternateKeyMask))
-                    self.toolMode = kZoomInTool;
-            }
-        
-            return event;
-        }];
-  
-  //NSRect frame = [self.imageView frame];
-  
-  //frame.size = self.imageSize;
-  
-  //[self.imageView setFrame: frame];
-  //[self.imageView setImageScaling: NSImageScaleNone];
-  }
+    [self.panModeButton setImage: [[NSCursor openHandCursor] image]];
+    [self.zoomModeButton setImage: zoomInToolbar];
+    [self.addGCPModeButton setImage: GCPToolbar];
+    
+    [self.selectGCPModeButton setImage: [[NSCursor arrowCursor] image]];
+
+    self.imageView.document = self;
+    
+    [NSEvent
+      addLocalMonitorForEventsMatchingMask: NSFlagsChangedMask
+      handler:
+          ^NSEvent *(NSEvent * event)
+          {
+              if(self.toolMode == kZoomInTool)
+              {
+                  if([NSEvent modifierFlags] & NSAlternateKeyMask)
+                      self.toolMode = kZoomOutTool;
+              }
+              else if(self.toolMode == kZoomOutTool)
+              {
+                  if(!([NSEvent modifierFlags] & NSAlternateKeyMask))
+                      self.toolMode = kZoomInTool;
+              }
+          
+              return event;
+          }];
+    
+    //NSRect frame = [self.imageView frame];
+    
+    //frame.size = self.imageSize;
+    
+    //[self.imageView setFrame: frame];
+    //[self.imageView setImageScaling: NSImageScaleNone];
+}
 
 - (IBAction) setTool: (id) sender
 {
@@ -298,8 +310,9 @@
     NSLog(@"export map");
 }
 
-- (void) addGCP
+- (void) addGCP: (NSPoint) point
 {
+    self.currentGCPPoint = point;
     [self.GCPController add: self];
 }
 
@@ -330,6 +343,11 @@
 {
     myCanPreview = ([self.GCPs count] >= 4);
   
+    GeoMapGCP * GCP = [self.GCPs lastObject];
+  
+    GCP.x = self.currentGCPPoint.x;
+    GCP.y = self.currentGCPPoint.y;
+  
     [self.GCPTableView
         editColumn: 0
         row: [self.GCPs count] - 1
@@ -344,6 +362,9 @@
 
 - (IBAction) commitLongitude: (id) sender
 {
+    GeoMapGCP * GCP = [self.GCPs lastObject];
+
+    NSLog(@"Added GCP at %lf, %lf = %@, %@", GCP.x, GCP.y, GCP.latitude, GCP.longitude);
 }
 
 @end

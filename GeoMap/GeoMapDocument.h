@@ -44,6 +44,7 @@
 @property (strong) NSMutableArray * GCPs;
 @property (strong) IBOutlet NSArrayController * GCPController;
 @property (strong) IBOutlet NSTableView * GCPTableView;
+@property (assign) NSPoint currentGCPPoint;
 
 @property (readonly) NSString * actionButtonTitle;
 @property (readonly) BOOL canPreview;
@@ -53,7 +54,7 @@
 - (IBAction) previewMap: (id) sender;
 - (IBAction) exportMap: (id) sender;
 
-- (void) addGCP;
+- (void) addGCP: (NSPoint) point;
 
 - (IBAction) commitLatitude: (id) sender;
 - (IBAction) commitLongitude: (id) sender;

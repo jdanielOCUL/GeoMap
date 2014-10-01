@@ -160,9 +160,37 @@
 
 - (void) mouseUp: (NSEvent *) event
 {
-    NSPoint position =
-        [[self.scrollView contentView]
-            convertPoint: event.locationInWindow fromView: nil];
+    // The clip view is the big driver. With magnification, it shrinks down to
+    // a fraction of the frame view.
+    NSClipView * clipView = [self.scrollView contentView];
+  
+    // Get the mouse coordinates in the context of the clip view.
+    NSPoint clipPosition =
+        [clipView convertPoint: event.locationInWindow fromView: nil];
+
+    NSPoint imagePosition = clipPosition;
+  
+    // Now for the tricky part. The aspect ratio of the image probably doesn't
+    // match the frame. I need to have the location and size of the padding.
+    double frameAspectRatio = self.bounds.size.width / self.bounds.size.height;
+    double imageAspectRatio = self.image.size.width / self.image.size.height;
+  
+    double scale = 1;
+  
+    // The frame is proportionally wider than the image. There is extra space
+    // on the sides.
+    if(frameAspectRatio > imageAspectRatio)
+        scale = self.image.size.height / self.bounds.size.height;
+  
+    // The frame is proportionally narrower than the iamge. There is extra space
+    // at the top and bottom, or none at all.
+    else
+        scale = self.image.size.width / self.bounds.size.width;
+  
+    imagePosition.x *= scale;
+    imagePosition.y *= scale;
+
+    NSLog(@"Mouse %@", NSStringFromPoint(imagePosition));
   
     switch(self.document.toolMode)
     {
@@ -174,8 +202,13 @@
             if(magnification < self.scrollView.maxMagnification)
             {
                 magnification *= kZoomInFactor;
+ 
+                if(magnification > self.scrollView.maxMagnification)
+                    magnification = self.scrollView.maxMagnification;
+
                 [[self.scrollView animator]
-                    setMagnification: magnification centeredAtPoint: position];
+                    setMagnification: magnification
+                    centeredAtPoint: clipPosition];
             }
             break;
     
@@ -183,8 +216,13 @@
             if(magnification > self.scrollView.minMagnification)
             {
                 magnification *= kZoomOutFactor;
+ 
+                if(magnification < self.scrollView.minMagnification)
+                    magnification = self.scrollView.minMagnification;
+
                 [[self.scrollView animator]
-                    setMagnification: magnification centeredAtPoint: position];
+                    setMagnification: magnification
+                    centeredAtPoint: clipPosition];
             }
             break;
 
@@ -192,7 +230,7 @@
             break;
       
         case kAddGCPTool:
-            [self.document addGCP];
+            [self.document addGCP: imagePosition];
             break;
 
         default:
@@ -202,58 +240,15 @@
 
 - (void) zoomToRect: (NSRect) rect
 {
-    double zoomInX = self.frame.size.width / rect.size.width;
-    double zoomInY = self.frame.size.height / rect.size.height;
-  
-    double zoomIn = fmin(zoomInX, zoomInY);
-  
-    NSRect idealRect = rect;
-  
-    idealRect.size.width =  self.frame.size.width / zoomIn;
-    idealRect.size.height = self.frame.size.height / zoomIn;
-  
-    if(idealRect.size.width > rect.size.width)
-    {
-        rect.origin.x =
-            rect.origin.x + (rect.size.width / 2) - (idealRect.size.width / 2);
-        rect.size.width = idealRect.size.width;
-    }
-  
-    if(idealRect.size.height > rect.size.height)
-    {
-        rect.origin.y =
-            rect.origin.y + (rect.size.height / 2) - (idealRect.size.height / 2);
-        rect.size.height = idealRect.size.height;
-    }
-
-    if(zoomIn > self.scrollView.maxMagnification)
-      zoomIn = self.scrollView.maxMagnification;
-
-    magnification = zoomIn;
-  
-    NSPoint centre = rect.origin;
-  
-    centre.x += rect.size.width / 2;
-    centre.y += rect.size.height / 2;
-  
-    NSPoint newOrigin =
-      [[self.scrollView contentView] convertPoint: rect.origin fromView: self];
-  
     [NSAnimationContext
         runAnimationGroup:
             ^(NSAnimationContext * context)
             {
-                [[self.scrollView animator]
-                    setMagnification: magnification centeredAtPoint: centre];
+                [[self.scrollView animator] magnifyToFitRect: rect];
             }
         completionHandler:
             ^{
-                dispatch_async(
-                    dispatch_get_main_queue(),
-                    ^{
-                        [[[self.scrollView contentView] animator]
-                            scrollToPoint: newOrigin];                  
-                    });
+                magnification = [self.scrollView magnification];
             }];
 }
 

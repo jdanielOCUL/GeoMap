@@ -16,9 +16,9 @@
     {
         NSBezierPath * path =
           [NSBezierPath
-              bezierPathWithRoundedRect: self.bounds xRadius: 8 yRadius: 8];
+              bezierPathWithRoundedRect: self.bounds xRadius: 6 yRadius: 6];
     
-        [[NSColor grayColor] set];
+        [[NSColor colorWithCalibratedRed: .6 green: .6 blue: .6 alpha: 1] set];
         [path fill];
     }
     
