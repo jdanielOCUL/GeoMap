@@ -84,6 +84,16 @@
           
                 [self.imageScrollView setDocumentCursor: self.addGCPCursor];
                 break;
+
+            case kEditGCPTool:
+                self.panModeButton.state = NSOffState;
+                self.zoomModeButton.state = NSOffState;
+                self.selectGCPModeButton.state = NSOffState;
+                self.addGCPModeButton.state = NSOffState;
+          
+                [self.imageScrollView
+                    setDocumentCursor: [NSCursor arrowCursor]];
+                break;
         }
     }
 }
@@ -298,6 +308,8 @@
         self.toolMode = kSelectGCPTool;
     else if(sender ==self.addGCPModeButton)
         self.toolMode = kAddGCPTool;
+  
+    self.previousToolMode = self.toolMode;
 }
 
 - (IBAction) previewMap: (id) sender
@@ -353,6 +365,9 @@
         row: [self.GCPs count] - 1
         withEvent: nil
         select: YES];
+  
+    self.previousToolMode = self.toolMode;
+    self.toolMode = kEditGCPTool;
 }
 
 - (IBAction) commitLatitude: (id) sender;
@@ -364,6 +379,7 @@
 {
     GeoMapGCP * GCP = [self.GCPs lastObject];
 
+    self.toolMode = self.previousToolMode;
     NSLog(@"Added GCP at %lf, %lf = %@, %@", GCP.x, GCP.y, GCP.latitude, GCP.longitude);
 }
 

@@ -15,6 +15,7 @@
 
 #define kSelectGCPTool 3
 #define kAddGCPTool    4
+#define kEditGCPTool   5
 
 @class GeoMapScrollView;
 @class GeoMapImageView;
@@ -28,6 +29,7 @@
 @property (strong) IBOutlet GeoMapScrollView * imageScrollView;
 @property (strong) IBOutlet GeoMapImageView * imageView;
 @property (assign) NSUInteger toolMode;
+@property (assign) NSUInteger previousToolMode;
 @property (strong) NSCursor * zoomInCursor;
 @property (strong) NSCursor * zoomOutCursor;
 @property (strong) NSCursor * addGCPCursor;
