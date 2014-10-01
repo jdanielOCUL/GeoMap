@@ -195,10 +195,6 @@
     imagePosition.x *= self.scale;
     imagePosition.y *= self.scale;
 
-    //NSLog(@"Scale %lf", self.scale);
-    //NSLog(@"Image %@", NSStringFromSize(self.image.size));
-    //NSLog(@"Mouse %@", NSStringFromPoint(imagePosition));
-  
     switch(self.document.toolMode)
     {
         case kPanTool:
@@ -234,7 +230,6 @@
       
         case kAddGCPTool:
             [self.document addGCP: imagePosition];
-            [self addGCP: imagePosition];
             break;
 
         default:
@@ -292,11 +287,6 @@
     // at the top and bottom, or none at all.
     else
         self.scale = self.image.size.width / self.bounds.size.width;
-}
-
-- (void) addGCP: (NSPoint) point
-{
-    [self drawGCPAt: point];
 }
 
 @end

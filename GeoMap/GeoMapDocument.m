@@ -365,6 +365,8 @@
         select: YES];
   
     self.toolMode = kEditGCPTool;
+    [self.imageView drawGCPAt: GCP.imagePoint];
+    [self.imageView setNeedsDisplay: YES];
 }
 
 - (IBAction) commitLatitude: (id) sender;
