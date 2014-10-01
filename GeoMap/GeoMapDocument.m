@@ -247,7 +247,7 @@
 {
     NSImage * zoomIn = [NSImage imageNamed: @"ZoomIn"];
     NSImage * zoomOut = [NSImage imageNamed: @"ZoomOut"];
-    NSImage * addGCP = [NSImage imageNamed: @"GCP"];
+    self.GCPImage = [NSImage imageNamed: @"GCP"];
     
     self.toolMode = kPanTool;
     self.zoomInCursor =
@@ -258,7 +258,7 @@
             initWithImage: zoomOut hotSpot: NSMakePoint(7, 7)];
     self.addGCPCursor =
         [[NSCursor alloc]
-            initWithImage: addGCP hotSpot: NSMakePoint(12.5, 12.5)];
+            initWithImage: self.GCPImage hotSpot: NSMakePoint(12.5, 12.5)];
     
     NSImage * zoomInToolbar = [NSImage imageNamed: @"ZoomInToolbar"];
     NSImage * GCPToolbar = [NSImage imageNamed: @"GCPToolbar"];
@@ -308,8 +308,6 @@
         self.toolMode = kSelectGCPTool;
     else if(sender ==self.addGCPModeButton)
         self.toolMode = kAddGCPTool;
-  
-    self.previousToolMode = self.toolMode;
 }
 
 - (IBAction) previewMap: (id) sender
@@ -357,8 +355,8 @@
   
     GeoMapGCP * GCP = [self.GCPs lastObject];
   
-    GCP.x = self.currentGCPPoint.x;
-    GCP.y = self.currentGCPPoint.y;
+    GCP.imagePoint =
+        NSMakePoint(self.currentGCPPoint.x, self.currentGCPPoint.y);
   
     [self.GCPTableView
         editColumn: 0
@@ -366,7 +364,6 @@
         withEvent: nil
         select: YES];
   
-    self.previousToolMode = self.toolMode;
     self.toolMode = kEditGCPTool;
 }
 
@@ -377,10 +374,7 @@
 
 - (IBAction) commitLongitude: (id) sender
 {
-    GeoMapGCP * GCP = [self.GCPs lastObject];
-
-    self.toolMode = self.previousToolMode;
-    NSLog(@"Added GCP at %lf, %lf = %@, %@", GCP.x, GCP.y, GCP.latitude, GCP.longitude);
+    self.toolMode = kPanTool;
 }
 
 @end

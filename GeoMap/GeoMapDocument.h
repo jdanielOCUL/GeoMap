@@ -29,7 +29,6 @@
 @property (strong) IBOutlet GeoMapScrollView * imageScrollView;
 @property (strong) IBOutlet GeoMapImageView * imageView;
 @property (assign) NSUInteger toolMode;
-@property (assign) NSUInteger previousToolMode;
 @property (strong) NSCursor * zoomInCursor;
 @property (strong) NSCursor * zoomOutCursor;
 @property (strong) NSCursor * addGCPCursor;
@@ -47,6 +46,7 @@
 @property (strong) IBOutlet NSArrayController * GCPController;
 @property (strong) IBOutlet NSTableView * GCPTableView;
 @property (assign) NSPoint currentGCPPoint;
+@property (strong) NSImage * GCPImage;
 
 @property (readonly) NSString * actionButtonTitle;
 @property (readonly) BOOL canPreview;

@@ -14,5 +14,8 @@
 
 @property (strong) GeoMapDocument * document;
 @property (strong) NSScrollView * scrollView;
+@property (assign) double scale;
+
+- (void) drawGCPAt: (NSPoint) point;
 
 @end

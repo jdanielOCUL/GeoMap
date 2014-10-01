@@ -8,6 +8,7 @@
 
 #import "GeoMapImageView.h"
 #import "GeoMapDocument.h"
+#import "GeoMapGCP.h"
 
 #define kZoomInFactor  1.414214
 #define kZoomOutFactor 0.7071068
@@ -38,11 +39,16 @@
 
     self.selectionFillColor =
         [NSColor colorWithCalibratedRed: .5 green: .5 blue: .5 alpha: .4];
+  
+    [self updateScale];
 }
 
 - (void) drawRect: (NSRect) dirtyRect
 {
     [super drawRect: dirtyRect];
+  
+    for(GeoMapGCP * gcp in self.document.GCPs)
+        [self drawGCPAt: gcp.imagePoint];
   
     if(!NSEqualRects(selectionMarquee, NSZeroRect))
     {
@@ -54,6 +60,20 @@
         [self.selectionFillColor set];
         [marquee fill];
     }
+}
+
+- (void) drawGCPAt: (NSPoint) point
+{
+    double imageSize = self.document.GCPImage.size.height / 6 / magnification * self.scale;
+
+    NSRect GCPRect =
+        NSMakeRect(
+            (point.x / self.scale) - imageSize/2,
+            (point.y / self.scale) - imageSize/2,
+            imageSize,
+            imageSize);
+
+    [self.document.GCPImage drawInRect: GCPRect];
 }
 
 - (void) mouseDown: (NSEvent *) event
@@ -170,27 +190,14 @@
 
     NSPoint imagePosition = clipPosition;
   
-    // Now for the tricky part. The aspect ratio of the image probably doesn't
-    // match the frame. I need to have the location and size of the padding.
-    double frameAspectRatio = self.bounds.size.width / self.bounds.size.height;
-    double imageAspectRatio = self.image.size.width / self.image.size.height;
-  
-    double scale = 1;
-  
-    // The frame is proportionally wider than the image. There is extra space
-    // on the sides.
-    if(frameAspectRatio > imageAspectRatio)
-        scale = self.image.size.height / self.bounds.size.height;
-  
-    // The frame is proportionally narrower than the iamge. There is extra space
-    // at the top and bottom, or none at all.
-    else
-        scale = self.image.size.width / self.bounds.size.width;
-  
-    imagePosition.x *= scale;
-    imagePosition.y *= scale;
+    [self updateScale];
+    
+    imagePosition.x *= self.scale;
+    imagePosition.y *= self.scale;
 
-    NSLog(@"Mouse %@", NSStringFromPoint(imagePosition));
+    //NSLog(@"Scale %lf", self.scale);
+    //NSLog(@"Image %@", NSStringFromSize(self.image.size));
+    //NSLog(@"Mouse %@", NSStringFromPoint(imagePosition));
   
     switch(self.document.toolMode)
     {
@@ -206,9 +213,7 @@
                 if(magnification > self.scrollView.maxMagnification)
                     magnification = self.scrollView.maxMagnification;
 
-                [[self.scrollView animator]
-                    setMagnification: magnification
-                    centeredAtPoint: clipPosition];
+                [self zoomToPoint: clipPosition];
             }
             break;
     
@@ -220,9 +225,7 @@
                 if(magnification < self.scrollView.minMagnification)
                     magnification = self.scrollView.minMagnification;
 
-                [[self.scrollView animator]
-                    setMagnification: magnification
-                    centeredAtPoint: clipPosition];
+                [self zoomToPoint: clipPosition];
             }
             break;
 
@@ -231,6 +234,7 @@
       
         case kAddGCPTool:
             [self.document addGCP: imagePosition];
+            [self addGCP: imagePosition];
             break;
 
         default:
@@ -249,7 +253,50 @@
         completionHandler:
             ^{
                 magnification = [self.scrollView magnification];
+                [self updateScale];
+                [self setNeedsDisplay: YES];
             }];
+}
+
+- (void) zoomToPoint: (NSPoint) point
+{
+    [NSAnimationContext
+        runAnimationGroup:
+            ^(NSAnimationContext * context)
+            {
+                [[self.scrollView animator]
+                    setMagnification: magnification
+                    centeredAtPoint: point];
+            }
+        completionHandler:
+            ^{
+                magnification = [self.scrollView magnification];
+                [self updateScale];
+                [self setNeedsDisplay: YES];
+            }];
+}
+
+- (void) updateScale
+{
+    // Now for the tricky part. The aspect ratio of the image probably doesn't
+    // match the frame. I need to have the location and size of the padding.
+    double frameAspectRatio = self.bounds.size.width / self.bounds.size.height;
+    double imageAspectRatio = self.image.size.width / self.image.size.height;
+  
+    // The frame is proportionally wider than the image. There is extra space
+    // on the sides.
+    if(frameAspectRatio > imageAspectRatio)
+        self.scale = self.image.size.height / self.bounds.size.height;
+  
+    // The frame is proportionally narrower than the iamge. There is extra space
+    // at the top and bottom, or none at all.
+    else
+        self.scale = self.image.size.width / self.bounds.size.width;
+}
+
+- (void) addGCP: (NSPoint) point
+{
+    [self drawGCPAt: point];
 }
 
 @end
