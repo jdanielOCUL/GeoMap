@@ -45,7 +45,6 @@
 @property (strong) NSMutableArray * GCPs;
 @property (strong) IBOutlet NSArrayController * GCPController;
 @property (strong) IBOutlet NSTableView * GCPTableView;
-@property (assign) NSPoint currentGCPPoint;
 @property (strong) NSImage * GCPImage;
 
 @property (readonly) NSString * actionButtonTitle;
@@ -57,6 +56,7 @@
 - (IBAction) exportMap: (id) sender;
 
 - (void) addGCP: (NSPoint) point;
+- (IBAction) remove: (id) sender;
 
 - (IBAction) commitLatitude: (id) sender;
 - (IBAction) commitLongitude: (id) sender;

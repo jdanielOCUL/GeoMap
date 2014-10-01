@@ -164,7 +164,7 @@
                                         <font key="font" metaFont="system"/>
                                     </buttonCell>
                                     <connections>
-                                        <action selector="remove:" target="ueB-MD-AHo" id="iJV-9M-lQl"/>
+                                        <action selector="remove:" target="-2" id="cMK-De-QiY"/>
                                         <binding destination="ueB-MD-AHo" name="enabled" keyPath="self.canRemove" id="5lb-8G-hp7"/>
                                     </connections>
                                 </button>

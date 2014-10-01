@@ -322,8 +322,30 @@
 
 - (void) addGCP: (NSPoint) point
 {
-    self.currentGCPPoint = point;
-    [self.GCPController add: self];
+    GeoMapGCP * GCP = [GeoMapGCP new];
+  
+    GCP.imagePoint = point;
+
+    [self.GCPController addObject: GCP];
+  
+    myCanPreview = ([self.GCPs count] >= 4);
+  
+    [self.GCPTableView
+        editColumn: 0
+        row: [self.GCPs count] - 1
+        withEvent: nil
+        select: YES];
+  
+    self.toolMode = kEditGCPTool;
+    [self.imageView drawGCPAt: GCP.imagePoint];
+    [self.imageView setNeedsDisplay: YES];
+}
+
+- (void) remove: (id) sender
+{
+    [self.GCPController remove: sender];
+  
+    [self.imageView setNeedsDisplay: YES];
 }
 
 - (NSView *) tableView: (NSTableView *) tableView
@@ -345,28 +367,6 @@
     }
     
     return nil;
-}
-
-- (void) tableView: (NSTableView *) tableView
-    didAddRowView: (NSTableRowView *) rowView
-    forRow: (NSInteger) row
-{
-    myCanPreview = ([self.GCPs count] >= 4);
-  
-    GeoMapGCP * GCP = [self.GCPs lastObject];
-  
-    GCP.imagePoint =
-        NSMakePoint(self.currentGCPPoint.x, self.currentGCPPoint.y);
-  
-    [self.GCPTableView
-        editColumn: 0
-        row: [self.GCPs count] - 1
-        withEvent: nil
-        select: YES];
-  
-    self.toolMode = kEditGCPTool;
-    [self.imageView drawGCPAt: GCP.imagePoint];
-    [self.imageView setNeedsDisplay: YES];
 }
 
 - (IBAction) commitLatitude: (id) sender;
