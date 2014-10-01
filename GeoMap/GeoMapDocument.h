@@ -57,6 +57,7 @@
 
 - (void) addGCP: (NSPoint) point;
 - (IBAction) remove: (id) sender;
+- (void) selectGCPAt: (NSPoint) point;
 
 - (IBAction) commitLatitude: (id) sender;
 - (IBAction) commitLongitude: (id) sender;

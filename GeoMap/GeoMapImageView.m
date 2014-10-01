@@ -226,6 +226,7 @@
             break;
 
         case kSelectGCPTool:
+            [self.document selectGCPAt: imagePosition];
             break;
       
         case kAddGCPTool:

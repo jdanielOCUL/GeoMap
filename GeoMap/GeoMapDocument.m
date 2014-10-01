@@ -348,6 +348,30 @@
     [self.imageView setNeedsDisplay: YES];
 }
 
+- (void) selectGCPAt: (NSPoint) point
+{
+    double closetDistance = 0;
+    GeoMapGCP * closest = nil;
+  
+    for(GeoMapGCP * GCP in self.GCPs)
+    {
+        double distance =
+            sqrt(
+                pow(
+                    GCP.imagePoint.x - point.x, 2) +
+                    pow(GCP.imagePoint.y - point.y, 2));
+    
+        if((distance < closetDistance) || !closest)
+        {
+            closest = GCP;
+            closetDistance = distance;
+        }
+    }
+  
+    if(closest)
+        [self.GCPController setSelectedObjects: @[closest]];
+}
+
 - (NSView *) tableView: (NSTableView *) tableView
     viewForTableColumn: (NSTableColumn *) tableColumn
     row: (NSInteger) row
