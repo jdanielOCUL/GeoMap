@@ -1,0 +1,1305 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>osgeo.gdal.Band</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="osgeo-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://gdal.org/">GDAL/OGR Python API</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="osgeo-module.html">Package&nbsp;osgeo</a> ::
+        <a href="osgeo.gdal-module.html">Module&nbsp;gdal</a> ::
+        Class&nbsp;Band
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="osgeo.gdal.Band-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class Band</h1><p class="nomargin-top"><span class="codelink"><a href="osgeo.gdal-pysrc.html#Band">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_osgeo_gd_2" name="uml_class_diagram_for_osgeo_gd_2">
+<area shape="rect" href="osgeo.gdal.Band-class.html#__swig_setmethods__" title="osgeo.gdal.Band.__swig_setmethods__" alt="" coords="17,295,252,313"/>
+<area shape="rect" href="osgeo.gdal.Band-class.html#__setattr__" title="osgeo.gdal.Band.__setattr__" alt="" coords="17,313,252,332"/>
+<area shape="rect" href="osgeo.gdal.Band-class.html#__swig_getmethods__" title="osgeo.gdal.Band.__swig_getmethods__" alt="" coords="17,332,252,351"/>
+<area shape="rect" href="osgeo.gdal.Band-class.html#__getattr__" title="osgeo.gdal.Band.__getattr__" alt="" coords="17,351,252,369"/>
+<area shape="rect" href="osgeo.gdal.Band-class.html#__init__" title="osgeo.gdal.Band.__init__" alt="" coords="17,372,252,391"/>
+<area shape="rect" href="osgeo.gdal.Band-class.html#__repr__" title="osgeo.gdal.Band.__repr__" alt="" coords="17,391,252,409"/>
+<area shape="rect" href="osgeo.gdal.Band-class.html#GetBand" title="osgeo.gdal.Band.GetBand" alt="" coords="17,409,252,428"/>
+<area shape="rect" href="osgeo.gdal.Band-class.html#GetBlockSize" title="osgeo.gdal.Band.GetBlockSize" alt="" coords="17,428,252,447"/>
+<area shape="rect" href="osgeo.gdal.Band-class.html#GetColorInterpretation" title="osgeo.gdal.Band.GetColorInterpretation" alt="" coords="17,447,252,465"/>
+<area shape="rect" href="osgeo.gdal.Band-class.html#GetRasterColorInterpretation" title="osgeo.gdal.Band.GetRasterColorInterpretation" alt="" coords="17,465,252,484"/>
+<area shape="rect" href="osgeo.gdal.Band-class.html#SetColorInterpretation" title="SetColorInterpretation(self, GDALColorInterp val) &#45;&gt; CPLErr" alt="" coords="17,484,252,503"/>
+<area shape="rect" href="osgeo.gdal.Band-class.html#SetRasterColorInterpretation" title="SetRasterColorInterpretation(self, GDALColorInterp val) &#45;&gt; CPLErr" alt="" coords="17,503,252,521"/>
+<area shape="rect" href="osgeo.gdal.Band-class.html#GetNoDataValue" title="osgeo.gdal.Band.GetNoDataValue" alt="" coords="17,521,252,540"/>
+<area shape="rect" href="osgeo.gdal.Band-class.html#SetNoDataValue" title="SetNoDataValue(self, double d) &#45;&gt; CPLErr" alt="" coords="17,540,252,559"/>
+<area shape="rect" href="osgeo.gdal.Band-class.html#GetUnitType" title="osgeo.gdal.Band.GetUnitType" alt="" coords="17,559,252,577"/>
+<area shape="rect" href="osgeo.gdal.Band-class.html#SetUnitType" title="SetUnitType(self, char val) &#45;&gt; CPLErr" alt="" coords="17,577,252,596"/>
+<area shape="rect" href="osgeo.gdal.Band-class.html#GetRasterCategoryNames" title="osgeo.gdal.Band.GetRasterCategoryNames" alt="" coords="17,596,252,615"/>
+<area shape="rect" href="osgeo.gdal.Band-class.html#__get_array_interface__" title="osgeo.gdal.Band.__get_array_interface__" alt="" coords="17,633,252,652"/>
+<area shape="rect" href="osgeo.gdal.Band-class.html" title="Proxy of C++ GDALRasterBandShadow class" alt="" coords="16,277,253,653"/>
+<area shape="rect" href="osgeo.gdal.MajorObject-class.html#GetDescription" title="osgeo.gdal.MajorObject.GetDescription" alt="" coords="47,97,223,116"/>
+<area shape="rect" href="osgeo.gdal.MajorObject-class.html#SetDescription" title="SetDescription(self, char pszNewDesc)" alt="" coords="47,116,223,135"/>
+<area shape="rect" href="osgeo.gdal.MajorObject-class.html#GetMetadata_Dict" title="GetMetadata_Dict(self, char pszDomain = &quot;&quot;) &#45;&gt; char" alt="" coords="47,135,223,153"/>
+<area shape="rect" href="osgeo.gdal.MajorObject-class.html#GetMetadata_List" title="GetMetadata_List(self, char pszDomain = &quot;&quot;) &#45;&gt; char" alt="" coords="47,153,223,172"/>
+<area shape="rect" href="osgeo.gdal.MajorObject-class.html#SetMetadata" title="SetMetadata(self, char papszMetadata, char pszDomain = &quot;&quot;) &#45;&gt; CPLErr &#160;SetMetadata(self, char pszMetadataString, char pszDomain = &quot;&quot;) &#45;&gt; CPLErr" alt="" coords="47,172,223,191"/>
+<area shape="rect" href="osgeo.gdal.MajorObject-class.html#GetMetadataItem" title="GetMetadataItem(self, char pszName, char pszDomain = &quot;&quot;) &#45;&gt; char" alt="" coords="47,191,223,209"/>
+<area shape="rect" href="osgeo.gdal.MajorObject-class.html#SetMetadataItem" title="SetMetadataItem(self, char pszName, char pszValue, char pszDomain = &quot;&quot;) &#45;&gt; &#160;CPLErr" alt="" coords="47,209,223,228"/>
+<area shape="rect" href="osgeo.gdal.MajorObject-class.html#GetMetadata" title="osgeo.gdal.MajorObject.GetMetadata" alt="" coords="47,228,223,247"/>
+<area shape="rect" href="osgeo.gdal.MajorObject-class.html" title="Proxy of C++ GDALMajorObjectShadow class" alt="" coords="45,72,224,248"/>
+<area shape="rect" href="osgeo.gdal._object-class.html" title="osgeo.gdal._object" alt="" coords="112,11,157,43"/>
+</map>
+  <img src="uml_class_diagram_for_osgeo_gd_2.gif" alt='' usemap="#uml_class_diagram_for_osgeo_gd_2" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<p>Proxy of C++ GDALRasterBandShadow class</p>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="osgeo.gdal.Band-class.html#__init__" class="summary-sig-name">__init__</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="osgeo.gdal.Band-class.html#__repr__" class="summary-sig-name">__repr__</a>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#_swig_repr">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="GetBand"></a><span class="summary-sig-name">GetBand</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.GetBand">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="GetBlockSize"></a><span class="summary-sig-name">GetBlockSize</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.GetBlockSize">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">GDALColorInterp</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="GetColorInterpretation"></a><span class="summary-sig-name">GetColorInterpretation</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.GetColorInterpretation">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">GDALColorInterp</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="GetRasterColorInterpretation"></a><span class="summary-sig-name">GetRasterColorInterpretation</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.GetRasterColorInterpretation">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="SetColorInterpretation"></a><span class="summary-sig-name">SetColorInterpretation</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      SetColorInterpretation(self, GDALColorInterp val) -&gt; CPLErr</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.SetColorInterpretation">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="SetRasterColorInterpretation"></a><span class="summary-sig-name">SetRasterColorInterpretation</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      SetRasterColorInterpretation(self, GDALColorInterp val) -&gt; CPLErr</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.SetRasterColorInterpretation">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="GetNoDataValue"></a><span class="summary-sig-name">GetNoDataValue</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.GetNoDataValue">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="SetNoDataValue"></a><span class="summary-sig-name">SetNoDataValue</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      SetNoDataValue(self, double d) -&gt; CPLErr</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.SetNoDataValue">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">char</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="GetUnitType"></a><span class="summary-sig-name">GetUnitType</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.GetUnitType">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="SetUnitType"></a><span class="summary-sig-name">SetUnitType</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      SetUnitType(self, char val) -&gt; CPLErr</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.SetUnitType">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">char</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="GetRasterCategoryNames"></a><span class="summary-sig-name">GetRasterCategoryNames</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.GetRasterCategoryNames">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="SetRasterCategoryNames"></a><span class="summary-sig-name">SetRasterCategoryNames</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      SetRasterCategoryNames(self, char names) -&gt; CPLErr</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.SetRasterCategoryNames">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="GetMinimum"></a><span class="summary-sig-name">GetMinimum</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.GetMinimum">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="GetMaximum"></a><span class="summary-sig-name">GetMaximum</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.GetMaximum">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="GetOffset"></a><span class="summary-sig-name">GetOffset</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.GetOffset">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="GetScale"></a><span class="summary-sig-name">GetScale</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.GetScale">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="SetOffset"></a><span class="summary-sig-name">SetOffset</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      SetOffset(self, double val) -&gt; CPLErr</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.SetOffset">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="SetScale"></a><span class="summary-sig-name">SetScale</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      SetScale(self, double val) -&gt; CPLErr</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.SetScale">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="GetStatistics"></a><span class="summary-sig-name">GetStatistics</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      GetStatistics(self, int approx_ok, int force) -&gt; CPLErr</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.GetStatistics">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="ComputeStatistics"></a><span class="summary-sig-name">ComputeStatistics</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      ComputeStatistics(self, bool approx_ok, GDALProgressFunc callback = 
+      None, void callback_data = None) -&gt; CPLErr</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.ComputeStatistics">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="SetStatistics"></a><span class="summary-sig-name">SetStatistics</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      SetStatistics(self, double min, double max, double mean, double 
+      stddev) -&gt; CPLErr</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.SetStatistics">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="GetOverviewCount"></a><span class="summary-sig-name">GetOverviewCount</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.GetOverviewCount">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="GetOverview"></a><span class="summary-sig-name">GetOverview</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      GetOverview(self, int i) -&gt; Band</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.GetOverview">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="Checksum"></a><span class="summary-sig-name">Checksum</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span><br />
+      Checksum(self, int xoff = 0, int yoff = 0, int xsize = None, int 
+      ysize = None) -&gt; int</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.Checksum">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="ComputeRasterMinMax"></a><span class="summary-sig-name">ComputeRasterMinMax</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      ComputeRasterMinMax(self, int approx_ok = 0)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.ComputeRasterMinMax">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="ComputeBandStats"></a><span class="summary-sig-name">ComputeBandStats</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      ComputeBandStats(self, int samplestep = 1)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.ComputeBandStats">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="Fill"></a><span class="summary-sig-name">Fill</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      Fill(self, double real_fill, double imag_fill = 0.0) -&gt; CPLErr</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.Fill">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="osgeo.gdal.Band-class.html#WriteRaster" class="summary-sig-name">WriteRaster</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span><br />
+      WriteRaster(self, int xoff, int yoff, int xsize, int ysize, GIntBig buf_len, ...</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.WriteRaster">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="FlushCache"></a><span class="summary-sig-name">FlushCache</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.FlushCache">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">ColorTable</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="GetRasterColorTable"></a><span class="summary-sig-name">GetRasterColorTable</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.GetRasterColorTable">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">ColorTable</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="GetColorTable"></a><span class="summary-sig-name">GetColorTable</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.GetColorTable">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="SetRasterColorTable"></a><span class="summary-sig-name">SetRasterColorTable</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      SetRasterColorTable(self, ColorTable arg) -&gt; int</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.SetRasterColorTable">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="SetColorTable"></a><span class="summary-sig-name">SetColorTable</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      SetColorTable(self, ColorTable arg) -&gt; int</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.SetColorTable">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">RasterAttributeTable</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="GetDefaultRAT"></a><span class="summary-sig-name">GetDefaultRAT</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.GetDefaultRAT">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="SetDefaultRAT"></a><span class="summary-sig-name">SetDefaultRAT</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      SetDefaultRAT(self, RasterAttributeTable table) -&gt; int</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.SetDefaultRAT">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">Band</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="GetMaskBand"></a><span class="summary-sig-name">GetMaskBand</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.GetMaskBand">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="GetMaskFlags"></a><span class="summary-sig-name">GetMaskFlags</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.GetMaskFlags">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="CreateMaskBand"></a><span class="summary-sig-name">CreateMaskBand</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      CreateMaskBand(self, int nFlags) -&gt; CPLErr</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.CreateMaskBand">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="osgeo.gdal.Band-class.html#GetHistogram" class="summary-sig-name">GetHistogram</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span><br />
+      GetHistogram(self, double min = -0.5, double max = 255.5, int buckets = 256, ...</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.GetHistogram">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="osgeo.gdal.Band-class.html#GetDefaultHistogram" class="summary-sig-name">GetDefaultHistogram</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span><br />
+      GetDefaultHistogram(self, double min_ret = None, double max_ret = None, int buckets_ret = None, ...</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.GetDefaultHistogram">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="SetDefaultHistogram"></a><span class="summary-sig-name">SetDefaultHistogram</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      SetDefaultHistogram(self, double min, double max, int buckets_in) 
+      -&gt; CPLErr</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.SetDefaultHistogram">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">bool</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="HasArbitraryOverviews"></a><span class="summary-sig-name">HasArbitraryOverviews</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.HasArbitraryOverviews">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">char</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="GetCategoryNames"></a><span class="summary-sig-name">GetCategoryNames</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.GetCategoryNames">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="SetCategoryNames"></a><span class="summary-sig-name">SetCategoryNames</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      SetCategoryNames(self, char papszCategoryNames) -&gt; CPLErr</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.SetCategoryNames">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="osgeo.gdal.Band-class.html#ReadRaster1" class="summary-sig-name">ReadRaster1</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span><br />
+      ReadRaster1(self, int xoff, int yoff, int xsize, int ysize, int buf_xsize = None, ...</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.ReadRaster1">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="ReadRaster"></a><span class="summary-sig-name">ReadRaster</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">xoff</span>,
+        <span class="summary-sig-arg">yoff</span>,
+        <span class="summary-sig-arg">xsize</span>,
+        <span class="summary-sig-arg">ysize</span>,
+        <span class="summary-sig-arg">buf_xsize</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">buf_ysize</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">buf_type</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">buf_pixel_space</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">buf_line_space</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.ReadRaster">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="ReadAsArray"></a><span class="summary-sig-name">ReadAsArray</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">xoff</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">yoff</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">win_xsize</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">win_ysize</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">buf_xsize</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">buf_ysize</span>=<span class="summary-sig-default">None</span>,
+        <span class="summary-sig-arg">buf_obj</span>=<span class="summary-sig-default">None</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.ReadAsArray">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="WriteArray"></a><span class="summary-sig-name">WriteArray</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">array</span>,
+        <span class="summary-sig-arg">xoff</span>=<span class="summary-sig-default">0</span>,
+        <span class="summary-sig-arg">yoff</span>=<span class="summary-sig-default">0</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.WriteArray">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__get_array_interface__"></a><span class="summary-sig-name">__get_array_interface__</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.__get_array_interface__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" class="summary">
+    <p class="indent-wrapped-lines"><b>Inherited from <code><a href="osgeo.gdal.MajorObject-class.html">MajorObject</a></code></b>:
+      <code><a href="osgeo.gdal.MajorObject-class.html#GetDescription">GetDescription</a></code>,
+      <code><a href="osgeo.gdal.MajorObject-class.html#GetMetadata">GetMetadata</a></code>,
+      <code><a href="osgeo.gdal.MajorObject-class.html#GetMetadataItem">GetMetadataItem</a></code>,
+      <code><a href="osgeo.gdal.MajorObject-class.html#GetMetadata_Dict">GetMetadata_Dict</a></code>,
+      <code><a href="osgeo.gdal.MajorObject-class.html#GetMetadata_List">GetMetadata_List</a></code>,
+      <code><a href="osgeo.gdal.MajorObject-class.html#SetDescription">SetDescription</a></code>,
+      <code><a href="osgeo.gdal.MajorObject-class.html#SetMetadata">SetMetadata</a></code>,
+      <code><a href="osgeo.gdal.MajorObject-class.html#SetMetadataItem">SetMetadataItem</a></code>
+      </p>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__swig_setmethods__"></a><span class="summary-name">__swig_setmethods__</span> = <code title="{}">{}</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__setattr__"></a><span class="summary-name">__setattr__</span> = <code title="lambda self, name, value:">lambda self, name, value:</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__swig_getmethods__"></a><span class="summary-name">__swig_getmethods__</span> = <code title="{}">{}</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__getattr__"></a><span class="summary-name">__getattr__</span> = <code title="lambda self, name:">lambda self, name:</code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="__init__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__init__</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">*args</span>,
+        <span class="sig-arg">**kwargs</span>)</span>
+    <br /><em class="fname">(Constructor)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.__init__">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="osgeo.gdal.MajorObject-class.html#__init__">MajorObject.__init__</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="__repr__"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">__repr__</span>(<span class="sig-arg">self</span>)</span>
+    <br /><em class="fname">(Representation operator)</em>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="osgeo.gdal-pysrc.html#_swig_repr">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  
+  <dl class="fields">
+    <dt>Overrides:
+        <a href="osgeo.gdal-module.html#_swig_repr" onclick="show_private();">_swig_repr</a>
+    </dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="WriteRaster"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">WriteRaster</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">*args</span>,
+        <span class="sig-arg">**kwargs</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.WriteRaster">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+WriteRaster(self, int xoff, int yoff, int xsize, int ysize, GIntBig buf_len, 
+    int buf_xsize = None, int buf_ysize = None, 
+    int buf_type = None, int buf_pixel_space = None, 
+    int buf_line_space = None) -&gt; CPLErr
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="GetHistogram"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">GetHistogram</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">*args</span>,
+        <span class="sig-arg">**kwargs</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.GetHistogram">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+GetHistogram(self, double min = -0.5, double max = 255.5, int buckets = 256, 
+    int include_out_of_range = 0, int approx_ok = 1, 
+    GDALProgressFunc callback = None, 
+    void callback_data = None) -&gt; CPLErr
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="GetDefaultHistogram"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">GetDefaultHistogram</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">*args</span>,
+        <span class="sig-arg">**kwargs</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.GetDefaultHistogram">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+GetDefaultHistogram(self, double min_ret = None, double max_ret = None, int buckets_ret = None, 
+    int ppanHistogram = None, 
+    int force = 1, GDALProgressFunc callback = None, 
+    void callback_data = None) -&gt; CPLErr
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="ReadRaster1"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">ReadRaster1</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">*args</span>,
+        <span class="sig-arg">**kwargs</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="osgeo.gdal-pysrc.html#Band.ReadRaster1">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+ReadRaster1(self, int xoff, int yoff, int xsize, int ysize, int buf_xsize = None, 
+    int buf_ysize = None, int buf_type = None, 
+    int buf_pixel_space = None, int buf_line_space = None) -&gt; CPLErr
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="osgeo-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://gdal.org/">GDAL/OGR Python API</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Sat Dec 10 22:26:58 2011
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>

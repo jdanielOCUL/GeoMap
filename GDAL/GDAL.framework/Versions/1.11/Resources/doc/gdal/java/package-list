@@ -1,0 +1,4 @@
+org.gdal.gdal
+org.gdal.gdalconst
+org.gdal.ogr
+org.gdal.osr

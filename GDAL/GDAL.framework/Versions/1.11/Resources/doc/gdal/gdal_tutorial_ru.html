@@ -1,0 +1,434 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<title>RU: Руководство по использованию GDAL</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<!-- Создано системой Doxygen 1.7.1 -->
+<div class="navigation" id="top">
+  <div class="tabs">
+    <ul class="tablist">
+      <li><a href="index.html"><span>Титульная&nbsp;страница</span></a></li>
+      <li class="current"><a href="pages.html"><span>Описания</span></a></li>
+    </ul>
+  </div>
+</div>
+<div class="header">
+  <div class="headertitle">
+<h1>Руководство по использованию GDAL </h1>  </div>
+</div>
+<div class="contents">
+<h2><a class="anchor" id="gdal_tutorial_ru_open"></a>
+Открытие файла</h2>
+<p>Перед тем, как открыть набор данных, поддерживаемый GDAL, необходимо зарегистрировать драйверы. Для каждого поддерживаемого формата существует отдельный драйвер. В большинстве случаев это можно сделать с помощью функции GDALAllRegister(), которая пытается зарегистрировать все известные драйверы, включая те, что загружены из динамически подгружаемых модулей .so, используя GDALDriverManager::AutoLoadDrivers(). Имеется возможность ограничить набор драйверов, доступных в приложении; примером может служить код модуля <a href="gdalallregister.cpp.html">gdalallregister.cpp</a>.</p>
+<p>Как только драйверы зарегистрированы, приложение должно вызвать функцию GDALOpen() для открытия набора данных. В качестве параметров функция принимает название набора данных и режим доступа (GA_ReadOnly или GA_Update).</p>
+<p>На языке C++: </p>
+<div class="fragment"><pre class="fragment"><span class="preprocessor">#include &quot;gdal_priv.h&quot;</span>
+
+<span class="keywordtype">int</span> main()
+{
+    GDALDataset  *poDataset;
+
+    GDALAllRegister();
+
+    poDataset = (GDALDataset *) GDALOpen( pszFilename, GA_ReadOnly );
+    <span class="keywordflow">if</span>( poDataset == NULL )
+    {
+        ...;
+    }
+</pre></div><p>На языке C: </p>
+<div class="fragment"><pre class="fragment"><span class="preprocessor">#include &quot;gdal.h&quot;</span>
+
+<span class="keywordtype">int</span> main()
+{
+    GDALDatasetH  hDataset;
+
+    GDALAllRegister();
+
+    hDataset = GDALOpen( pszFilename, GA_ReadOnly );
+    <span class="keywordflow">if</span>( hDataset == NULL )
+    {
+        ...;
+    }
+</pre></div><p>На языке Python: </p>
+<div class="fragment"><pre class="fragment">    <span class="keyword">import</span> gdal
+    from gdalconst <span class="keyword">import</span> *
+
+    dataset = gdal.Open( filename, GA_ReadOnly )
+    <span class="keywordflow">if</span> dataset is None:
+        ...
+</pre></div><p>Если GDALOpen() возвращает NULL, это означает, что операция не удалась и что сообщения об ошибке были посланы с помощью функции CPLError(). Если вы хотите управлять процессом выдачи пользователю сообщений об ошибках, то обратитесь к документации на функцию CPLError(). Вообще говоря, CPLError() применяется во всех компонентах GDAL для выдачи сообщений об ошибках. Заметим также, что pszFilename не должна обязательно быть именем файла на физическом носителе (хотя обычно это так). Интерпретация этого параметра зависит от драйвера, это может быть URL или имя файла с дополнительными параметрами, управляющими процессом чтения, либо чем-то иным. Пожалуйста, не ограничивайте диалоги выбора набора данных для открытия только лишь файлами на физических носителях.</p>
+<h2><a class="anchor" id="gdal_tutorial_ru_dataset"></a>
+Чтение информации о наборе данных</h2>
+<p>Как было описано в разделе <a href="gdal_datamodel.html">Модель данных GDAL</a>, набор данных GDALDataset содержит список растровых каналов, покрывающих одну и ту же территорию и имеющих одинаковое разрешение. Он также содержит метаданные, координатную систему, географическую привязку, размер растра и некоторую дополнительную информацию.</p>
+<div class="fragment"><pre class="fragment">    adfGeoTransform[0] <span class="comment">/* координата x верхнего левого угла */</span>
+    adfGeoTransform[1] <span class="comment">/* ширина пиксела */</span>
+    adfGeoTransform[2] <span class="comment">/* поворот, 0, если изображение ориентировано на север */</span>
+    adfGeoTransform[3] <span class="comment">/* координата y верхнего левого угла */</span>
+    adfGeoTransform[4] <span class="comment">/* поворот, 0, если изображение ориентировано на север */</span>
+    adfGeoTransform[5] <span class="comment">/* высота пиксела */</span>
+</pre></div><p>Если мы хотим вывести некоторую общую информацию о наборе данных, то можно сделать следующее:</p>
+<p>На языке C++: </p>
+<div class="fragment"><pre class="fragment">    <span class="keywordtype">double</span>        adfGeoTransform[6];
+
+    printf( <span class="stringliteral">&quot;Драйвер: %s/%s\n&quot;</span>,
+            poDataset-&gt;GetDriver()-&gt;GetDescription(), 
+            poDataset-&gt;GetDriver()-&gt;GetMetadataItem( GDAL_DMD_LONGNAME ) );
+
+    printf( <span class="stringliteral">&quot;Размер %dx%dx%d\n&quot;</span>, 
+            poDataset-&gt;GetRasterXSize(), poDataset-&gt;GetRasterYSize(),
+            poDataset-&gt;GetRasterCount() );
+
+    <span class="keywordflow">if</span>( poDataset-&gt;GetProjectionRef()  != NULL )
+        printf( <span class="stringliteral">&quot;Проекция \&quot;%s\&quot;\n&quot;</span>, poDataset-&gt;GetProjectionRef() );
+
+    <span class="keywordflow">if</span>( poDataset-&gt;GetGeoTransform( adfGeoTransform ) == CE_None )
+    {
+        printf( <span class="stringliteral">&quot;Начало координат (%.6f,%.6f)\n&quot;</span>,
+                adfGeoTransform[0], adfGeoTransform[3] );
+
+        printf( <span class="stringliteral">&quot;Размер пиксела (%.6f,%.6f)\n&quot;</span>,
+                adfGeoTransform[1], adfGeoTransform[5] );
+    }
+</pre></div><p>На языке C: </p>
+<div class="fragment"><pre class="fragment">    GDALDriverH   hDriver;
+    <span class="keywordtype">double</span>        adfGeoTransform[6];
+
+    hDriver = GDALGetDatasetDriver( hDataset );
+    printf( <span class="stringliteral">&quot;Драйвер: %s/%s\n&quot;</span>,
+            GDALGetDriverShortName( hDriver ),
+            GDALGetDriverLongName( hDriver ) );
+
+    printf( <span class="stringliteral">&quot;Размер %dx%dx%d\n&quot;</span>,
+            GDALGetRasterXSize( hDataset ), 
+            GDALGetRasterYSize( hDataset ),
+            GDALGetRasterCount( hDataset ) );
+
+    <span class="keywordflow">if</span>( GDALGetProjectionRef( hDataset ) != NULL )
+        printf( <span class="stringliteral">&quot;Проекция \&quot;%s\&quot;\n&quot;</span>, GDALGetProjectionRef( hDataset ) );
+
+    <span class="keywordflow">if</span>( GDALGetGeoTransform( hDataset, adfGeoTransform ) == CE_None )
+    {
+        printf( <span class="stringliteral">&quot;Начало координат (%.6f,%.6f)\n&quot;</span>,
+                adfGeoTransform[0], adfGeoTransform[3] );
+
+        printf( <span class="stringliteral">&quot;Размер пиксела (%.6f,%.6f)\n&quot;</span>,
+                adfGeoTransform[1], adfGeoTransform[5] );
+    }
+</pre></div><p>На языке Python: </p>
+<div class="fragment"><pre class="fragment">    print <span class="stringliteral">&#39;Драйвер: &#39;</span>, dataset.GetDriver().ShortName,<span class="charliteral">&#39;/&#39;</span>, \
+          dataset.GetDriver().LongName
+    print <span class="stringliteral">&#39;Размер &#39;</span>,dataset.RasterXSize,<span class="charliteral">&#39;x&#39;</span>,dataset.RasterYSize, \
+          <span class="charliteral">&#39;x&#39;</span>,dataset.RasterCount
+    print <span class="stringliteral">&#39;Проекция &#39;</span>,dataset.GetProjection()
+    
+    geotransform = dataset.GetGeoTransform()
+    <span class="keywordflow">if</span> not geotransform is None:
+        print <span class="stringliteral">&#39;Начало координат (&#39;</span>,geotransform[0], <span class="charliteral">&#39;,&#39;</span>,geotransform[3],<span class="charliteral">&#39;)&#39;</span>
+        print <span class="stringliteral">&#39;Размер пиксела = (&#39;</span>,geotransform[1], <span class="charliteral">&#39;,&#39;</span>,geotransform[5],<span class="charliteral">&#39;)&#39;</span>
+</pre></div><h2><a class="anchor" id="gdal_tutorial_ru_band"></a>
+Чтение растрового канала</h2>
+<p>Одним из способов чтения растровых данных с помощью GDAL является поканальный доступ. При этом при последовательном чтении каналов доступны метаданные, параметры блоков, а также различная другая информация. Далее приведены примеры кода, извлекающего объект GDALRasterBand из набора данных (каналы нумеруются от 1 и до GetRasterCount()) и выводящего некоторую информацию о канале.</p>
+<p>На языке C++: </p>
+<div class="fragment"><pre class="fragment">        GDALRasterBand  *poBand;
+        <span class="keywordtype">int</span>             nBlockXSize, nBlockYSize;
+        <span class="keywordtype">int</span>             bGotMin, bGotMax;
+        <span class="keywordtype">double</span>          adfMinMax[2];
+        
+        poBand = poDataset-&gt;GetRasterBand( 1 );
+        poBand-&gt;GetBlockSize( &amp;nBlockXSize, &amp;nBlockYSize );
+        printf( <span class="stringliteral">&quot;Размер блока %dx%d, тип данных %s, ColorInterp=%s\n&quot;</span>,
+                nBlockXSize, nBlockYSize,
+                GDALGetDataTypeName(poBand-&gt;GetRasterDataType()),
+                GDALGetColorInterpretationName(
+                    poBand-&gt;GetColorInterpretation()) );
+
+        adfMinMax[0] = poBand-&gt;GetMinimum( &amp;bGotMin );
+        adfMinMax[1] = poBand-&gt;GetMaximum( &amp;bGotMax );
+        <span class="keywordflow">if</span>( ! (bGotMin &amp;&amp; bGotMax) )
+            GDALComputeRasterMinMax((GDALRasterBandH)poBand, TRUE, adfMinMax);
+
+        printf( <span class="stringliteral">&quot;Min=%.3fd, Max=%.3f\n&quot;</span>, adfMinMax[0], adfMinMax[1] );
+        
+        <span class="keywordflow">if</span>( poBand-&gt;GetOverviewCount() &gt; 0 )
+            printf( <span class="stringliteral">&quot;Канал содержит %d обзорных изображений.\n&quot;</span>,
+                    poBand-&gt;GetOverviewCount() );
+
+        <span class="keywordflow">if</span>( poBand-&gt;GetColorTable() != NULL )
+            printf( <span class="stringliteral">&quot;Канал содержит таблицу цветов с %d записями.\n&quot;</span>, 
+                     poBand-&gt;GetColorTable()-&gt;GetColorEntryCount() );
+</pre></div><p>In C: </p>
+<div class="fragment"><pre class="fragment">        GDALRasterBandH hBand;
+        <span class="keywordtype">int</span>             nBlockXSize, nBlockYSize;
+        <span class="keywordtype">int</span>             bGotMin, bGotMax;
+        <span class="keywordtype">double</span>          adfMinMax[2];
+        
+        hBand = GDALGetRasterBand( hDataset, 1 );
+        GDALGetBlockSize( hBand, &amp;nBlockXSize, &amp;nBlockYSize );
+        printf( <span class="stringliteral">&quot;Размер блока %dx%d, тип данных %s, ColorInterp=%s\n&quot;</span>,
+                nBlockXSize, nBlockYSize,
+                GDALGetDataTypeName(GDALGetRasterDataType(hBand)),
+                GDALGetColorInterpretationName(
+                    GDALGetRasterColorInterpretation(hBand)) );
+
+        adfMinMax[0] = GDALGetRasterMinimum( hBand, &amp;bGotMin );
+        adfMinMax[1] = GDALGetRasterMaximum( hBand, &amp;bGotMax );
+        <span class="keywordflow">if</span>( ! (bGotMin &amp;&amp; bGotMax) )
+            GDALComputeRasterMinMax( hBand, TRUE, adfMinMax );
+
+        printf( <span class="stringliteral">&quot;Min=%.3fd, Max=%.3f\n&quot;</span>, adfMinMax[0], adfMinMax[1] );
+        
+        <span class="keywordflow">if</span>( GDALGetOverviewCount(hBand) &gt; 0 )
+            printf( <span class="stringliteral">&quot;Канал содержит %d обзорных изображений.\n&quot;</span>,
+                    GDALGetOverviewCount(hBand));
+
+        <span class="keywordflow">if</span>( GDALGetRasterColorTable( hBand ) != NULL )
+            printf( <span class="stringliteral">&quot;Канал содержит таблицу цветов с %d записями.\n&quot;</span>, 
+                     GDALGetColorEntryCount(
+                         GDALGetRasterColorTable( hBand ) ) );
+</pre></div><p>На языке Python: </p>
+<div class="fragment"><pre class="fragment">        band = dataset.GetRasterBand(1)
+
+        print <span class="stringliteral">&#39;Тип данных&#39;</span>,gdal.GetDataTypeName(band.DataType)
+
+        min = band.GetMinimum()
+        max = band.GetMaximum()
+        <span class="keywordflow">if</span> min is not None and max is not None:
+            (min,max) = ComputeRasterMinMax(1)
+        print <span class="stringliteral">&#39;Min=%.3f, Max=%.3f&#39;</span> % (min,max)
+
+        <span class="keywordflow">if</span> band.GetOverviewCount() &gt; 0:
+            print <span class="stringliteral">&#39;Канал содержит &#39;</span>, band.GetOverviewCount(), \
+            <span class="stringliteral">&#39; обзорных изображений.&#39;</span>
+
+        <span class="keywordflow">if</span> not band.GetRasterColorTable() is None:
+            print <span class="stringliteral">&#39;Канал содержит таблицу цветов с &#39;</span>, \
+            band.GetRasterColorTable().GetCount(), <span class="stringliteral">&#39; записями.&#39;</span>
+</pre></div><h2><a class="anchor" id="gdal_tutorial_ru_read"></a>
+Чтение растровых данных</h2>
+<p>Существует несколько способов чтения растровых данных, однако наиболее общим является использование метод GDALRasterBand::RasterIO(). Этот метод автоматически производит конвертацию типов данных, масштабирование и вырезку области интереса. Следующий код читает первую строку данных в буфер соответствующего размера, преобразовывая их при этом в вещественный тип одинарной точности.</p>
+<p>На языке C++: </p>
+<div class="fragment"><pre class="fragment">        <span class="keywordtype">float</span> *pafScanline;
+        <span class="keywordtype">int</span>   nXSize = poBand-&gt;GetXSize();
+
+        pafScanline = (<span class="keywordtype">float</span> *) CPLMalloc(<span class="keyword">sizeof</span>(<span class="keywordtype">float</span>)*nXSize);
+        poBand-&gt;RasterIO( GF_Read, 0, 0, nXSize, 1, 
+                          pafScanline, nXSize, 1, GDT_Float32, 
+                          0, 0 );
+</pre></div><p>На языке C: </p>
+<div class="fragment"><pre class="fragment">        <span class="keywordtype">float</span> *pafScanline;
+        <span class="keywordtype">int</span>   nXSize = GDALGetRasterBandXSize( hBand );
+
+        pafScanline = (<span class="keywordtype">float</span> *) CPLMalloc(<span class="keyword">sizeof</span>(<span class="keywordtype">float</span>)*nXSize);
+        GDALRasterIO( hBand, GF_Read, 0, 0, nXSize, 1, 
+                      pafScanline, nXSize, 1, GDT_Float32, 
+                      0, 0 );
+</pre></div><p>На языке Python:</p>
+<div class="fragment"><pre class="fragment">        scanline = band.ReadRaster( 0, 0, band.XSize, 1, \
+                                     band.XSize, 1, GDT_Float32 )
+</pre></div><p>Здесь возвращаемая строка имеет тип string, и содержит xsize*4 байт вещественных данных. Эта строка может быть преобразована в базовые типы языка Python с помощью модуля <b>struct</b> из стандартной библиотеки:</p>
+<div class="fragment"><pre class="fragment">        <span class="keyword">import</span> <span class="keyword">struct</span>
+
+        tuple_of_floats = <span class="keyword">struct</span>.unpack(<span class="charliteral">&#39;f&#39;</span> * b2.XSize, scanline)
+</pre></div><p>Вызов функции The RasterIO производится со следующими аргументами: </p>
+<div class="fragment"><pre class="fragment">CPLErr GDALRasterBand::RasterIO( GDALRWFlag eRWFlag,
+                                 <span class="keywordtype">int</span> nXOff, <span class="keywordtype">int</span> nYOff, <span class="keywordtype">int</span> nXSize, <span class="keywordtype">int</span> nYSize,
+                                 <span class="keywordtype">void</span> * pData, <span class="keywordtype">int</span> nBufXSize, <span class="keywordtype">int</span> nBufYSize,
+                                 GDALDataType eBufType,
+                                 <span class="keywordtype">int</span> nPixelSpace,
+                                 <span class="keywordtype">int</span> nLineSpace )
+</pre></div><p>Заметим, что один и тот же вызов RasterIO() применяется как для чтения, так и для записи, в зависимости от значения флага eRWFlag (GF_Read или GF_Write). Аргументы nXOff, nYOff, nXSize, nYSize описывают окно растра для чтения (или записи). Это окно необязательно должно совпадать с границами смежных блоков, однако считывание может быть более эффективным, если границы совпадают.</p>
+<p>pData --- это указатель на буфер в памяти, куда должны быть прочитаны (или откуда записаны) данные. Фактический тип этого буфера должен совпадать с типом, передаваемым в параметре eBufType, например, GDT_Float32 или GDT_Byte. Функция RasterIO() возьмёт на себя преобразование между типом данных буфера и типом данных канала. Обратите внимание, что при преобразовании вещественных данных в целые RasterIO() округляет в меньшую сторону, а если значение выходит за рамки допустимого диапазона, оно преобразуется в ближайшее допустимое значение. Это, например, означает, что при чтении 16-битных данных в буфер типа GDT_Byte все значения, превышающие 255 будут отображены в значение 255, <b>масштабирования данных не произойдёт!</b></p>
+<p>Параметры nBufXSize и nBufYSize задают размер буфера. При загрузке данных в полном разрешении он будет совпадать с размером окна. Однако для загрузки уменьшенного обзорного изображения размер буфера можно установить меньшим, чем размер окна. В этом случае RasterIO() будет использовать подходящие обзорные изображения (пирамиду) для более эффективного ввода/вывода.</p>
+<p>Параметры nPixelSpace и nLineSpace обычно равны нулю, что приводит к использованию значений по умолчанию. Однако они могут быть использованы для управления доступом к буферу данных, давая возможность читать в буфер, который уже содержит другие данные, чередуя пиксели или строки.</p>
+<h2><a class="anchor" id="gdal_tutorial_ru_close"></a>
+Закрытие набора данных</h2>
+<p>Пожалуйста, постоянно помните, что объекты GDALRasterBand <em>принадлежат</em> к своему набору данных и они никогда не должны удаляться с помощью оператора delete языка C++. Наборы данных GDALDataset могут быть закрыты либо с помощью вызова функции GDALClose(), либо с использованием оператора delete для объекта GDALDataset. Любой вариант приведёт к корректному освобождению памяти и сбросу на диск всех незаписанных данных.</p>
+<h2><a class="anchor" id="gdal_tutorial_ru_creation"></a>
+Способы создания файлов</h2>
+<p>Новые файлы в форматах, поддерживаемых GDAL, могут быть созданы в том случае, если драйвер формата поддерживает создание. Существует два основных способа создать файл: CreateCopy() и Create().</p>
+<p>Способ CreateCopy предполагает вызов функции CreateCopy() с указанием требуемого драйвера выходного формата и передачей исходного набора данных, копия которого должна быть создана. Способ Create предполагает вызов метода Create() с указанием необходимого драйвера, а затем непосредственной записью всех метаданных и изображения соответствующими отдельными вызовами. Все драйверы, которые могут создавать новые файлы, поддерживают метод CreateCopy(), однако не все поддерживают метод Create().</p>
+<p>Для того, чтобы определить, какой метод поддерживает конкретный драйвер, можно проверить метаданные DCAP_CREATE и DCAP_CREATECOPY у объекта драйвера. Убедитесь, что функция GDALAllRegister() была вызвана прежде, чем вызывать функцию GetDriverByName(). В следующем примере мы запросим драйвер и проверим, поддерживает ли он методы Create() и/или CreateCopy().</p>
+<p>На языке C++: </p>
+<div class="fragment"><pre class="fragment"><span class="preprocessor">#include &quot;cpl_string.h&quot;</span>
+...
+    <span class="keyword">const</span> <span class="keywordtype">char</span> *pszFormat = <span class="stringliteral">&quot;GTiff&quot;</span>;
+    GDALDriver *poDriver;
+    <span class="keywordtype">char</span> **papszMetadata;
+
+    poDriver = GetGDALDriverManager()-&gt;GetDriverByName(pszFormat);
+
+    <span class="keywordflow">if</span>( poDriver == NULL )
+        exit( 1 );
+
+    papszMetadata = poDriver-&gt;GetMetadata();
+    <span class="keywordflow">if</span>( CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE ) )
+        printf( <span class="stringliteral">&quot;Драйвер %s поддерживает метод Create().\n&quot;</span>, pszFormat );
+    <span class="keywordflow">if</span>( CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATECOPY, FALSE ) )
+        printf( <span class="stringliteral">&quot;Драйвер %s поддерживает метод CreateCopy().\n&quot;</span>, pszFormat );
+</pre></div><p>На языке C: </p>
+<div class="fragment"><pre class="fragment"><span class="preprocessor">#include &quot;cpl_string.h&quot;</span>
+...
+    <span class="keyword">const</span> <span class="keywordtype">char</span> *pszFormat = <span class="stringliteral">&quot;GTiff&quot;</span>;
+    GDALDriverH hDriver = GDALGetDriverByName( pszFormat );
+    <span class="keywordtype">char</span> **papszMetadata;
+
+    <span class="keywordflow">if</span>( hDriver == NULL )
+        exit( 1 );
+
+    papszMetadata = GDALGetMetadata( hDriver, NULL );
+    <span class="keywordflow">if</span>( CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATE, FALSE ) )
+        printf( <span class="stringliteral">&quot;Драйвер %s поддерживает метод Create().\n&quot;</span>, pszFormat );
+    <span class="keywordflow">if</span>( CSLFetchBoolean( papszMetadata, GDAL_DCAP_CREATECOPY, FALSE ) )
+        printf( <span class="stringliteral">&quot;Драйвер %s поддерживает метод CreateCopy().\n&quot;</span>, pszFormat );
+</pre></div><p>На языке Python:</p>
+<div class="fragment"><pre class="fragment">    format = <span class="stringliteral">&quot;GTiff&quot;</span>
+    driver = gdal.GetDriverByName( format )
+    metadata = driver.GetMetadata()
+    <span class="keywordflow">if</span> metadata.has_key(gdal.DCAP_CREATE) \
+       and metadata[gdal.DCAP_CREATE] == <span class="stringliteral">&#39;YES&#39;</span>:
+        print <span class="stringliteral">&#39;Драйвер %s поддерживает метод Create().&#39;</span> % format
+    <span class="keywordflow">if</span> metadata.has_key(gdal.DCAP_CREATECOPY) \
+       and metadata[gdal.DCAP_CREATECOPY] == <span class="stringliteral">&#39;YES&#39;</span>:
+        print <span class="stringliteral">&#39;Драйвер %s поддерживает метод CreateCopy().&#39;</span> % format
+</pre></div><p>Заметим, что некоторые драйверы могут только читать данные и не поддерживают ни метод Create(), ни CreateCopy().</p>
+<h2><a class="anchor" id="gdal_tutorial_ru_createcopy"></a>
+Использование метода CreateCopy()</h2>
+<p>Использование метода GDALDriver::CreateCopy() тривиально, поскольку большая часть информации читается из входного набора данных. Тем не менее, Метод позволяет передавать параметры, специфичные для создаваемого выходного формата, а также имеет возможность отображать ход процесса копирования пользователю. Простейшая операция копирования из файла с именем pszSrcFilename в новый файл pszDstFilename с параметрами по умолчанию и в формате, драйвер которого был предварительно выбран, может выглядеть следующим образом:</p>
+<p>На языке C++: </p>
+<div class="fragment"><pre class="fragment">    GDALDataset *poSrcDS = 
+       (GDALDataset *) GDALOpen( pszSrcFilename, GA_ReadOnly );
+    GDALDataset *poDstDS;
+
+    poDstDS = poDriver-&gt;CreateCopy( pszDstFilename, poSrcDS, FALSE, 
+                                    NULL, NULL, NULL );
+    <span class="keywordflow">if</span>( poDstDS != NULL )
+        <span class="keyword">delete</span> poDstDS;
+</pre></div><p>На языке C: </p>
+<div class="fragment"><pre class="fragment">    GDALDatasetH hSrcDS = GDALOpen( pszSrcFilename, GA_ReadOnly );
+    GDALDatasetH hDstDS;
+
+    hDstDS = GDALCreateCopy( hDriver, pszDstFilename, hSrcDS, FALSE, 
+                             NULL, NULL, NULL );
+    <span class="keywordflow">if</span>( hDstDS != NULL )
+        GDALClose( hDstDS );
+</pre></div><p>На языке Python:</p>
+<div class="fragment"><pre class="fragment">    src_ds = gdal.Open( src_filename )
+    dst_ds = driver.CreateCopy( dst_filename, src_ds, 0 )
+</pre></div><p>Заметим, что метод CreateCopy() возвращает набор данных, пригодный для записи и он должен быть соответствующим образом закрыт для завершения записи и сброса данных на диск. В случае языка Python это произойдёт автоматически, когда "dst_ds" выйдет из области видимости. Значение FALSE (или 0), используемое для параметра bStrict, следующего сразу за именем выходного набора данных в вызове CreateCopy(), показывает, что CreateCopy() должен завершиться без фатальной ошибки даже в случае, если создаваемый набор данных не может быть идентичен входному набору. Такое может произойти, например, поскольку выходной формат не поддерживает тип данных входного формата, или потому, что выходной формат не поддерживает географическую привязку.</p>
+<p>Более сложный случай может включать указание параметров для создания выходного файла и использование индикатора хода работы:</p>
+<p>На языке C++: </p>
+<div class="fragment"><pre class="fragment"><span class="preprocessor">#include &quot;cpl_string.h&quot;</span>
+...
+    <span class="keywordtype">char</span> **papszOptions = NULL;
+    
+    papszOptions = CSLSetNameValue( papszOptions, <span class="stringliteral">&quot;TILED&quot;</span>, <span class="stringliteral">&quot;YES&quot;</span> );
+    papszOptions = CSLSetNameValue( papszOptions, <span class="stringliteral">&quot;COMPRESS&quot;</span>, <span class="stringliteral">&quot;PACKBITS&quot;</span> );
+    poDstDS = poDriver-&gt;CreateCopy( pszDstFilename, poSrcDS, FALSE, 
+                                    papszOptions, GDALTermProgress, NULL );
+    <span class="keywordflow">if</span>( poDstDS != NULL )
+        <span class="keyword">delete</span> poDstDS;
+    CSLDestroy( papszOptions );
+</pre></div><p>На языке C: </p>
+<div class="fragment"><pre class="fragment"><span class="preprocessor">#include &quot;cpl_string.h&quot;</span>
+...
+    <span class="keywordtype">char</span> **papszOptions = NULL;
+    
+    papszOptions = CSLSetNameValue( papszOptions, <span class="stringliteral">&quot;TILED&quot;</span>, <span class="stringliteral">&quot;YES&quot;</span> );
+    papszOptions = CSLSetNameValue( papszOptions, <span class="stringliteral">&quot;COMPRESS&quot;</span>, <span class="stringliteral">&quot;PACKBITS&quot;</span> );
+    hDstDS = GDALCreateCopy( hDriver, pszDstFilename, hSrcDS, FALSE, 
+                             papszOptions, GDALTermProgres, NULL );
+    <span class="keywordflow">if</span>( hDstDS != NULL )
+        GDALClose( hDstDS );
+    CSLDestroy( papszOptions );
+</pre></div><p>На языке Python:</p>
+<div class="fragment"><pre class="fragment">    src_ds = gdal.Open( src_filename )
+    dst_ds = driver.CreateCopy( dst_filename, src_ds, 0, 
+                                [ <span class="stringliteral">&#39;TILED=YES&#39;</span>, <span class="stringliteral">&#39;COMPRESS=PACKBITS&#39;</span> ] )
+</pre></div><h2><a class="anchor" id="gdal_tutorial_ru_create"></a>
+Использование метода Create()</h2>
+<p>В тех случаях, когда вы не просто экспортируете существующий файл в новый формат, может быть необходимо применить метод GDALDriver::Create() (кроме этого несколько интересных вариантов возможны при использовании виртуальных файлов или файлов в памяти). Метод Create() принимает список параметров, похожий на такой же для CreateCopy(), однако размеры изображения, число каналов и тип данных должен быть задан непосредственно.</p>
+<p>На языке C++: </p>
+<div class="fragment"><pre class="fragment">    GDALDataset *poDstDS;       
+    <span class="keywordtype">char</span> **papszOptions = NULL;
+
+    poDstDS = poDriver-&gt;Create( pszDstFilename, 512, 512, 1, GDT_Byte, 
+                                papszOptions );
+</pre></div><p>На языке C: </p>
+<div class="fragment"><pre class="fragment">    GDALDatasetH hDstDS;        
+    <span class="keywordtype">char</span> **papszOptions = NULL;
+
+    hDstDS = GDALCreate( hDriver, pszDstFilename, 512, 512, 1, GDT_Byte, 
+                         papszOptions );
+</pre></div><p>На языке Python:</p>
+<div class="fragment"><pre class="fragment">    dst_ds = driver.Create( dst_filename, 512, 512, 1, gdal.GDT_Byte )
+</pre></div><p>Как только набор данных будет успешно создан, все необходимые метаданные и собственно изображение должны быть записаны в файл. Конкретная реализация очень сильно зависит от задачи, но в простейшем случае, включающем запись проекции, географической привязки и растрового изображения, может выглядеть так:</p>
+<p>На языке C++: </p>
+<div class="fragment"><pre class="fragment">    <span class="keywordtype">double</span> adfGeoTransform[6] = { 444720, 30, 0, 3751320, 0, -30 };
+    OGRSpatialReference oSRS;
+    <span class="keywordtype">char</span> *pszSRS_WKT = NULL;
+    GDALRasterBand *poBand;
+    GByte abyRaster[512*512];
+
+    poDstDS-&gt;SetGeoTransform( adfGeoTransform );
+    
+    oSRS.SetUTM( 11, TRUE );
+    oSRS.SetWellKnownGeogCS( <span class="stringliteral">&quot;NAD27&quot;</span> );
+    oSRS.exportToWkt( &amp;pszSRS_WKT );
+    poDstDS-&gt;SetProjection( pszSRS_WKT );
+    CPLFree( pszSRS_WKT );
+
+    poBand = poDstDS-&gt;GetRasterBand(1);
+    poBand-&gt;RasterIO( GF_Write, 0, 0, 512, 512, 
+                      abyRaster, 512, 512, GDT_Byte, 0, 0 );    
+
+    <span class="keyword">delete</span> poDstDS;
+</pre></div><p>На языке C: </p>
+<div class="fragment"><pre class="fragment">    <span class="keywordtype">double</span> adfGeoTransform[6] = { 444720, 30, 0, 3751320, 0, -30 };
+    OGRSpatialReferenceH hSRS;
+    <span class="keywordtype">char</span> *pszSRS_WKT = NULL;
+    GDALRasterBandH hBand;
+    GByte abyRaster[512*512];
+
+    GDALSetGeoTransform( hDstDS, adfGeoTransform );
+
+    hSRS = OSRNewSpatialReference( NULL );
+    OSRSetUTM( hSRS, 11, TRUE );
+    OSRSetWellKnownGeogCS( hSRS, <span class="stringliteral">&quot;NAD27&quot;</span> );                     
+    OSRExportToWkt( hSRS, &amp;pszSRS_WKT );
+    OSRDestroySpatialReference( hSRS );
+
+    GDALSetProjection( hDstDS, pszSRS_WKT );
+    CPLFree( pszSRS_WKT );
+
+    hBand = GDALGetRasterBand( hDstDS, 1 );
+    GDALRasterIO( hBand, GF_Write, 0, 0, 512, 512, 
+                  abyRaster, 512, 512, GDT_Byte, 0, 0 );    
+
+    GDALClose( hDstDS );
+</pre></div><p>На языке Python:</p>
+<div class="fragment"><pre class="fragment">    <span class="keyword">import</span> Numeric, osr
+
+    dst_ds.SetGeoTransform( [ 444720, 30, 0, 3751320, 0, -30 ] )
+    
+    srs = osr.SpatialReference()
+    srs.SetUTM( 11, 1 )
+    srs.SetWellKnownGeogCS( <span class="stringliteral">&#39;NAD27&#39;</span> )
+    dst_ds.SetProjection( srs.ExportToWkt() )
+
+    raster = Numeric.zeros( (512, 512) )    
+    dst_ds.GetRasterBand(1).WriteArray( raster )
+</pre></div> 
+<p>
+$Id: gdal_tutorial_ru.dox 14542 2008-05-27 18:11:25Z dron $
+</p>
+ </div>
+<hr>
+
+Generated for GDAL by 
+<a href="http://www.doxygen.org/index.html"><img src="doxygen.png" alt="doxygen" align="middle" border="0"></a> 1.7.1.
+</body>
+</html>

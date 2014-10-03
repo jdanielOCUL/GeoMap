@@ -1,0 +1,24 @@
+\form#0:$Z$
+\form#1:\[ Z=\frac{\sum_{i=1}^n{\frac{Z_i}{r_i^p}}}{\sum_{i=1}^n{\frac{1}{r_i^p}}} \]
+\form#2:$Z_i$
+\form#3:$i$
+\form#4:$r_i$
+\form#5:$p$
+\form#6:$n$
+\form#7:$w$
+\form#8:\[ w=\frac{1}{r^p} \]
+\form#9:\[ Z=\frac{\sum_{i=1}^n{Z_i}}{n} \]
+\form#10:\[ Z=\min{(Z_1,Z_2,\ldots,Z_n)} \]
+\form#11:\[ Z=\max{(Z_1,Z_2,\ldots,Z_n)} \]
+\form#12:\[ Z=\max{(Z_1,Z_2,\ldots,Z_n)}-\min{(Z_1,Z_2,\ldots,Z_n)} \]
+\form#13:\[ Z=n \]
+\form#14:\[ Z=\frac{\sum_{i = 1}^n r_i}{n} \]
+\form#15:\[ Z=\frac{\sum_{i = 1}^{n-1}\sum_{j=i+1}^{n} r_{ij}}{\left(n-1\right)\,n-\frac{n+{\left(n-1\right)}^{2}-1}{2}} \]
+\form#16:$r_{ij}$
+\form#17:$j$
+\form#18:$r$
+\form#19:$radius_1$
+\form#20:$x$
+\form#21:$radius_2$
+\form#22:$y$
+\form#23:$angle$

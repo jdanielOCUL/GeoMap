@@ -1,0 +1,1013 @@
+<?xml version="1.0" encoding="ascii"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>osgeo.ogr.FeatureDefn</title>
+  <link rel="stylesheet" href="epydoc.css" type="text/css" />
+  <script type="text/javascript" src="epydoc.js"></script>
+</head>
+
+<body bgcolor="white" text="black" link="blue" vlink="#204080"
+      alink="#204080">
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="osgeo-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://gdal.org/">GDAL/OGR Python API</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+  <tr valign="top">
+    <td width="100%">
+      <span class="breadcrumbs">
+        <a href="osgeo-module.html">Package&nbsp;osgeo</a> ::
+        <a href="osgeo.ogr-module.html">Module&nbsp;ogr</a> ::
+        Class&nbsp;FeatureDefn
+      </span>
+    </td>
+    <td>
+      <table cellpadding="0" cellspacing="0">
+        <!-- hide/show private -->
+        <tr><td align="right"><span class="options">[<a href="javascript:void(0);" class="privatelink"
+    onclick="toggle_private();">hide&nbsp;private</a>]</span></td></tr>
+        <tr><td align="right"><span class="options"
+            >[<a href="frames.html" target="_top">frames</a
+            >]&nbsp;|&nbsp;<a href="osgeo.ogr.FeatureDefn-class.html"
+            target="_top">no&nbsp;frames</a>]</span></td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS DESCRIPTION ==================== -->
+<h1 class="epydoc">Class FeatureDefn</h1><p class="nomargin-top"><span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn">source&nbsp;code</a></span></p>
+<center>
+<center>  <map id="uml_class_diagram_for_osgeo_og_4" name="uml_class_diagram_for_osgeo_og_4">
+<area shape="rect" href="osgeo.ogr.FeatureDefn-class.html#__swig_setmethods__" title="osgeo.ogr.FeatureDefn.__swig_setmethods__" alt="" coords="17,89,209,108"/>
+<area shape="rect" href="osgeo.ogr.FeatureDefn-class.html#__setattr__" title="osgeo.ogr.FeatureDefn.__setattr__" alt="" coords="17,108,209,127"/>
+<area shape="rect" href="osgeo.ogr.FeatureDefn-class.html#__swig_getmethods__" title="osgeo.ogr.FeatureDefn.__swig_getmethods__" alt="" coords="17,127,209,145"/>
+<area shape="rect" href="osgeo.ogr.FeatureDefn-class.html#__getattr__" title="osgeo.ogr.FeatureDefn.__getattr__" alt="" coords="17,145,209,164"/>
+<area shape="rect" href="osgeo.ogr.FeatureDefn-class.html#__swig_destroy__" title="osgeo.ogr.FeatureDefn.__swig_destroy__" alt="" coords="17,164,209,183"/>
+<area shape="rect" href="osgeo.ogr.FeatureDefn-class.html#__del__" title="osgeo.ogr.FeatureDefn.__del__" alt="" coords="17,183,209,201"/>
+<area shape="rect" href="osgeo.ogr.FeatureDefn-class.html#__repr__" title="osgeo.ogr.FeatureDefn.__repr__" alt="" coords="17,204,209,223"/>
+<area shape="rect" href="osgeo.ogr.FeatureDefn-class.html#__init__" title="__init__(self, char name_null_ok = None) &#45;&gt; FeatureDefn" alt="" coords="17,223,209,241"/>
+<area shape="rect" href="osgeo.ogr.FeatureDefn-class.html#GetName" title="const char* OGR_FD_GetName(OGRFeatureDefnH hDefn)" alt="" coords="17,241,209,260"/>
+<area shape="rect" href="osgeo.ogr.FeatureDefn-class.html#GetFieldCount" title="int OGR_FD_GetFieldCount(OGRFeatureDefnH hDefn)" alt="" coords="17,260,209,279"/>
+<area shape="rect" href="osgeo.ogr.FeatureDefn-class.html#GetFieldDefn" title="GetFieldDefn(self, int i) &#45;&gt; FieldDefn" alt="" coords="17,279,209,297"/>
+<area shape="rect" href="osgeo.ogr.FeatureDefn-class.html#GetFieldIndex" title="GetFieldIndex(self, char name) &#45;&gt; int" alt="" coords="17,297,209,316"/>
+<area shape="rect" href="osgeo.ogr.FeatureDefn-class.html#AddFieldDefn" title="AddFieldDefn(self, FieldDefn defn)" alt="" coords="17,316,209,335"/>
+<area shape="rect" href="osgeo.ogr.FeatureDefn-class.html#GetGeomType" title="OGRwkbGeometryType OGR_FD_GetGeomType(OGRFeatureDefnH hDefn)" alt="" coords="17,335,209,353"/>
+<area shape="rect" href="osgeo.ogr.FeatureDefn-class.html#SetGeomType" title="SetGeomType(self, OGRwkbGeometryType geom_type)" alt="" coords="17,353,209,372"/>
+<area shape="rect" href="osgeo.ogr.FeatureDefn-class.html#GetReferenceCount" title="int OGR_FD_GetReferenceCount(OGRFeatureDefnH hDefn)" alt="" coords="17,372,209,391"/>
+<area shape="rect" href="osgeo.ogr.FeatureDefn-class.html#IsGeometryIgnored" title="int OGR_FD_IsGeometryIgnored(OGRFeatureDefnH hDefn)" alt="" coords="17,391,209,409"/>
+<area shape="rect" href="osgeo.ogr.FeatureDefn-class.html#SetGeometryIgnored" title="SetGeometryIgnored(self, int bIgnored)" alt="" coords="17,409,209,428"/>
+<area shape="rect" href="osgeo.ogr.FeatureDefn-class.html#IsStyleIgnored" title="int OGR_FD_IsStyleIgnored(OGRFeatureDefnH hDefn)" alt="" coords="17,428,209,447"/>
+<area shape="rect" href="osgeo.ogr.FeatureDefn-class.html#SetStyleIgnored" title="SetStyleIgnored(self, int bIgnored)" alt="" coords="17,447,209,465"/>
+<area shape="rect" href="osgeo.ogr.FeatureDefn-class.html#Destroy" title="Once called, self has effectively been destroyed." alt="" coords="17,465,209,484"/>
+<area shape="rect" href="osgeo.ogr.FeatureDefn-class.html" title="Proxy of C++ OGRFeatureDefnShadow class" alt="" coords="16,72,211,485"/>
+<area shape="rect" href="osgeo.ogr._object-class.html" title="osgeo.ogr._object" alt="" coords="91,11,136,43"/>
+</map>
+  <img src="uml_class_diagram_for_osgeo_og_4.gif" alt='' usemap="#uml_class_diagram_for_osgeo_og_4" ismap="ismap" class="graph-without-title" />
+</center>
+</center>
+<hr />
+<p>Proxy of C++ OGRFeatureDefnShadow class</p>
+
+<!-- ==================== INSTANCE METHODS ==================== -->
+<a name="section-InstanceMethods"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Instance Methods</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-InstanceMethods"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__repr__"></a><span class="summary-sig-name">__repr__</span>(<span class="summary-sig-arg">self</span>)</span></td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.ogr-pysrc.html#_swig_repr">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a name="__init__"></a><span class="summary-sig-name">__init__</span>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>,
+        <span class="summary-sig-arg">**kwargs</span>)</span><br />
+      __init__(self, char name_null_ok = None) -&gt; FeatureDefn</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn.__init__">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">char</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="osgeo.ogr.FeatureDefn-class.html#GetName" class="summary-sig-name">GetName</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      const char*
+OGR_FD_GetName(OGRFeatureDefnH hDefn)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn.GetName">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="osgeo.ogr.FeatureDefn-class.html#GetFieldCount" class="summary-sig-name">GetFieldCount</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      int
+OGR_FD_GetFieldCount(OGRFeatureDefnH hDefn)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn.GetFieldCount">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="osgeo.ogr.FeatureDefn-class.html#GetFieldDefn" class="summary-sig-name">GetFieldDefn</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      GetFieldDefn(self, int i) -&gt; FieldDefn</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn.GetFieldDefn">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="osgeo.ogr.FeatureDefn-class.html#GetFieldIndex" class="summary-sig-name">GetFieldIndex</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      GetFieldIndex(self, char name) -&gt; int</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn.GetFieldIndex">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="osgeo.ogr.FeatureDefn-class.html#AddFieldDefn" class="summary-sig-name">AddFieldDefn</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      AddFieldDefn(self, FieldDefn defn)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn.AddFieldDefn">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">OGRwkbGeometryType</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="osgeo.ogr.FeatureDefn-class.html#GetGeomType" class="summary-sig-name">GetGeomType</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      OGRwkbGeometryType
+OGR_FD_GetGeomType(OGRFeatureDefnH hDefn)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn.GetGeomType">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="osgeo.ogr.FeatureDefn-class.html#SetGeomType" class="summary-sig-name">SetGeomType</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      SetGeomType(self, OGRwkbGeometryType geom_type)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn.SetGeomType">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="osgeo.ogr.FeatureDefn-class.html#GetReferenceCount" class="summary-sig-name">GetReferenceCount</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      int
+OGR_FD_GetReferenceCount(OGRFeatureDefnH hDefn)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn.GetReferenceCount">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="osgeo.ogr.FeatureDefn-class.html#IsGeometryIgnored" class="summary-sig-name">IsGeometryIgnored</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      int
+OGR_FD_IsGeometryIgnored(OGRFeatureDefnH hDefn)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn.IsGeometryIgnored">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="osgeo.ogr.FeatureDefn-class.html#SetGeometryIgnored" class="summary-sig-name">SetGeometryIgnored</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      SetGeometryIgnored(self, int bIgnored)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn.SetGeometryIgnored">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">int</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="osgeo.ogr.FeatureDefn-class.html#IsStyleIgnored" class="summary-sig-name">IsStyleIgnored</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      int
+OGR_FD_IsStyleIgnored(OGRFeatureDefnH hDefn)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn.IsStyleIgnored">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="osgeo.ogr.FeatureDefn-class.html#SetStyleIgnored" class="summary-sig-name">SetStyleIgnored</a>(<span class="summary-sig-arg">self</span>,
+        <span class="summary-sig-arg">*args</span>)</span><br />
+      SetStyleIgnored(self, int bIgnored)</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn.SetStyleIgnored">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td><span class="summary-sig"><a href="osgeo.ogr.FeatureDefn-class.html#Destroy" class="summary-sig-name">Destroy</a>(<span class="summary-sig-arg">self</span>)</span><br />
+      Once called, self has effectively been destroyed.</td>
+          <td align="right" valign="top">
+            <span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn.Destroy">source&nbsp;code</a></span>
+            
+          </td>
+        </tr>
+      </table>
+      
+    </td>
+  </tr>
+</table>
+<!-- ==================== CLASS VARIABLES ==================== -->
+<a name="section-ClassVariables"></a>
+<table class="summary" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Class Variables</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-ClassVariables"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__swig_setmethods__"></a><span class="summary-name">__swig_setmethods__</span> = <code title="{}">{}</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__setattr__"></a><span class="summary-name">__setattr__</span> = <code title="lambda self, name, value:">lambda self, name, value:</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__swig_getmethods__"></a><span class="summary-name">__swig_getmethods__</span> = <code title="{}">{}</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__getattr__"></a><span class="summary-name">__getattr__</span> = <code title="lambda self, name:">lambda self, name:</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__swig_destroy__"></a><span class="summary-name">__swig_destroy__</span> = <code title="_ogr.delete_FeatureDefn">_ogr.delete_FeatureDefn</code>
+    </td>
+  </tr>
+<tr>
+    <td width="15%" align="right" valign="top" class="summary">
+      <span class="summary-type">&nbsp;</span>
+    </td><td class="summary">
+        <a name="__del__"></a><span class="summary-name">__del__</span> = <code title="lambda self:">lambda self:</code>
+    </td>
+  </tr>
+</table>
+<!-- ==================== METHOD DETAILS ==================== -->
+<a name="section-MethodDetails"></a>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr bgcolor="#70b0f0" class="table-header">
+  <td colspan="2" class="table-header">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <tr valign="top">
+        <td align="left"><span class="table-header">Method Details</span></td>
+        <td align="right" valign="top"
+         ><span class="options">[<a href="#section-MethodDetails"
+         class="privatelink" onclick="toggle_private();"
+         >hide private</a>]</span></td>
+      </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<a name="GetName"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">GetName</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn.GetName">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+const char*
+OGR_FD_GetName(OGRFeatureDefnH hDefn)
+
+Get name of the OGRFeatureDefn passed as an argument.
+
+This function is the same as the C++ method OGRFeatureDefn::GetName().
+
+Parameters:
+-----------
+
+hDefn:  handle to the feature definition to get the name from.
+
+the name. This name is internal and should not be modified, or freed.
+
+</pre>
+  <dl class="fields">
+    <dt>Returns: char</dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="GetFieldCount"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">GetFieldCount</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn.GetFieldCount">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+int
+OGR_FD_GetFieldCount(OGRFeatureDefnH hDefn)
+
+Fetch number of fields on the passed feature definition.
+
+This function is the same as the C++ OGRFeatureDefn::GetFieldCount().
+
+Parameters:
+-----------
+
+hDefn:  handle to the feature definition to get the fields count from.
+
+count of fields. 
+
+</pre>
+  <dl class="fields">
+    <dt>Returns: int</dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="GetFieldDefn"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">GetFieldDefn</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">*args</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn.GetFieldDefn">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+GetFieldDefn(self, int i) -&gt; FieldDefn
+
+OGRFieldDefnH
+OGR_FD_GetFieldDefn(OGRFeatureDefnH hDefn, int iField)
+
+Fetch field definition of the passed feature definition.
+
+This function is the same as the C++ method
+OGRFeatureDefn::GetFieldDefn().
+
+Starting with GDAL 1.7.0, this method will also issue an error if the
+index is not valid.
+
+Parameters:
+-----------
+
+hDefn:  handle to the feature definition to get the field definition
+from.
+
+iField:  the field to fetch, between 0 and GetFieldCount()-1.
+
+an handle to an internal field definition object or NULL if invalid
+index. This object should not be modified or freed by the application.
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="GetFieldIndex"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">GetFieldIndex</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">*args</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn.GetFieldIndex">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+GetFieldIndex(self, char name) -&gt; int
+
+int
+OGR_FD_GetFieldIndex(OGRFeatureDefnH hDefn, const char *pszFieldName)
+
+Find field by name.
+
+The field index of the first field matching the passed field name
+(case insensitively) is returned.
+
+This function is the same as the C++ method
+OGRFeatureDefn::GetFieldIndex.
+
+Parameters:
+-----------
+
+hDefn:  handle to the feature definition to get field index from.
+
+pszFieldName:  the field name to search for.
+
+the field index, or -1 if no match found. 
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="AddFieldDefn"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">AddFieldDefn</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">*args</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn.AddFieldDefn">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+AddFieldDefn(self, FieldDefn defn)
+
+void
+OGR_FD_AddFieldDefn(OGRFeatureDefnH hDefn, OGRFieldDefnH hNewField)
+
+Add a new field definition to the passed feature definition.
+
+To add a new field definition to a layer definition, do not use this
+function directly, but use OGR_L_CreateField() instead.
+
+This function should only be called while there are no OGRFeature
+objects in existance based on this OGRFeatureDefn. The OGRFieldDefn
+passed in is copied, and remains the responsibility of the caller.
+
+This function is the same as the C++ method
+OGRFeatureDefn::AddFieldDefn().
+
+Parameters:
+-----------
+
+hDefn:  handle to the feature definition to add the field definition
+to.
+
+hNewField:  handle to the new field definition. 
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="GetGeomType"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">GetGeomType</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn.GetGeomType">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+OGRwkbGeometryType
+OGR_FD_GetGeomType(OGRFeatureDefnH hDefn)
+
+Fetch the geometry base type of the passed feature definition.
+
+This function is the same as the C++ method
+OGRFeatureDefn::GetGeomType().
+
+Parameters:
+-----------
+
+hDefn:  handle to the feature definition to get the geometry type
+from.
+
+the base type for all geometry related to this definition. 
+
+</pre>
+  <dl class="fields">
+    <dt>Returns: OGRwkbGeometryType</dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="SetGeomType"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">SetGeomType</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">*args</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn.SetGeomType">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+SetGeomType(self, OGRwkbGeometryType geom_type)
+
+void
+OGR_FD_SetGeomType(OGRFeatureDefnH hDefn, OGRwkbGeometryType eType)
+
+Assign the base geometry type for the passed layer (the same as the
+feature definition).
+
+All geometry objects using this type must be of the defined type or a
+derived type. The default upon creation is wkbUnknown which allows for
+any geometry type. The geometry type should generally not be changed
+after any OGRFeatures have been created against this definition.
+
+This function is the same as the C++ method
+OGRFeatureDefn::SetGeomType().
+
+Parameters:
+-----------
+
+hDefn:  handle to the layer or feature definition to set the geometry
+type to.
+
+eType:  the new type to assign. 
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="GetReferenceCount"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">GetReferenceCount</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn.GetReferenceCount">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+int
+OGR_FD_GetReferenceCount(OGRFeatureDefnH hDefn)
+
+Fetch current reference count.
+
+This function is the same as the C++ method
+OGRFeatureDefn::GetReferenceCount().
+
+Parameters:
+-----------
+
+hDefn:  hanlde to the feature definition on witch OGRFeature are based
+on.
+
+the current reference count. 
+
+</pre>
+  <dl class="fields">
+    <dt>Returns: int</dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="IsGeometryIgnored"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">IsGeometryIgnored</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn.IsGeometryIgnored">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+int
+OGR_FD_IsGeometryIgnored(OGRFeatureDefnH hDefn)
+
+Determine whether the geometry can be omitted when fetching features.
+
+This function is the same as the C++ method
+OGRFeatureDefn::IsGeometryIgnored().
+
+Parameters:
+-----------
+
+hDefn:  hanlde to the feature definition on witch OGRFeature are based
+on.
+
+ignore state 
+
+</pre>
+  <dl class="fields">
+    <dt>Returns: int</dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="SetGeometryIgnored"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">SetGeometryIgnored</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">*args</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn.SetGeometryIgnored">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+SetGeometryIgnored(self, int bIgnored)
+
+void
+OGR_FD_SetGeometryIgnored(OGRFeatureDefnH hDefn, int bIgnore)
+
+Set whether the geometry can be omitted when fetching features.
+
+This function is the same as the C++ method
+OGRFeatureDefn::SetGeometryIgnored().
+
+Parameters:
+-----------
+
+hDefn:  hanlde to the feature definition on witch OGRFeature are based
+on.
+
+bIgnore:  ignore state 
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="IsStyleIgnored"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">IsStyleIgnored</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn.IsStyleIgnored">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+int
+OGR_FD_IsStyleIgnored(OGRFeatureDefnH hDefn)
+
+Determine whether the style can be omitted when fetching features.
+
+This function is the same as the C++ method
+OGRFeatureDefn::IsStyleIgnored().
+
+Parameters:
+-----------
+
+hDefn:  handle to the feature definition on which OGRFeature are based
+on.
+
+ignore state 
+
+</pre>
+  <dl class="fields">
+    <dt>Returns: int</dt>
+  </dl>
+</td></tr></table>
+</div>
+<a name="SetStyleIgnored"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">SetStyleIgnored</span>(<span class="sig-arg">self</span>,
+        <span class="sig-arg">*args</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn.SetStyleIgnored">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <pre class="literalblock">
+
+SetStyleIgnored(self, int bIgnored)
+
+void
+OGR_FD_SetStyleIgnored(OGRFeatureDefnH hDefn, int bIgnore)
+
+Set whether the style can be omitted when fetching features.
+
+This function is the same as the C++ method
+OGRFeatureDefn::SetStyleIgnored().
+
+Parameters:
+-----------
+
+hDefn:  hanlde to the feature definition on witch OGRFeature are based
+on.
+
+bIgnore:  ignore state 
+
+</pre>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<a name="Destroy"></a>
+<div>
+<table class="details" border="1" cellpadding="3"
+       cellspacing="0" width="100%" bgcolor="white">
+<tr><td>
+  <table width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr valign="top"><td>
+  <h3 class="epydoc"><span class="sig"><span class="sig-name">Destroy</span>(<span class="sig-arg">self</span>)</span>
+  </h3>
+  </td><td align="right" valign="top"
+    ><span class="codelink"><a href="osgeo.ogr-pysrc.html#FeatureDefn.Destroy">source&nbsp;code</a></span>&nbsp;
+    </td>
+  </tr></table>
+  
+  <p>Once called, self has effectively been destroyed.  Do not access. For 
+  backwards compatiblity only</p>
+  <dl class="fields">
+  </dl>
+</td></tr></table>
+</div>
+<br />
+<!-- ==================== NAVIGATION BAR ==================== -->
+<table class="navbar" border="0" width="100%" cellpadding="0"
+       bgcolor="#a0c0ff" cellspacing="0">
+  <tr valign="middle">
+  <!-- Home link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="osgeo-module.html">Home</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Tree link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="module-tree.html">Trees</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Index link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="identifier-index.html">Indices</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Help link -->
+      <th>&nbsp;&nbsp;&nbsp;<a
+        href="help.html">Help</a>&nbsp;&nbsp;&nbsp;</th>
+
+  <!-- Project homepage -->
+      <th class="navbar" align="right" width="100%">
+        <table border="0" cellpadding="0" cellspacing="0">
+          <tr><th class="navbar" align="center"
+            ><a class="navbar" target="_top" href="http://gdal.org/">GDAL/OGR Python API</a></th>
+          </tr></table></th>
+  </tr>
+</table>
+<table border="0" cellpadding="0" cellspacing="0" width="100%%">
+  <tr>
+    <td align="left" class="footer">
+    Generated by Epydoc 3.0.1 on Sat Dec 10 22:26:59 2011
+    </td>
+    <td align="right" class="footer">
+      <a target="mainFrame" href="http://epydoc.sourceforge.net"
+        >http://epydoc.sourceforge.net</a>
+    </td>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  <!--
+  // Private objects are initially displayed (because if
+  // javascript is turned off then we want them to be
+  // visible); but by default, we want to hide them.  So hide
+  // them unless we have a cookie that says to show them.
+  checkCookie();
+  // -->
+</script>
+</body>
+</html>
