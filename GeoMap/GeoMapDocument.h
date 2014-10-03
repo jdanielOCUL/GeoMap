@@ -24,6 +24,7 @@
     <NSToolbarDelegate,
     NSTableViewDelegate>
 
+@property (strong) NSString * input;
 @property (strong) NSImage * image;
 @property (assign) NSSize imageSize;
 @property (strong) IBOutlet GeoMapScrollView * imageScrollView;

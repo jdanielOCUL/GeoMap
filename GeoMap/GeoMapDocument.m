@@ -12,6 +12,7 @@
 #import "GeoMapImageView.h"
 #import "GeoMapGCPTableCellView.h"
 #import "GeoMapGCP.h"
+#import "GeoMapReproject.h"
 
 // Toolbar items.
 #define kImageControlsToolbarItemID @"imagecontrolstoolbaritem"
@@ -136,20 +137,23 @@
 
 + (BOOL)autosavesInPlace
 {
-    return YES;
+    return NO;
 }
 
 - (BOOL) writeToURL: (NSURL *) url
     ofType: (NSString *) typeName error: (NSError * __autoreleasing *) outError
 {
-    NSData * data = [self.image TIFFRepresentation];
-  
-    return [data writeToURL: url atomically: YES];
+    return
+        reproject(
+            [self.input fileSystemRepresentation],
+            [url fileSystemRepresentation]);
 }
 
 - (BOOL) readFromURL: (NSURL *) url
     ofType: (NSString *) typeName error: (NSError * __autoreleasing *) outError
 {
+    self.input = [url path];
+  
     self.image =
         [[NSImage alloc] initWithData: [NSData dataWithContentsOfURL: url]];
     

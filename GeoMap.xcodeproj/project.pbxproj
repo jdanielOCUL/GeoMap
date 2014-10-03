@@ -17,6 +17,7 @@
 		27497F2019DED523009B4E79 /* PROJ.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 270F1D7E19DECC890047DD67 /* PROJ.framework */; };
 		27497F2119DED523009B4E79 /* SQLite3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 270F1D7F19DECC890047DD67 /* SQLite3.framework */; };
 		27497F2219DED523009B4E79 /* UnixImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 270F1D8019DECC890047DD67 /* UnixImageIO.framework */; };
+		27497F2519DEDDF3009B4E79 /* GeoMapReproject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 27497F2319DEDDF3009B4E79 /* GeoMapReproject.cpp */; };
 		2758C36319DAF382004810CF /* GeoMapGCPTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2758C36219DAF382004810CF /* GeoMapGCPTableCellView.m */; };
 		2758C36919DB01FB004810CF /* GeoMapToolbarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2758C36819DB01FB004810CF /* GeoMapToolbarButton.m */; };
 		276A598719D9E9AC0013A00F /* GeoMapGCP.m in Sources */ = {isa = PBXBuildFile; fileRef = 276A598619D9E9AC0013A00F /* GeoMapGCP.m */; };
@@ -74,6 +75,8 @@
 		27497F1019DED3BC009B4E79 /* PROJ.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PROJ.framework; path = ../../../../Library/Frameworks/PROJ.framework; sourceTree = "<group>"; };
 		27497F1119DED3BC009B4E79 /* SQLite3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SQLite3.framework; path = ../../../../Library/Frameworks/SQLite3.framework; sourceTree = "<group>"; };
 		27497F1219DED3BC009B4E79 /* UnixImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UnixImageIO.framework; path = ../../../../Library/Frameworks/UnixImageIO.framework; sourceTree = "<group>"; };
+		27497F2319DEDDF3009B4E79 /* GeoMapReproject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GeoMapReproject.cpp; sourceTree = "<group>"; };
+		27497F2419DEDDF3009B4E79 /* GeoMapReproject.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = GeoMapReproject.h; sourceTree = "<group>"; };
 		2758C36119DAF382004810CF /* GeoMapGCPTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeoMapGCPTableCellView.h; sourceTree = "<group>"; };
 		2758C36219DAF382004810CF /* GeoMapGCPTableCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeoMapGCPTableCellView.m; sourceTree = "<group>"; };
 		2758C36719DB01FB004810CF /* GeoMapToolbarButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeoMapToolbarButton.h; sourceTree = "<group>"; };
@@ -207,6 +210,8 @@
 				2758C36219DAF382004810CF /* GeoMapGCPTableCellView.m */,
 				27B55D0719C9D4AE0018F328 /* GeoMapDocument.h */,
 				27B55D0819C9D4AE0018F328 /* GeoMapDocument.m */,
+				27497F2419DEDDF3009B4E79 /* GeoMapReproject.h */,
+				27497F2319DEDDF3009B4E79 /* GeoMapReproject.cpp */,
 				27B55D0A19C9D4AE0018F328 /* GeoMapDocument.xib */,
 				27B55D0D19C9D4AE0018F328 /* MainMenu.xib */,
 				27B55D1019C9D4AE0018F328 /* Images.xcassets */,
@@ -366,6 +371,7 @@
 				2758C36919DB01FB004810CF /* GeoMapToolbarButton.m in Sources */,
 				2758C36319DAF382004810CF /* GeoMapGCPTableCellView.m in Sources */,
 				276A598719D9E9AC0013A00F /* GeoMapGCP.m in Sources */,
+				27497F2519DEDDF3009B4E79 /* GeoMapReproject.cpp in Sources */,
 				27B55D3219C9E6720018F328 /* GeoMapScrollView.m in Sources */,
 				278CC20D19D33C04002E34C7 /* GeoMapImageView.m in Sources */,
 				27B55D2E19C9D4C60018F328 /* GeoMapToolbarItem.m in Sources */,
