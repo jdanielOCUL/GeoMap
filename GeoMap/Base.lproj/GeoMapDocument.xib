@@ -284,7 +284,7 @@
             </subviews>
             <point key="canvasLocation" x="28" y="501"/>
         </customView>
-        <arrayController objectClassName="GeoMapGCP" automaticallyPreparesContent="YES" id="ueB-MD-AHo" userLabel="GCPController">
+        <arrayController objectClassName="GeoMapGCP" automaticallyPreparesContent="YES" selectsInsertedObjects="NO" id="ueB-MD-AHo" userLabel="GCPController">
             <connections>
                 <binding destination="-2" name="contentArray" keyPath="self.GCPs" id="4at-1V-8wS"/>
             </connections>

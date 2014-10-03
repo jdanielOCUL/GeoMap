@@ -13,7 +13,16 @@
 extern "C" {
 #endif
 
-int reproject(const char * input, const char * output);
+typedef struct GCP
+{
+    double pixel;
+    double line;
+    double x;
+    double y;
+    const char * identifier;
+} GCP;
+
+int reproject(const char * input, const char * output, int gcpc, GCP * gcpv);
 
 #ifdef __cplusplus
 }

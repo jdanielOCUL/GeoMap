@@ -12,7 +12,7 @@
 #import "GeoMapImageView.h"
 #import "GeoMapGCPTableCellView.h"
 #import "GeoMapGCP.h"
-#import "GeoMapReproject.h"
+//#import "GeoMapReproject.h"
 
 // Toolbar items.
 #define kImageControlsToolbarItemID @"imagecontrolstoolbaritem"
@@ -143,10 +143,89 @@
 - (BOOL) writeToURL: (NSURL *) url
     ofType: (NSString *) typeName error: (NSError * __autoreleasing *) outError
 {
-    return
+    /* GCP * gcps = (GCP *)malloc(self.GCPs.count * sizeof(GCP));
+  
+    int i = 0;
+  
+    for(GeoMapGCP * GCP in self.GCPs)
+    {
+        GCP.lon = [GCP.longitude doubleValue];
+        GCP.lat = [GCP.latitude doubleValue];
+        
+        gcps[i].pixel = GCP.imagePoint.x;
+        gcps[i].line = GCP.imagePoint.y;
+        gcps[i].x = GCP.lon;
+        gcps[i].y = GCP.lat;
+    
+        ++i;
+    }
+  
+    BOOL result =
         reproject(
             [self.input fileSystemRepresentation],
-            [url fileSystemRepresentation]);
+            [url fileSystemRepresentation],
+            (int)self.GCPs.count,
+            gcps);
+  
+    free(gcps);
+  
+    return result; */
+  
+    NSMutableArray * args = [NSMutableArray array];
+  
+    [args addObject: self.input];
+  
+    for(GeoMapGCP * GCP in self.GCPs)
+    {
+        GCP.lon = [GCP.longitude doubleValue];
+        GCP.lat = [GCP.latitude doubleValue];
+    
+        [args addObject: @"-gcp"];
+        [args addObject: [NSString stringWithFormat: @"%lf", GCP.imagePoint.x]];
+        [args addObject: [NSString stringWithFormat: @"%lf", GCP.imagePoint.y]];
+        [args addObject: GCP.longitude];
+        [args addObject: GCP.latitude];
+    }
+
+    NSString * tempName =
+      [[[[self.input lastPathComponent]
+          stringByDeletingPathExtension]
+              stringByAppendingString: @"_gcp"]
+                  stringByAppendingPathExtension:@"tif"];
+  
+    NSString * tempPath =
+        [NSTemporaryDirectory() stringByAppendingPathComponent: tempName];
+  
+    [args addObject: tempPath];
+  
+    NSString * frameworksPath = [[NSBundle mainBundle] privateFrameworksPath];
+    NSString * GDALPath =
+        [frameworksPath
+            stringByAppendingPathComponent:
+                @"GDAL.framework/Versions/1.11/Programs"];
+  
+    NSTask * translate = [NSTask new];
+  
+    translate.launchPath =
+        [GDALPath stringByAppendingPathComponent: @"gdal_translate"];
+    translate.arguments = args;
+  
+    [translate launch];
+    [translate waitUntilExit];
+  
+    NSTask * warp = [NSTask new];
+  
+    warp.launchPath = [GDALPath stringByAppendingPathComponent: @"gdalwarp"];
+    warp.arguments =
+        @[
+        tempPath,
+        [url path]
+        ];
+  
+    [warp launch];
+    [warp waitUntilExit];
+
+    return YES;
 }
 
 - (BOOL) readFromURL: (NSURL *) url
