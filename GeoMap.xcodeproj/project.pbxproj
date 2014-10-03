@@ -49,7 +49,7 @@
 /* Begin PBXCopyFilesBuildPhase section */
 		270F1D7A19DECC3A0047DD67 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 8;
+			buildActionMask = 12;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
@@ -59,7 +59,7 @@
 				27497F1C19DED504009B4E79 /* SQLite3.framework in CopyFiles */,
 				27497F1D19DED504009B4E79 /* UnixImageIO.framework in CopyFiles */,
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -345,14 +345,14 @@
 /* Begin PBXShellScriptBuildPhase section */
 		270F1D7B19DECC480047DD67 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
+			buildActionMask = 12;
 			files = (
 			);
 			inputPaths = (
 			);
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "install_name_tool -change /Library/Frameworks/GDAL.framework/Versions/1.11/GDAL  @executable_path/../Frameworks/GDAL.framework/Versions/1.11/GDAL $TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/$EXECUTABLE_NAME\ninstall_name_tool -change /Library/Frameworks/GEOS.framework/Versions/3/GEOS @executable_path/../Frameworks/GEOS.framework/Versions/3/GEOS $TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/$EXECUTABLE_NAME\ninstall_name_tool -change /Library/Frameworks/PROJ.framework/Versions/4/PROJ @executable_path/../Frameworks/PROJ.framework/Versions/4/PROJ $TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/$EXECUTABLE_NAME\ninstall_name_tool -change /Library/Frameworks/SQLite3.framework/Versions/B/SQLite3 @executable_path/../Frameworks/SQLite3.framework/Versions/B/SQLite3 $TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/$EXECUTABLE_NAME\ninstall_name_tool -change /Library/Frameworks/UnixImageIO.framework/Versions/E/UnixImageIO @executable_path/../Frameworks/UnixImageIO.framework/Versions/E/UnixImageIO $TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/$EXECUTABLE_NAME\n\ninstall_name_tool -change /Library/Frameworks/PROJ.framework/Versions/4/PROJ @executable_path/../Frameworks/PROJ.framework/Versions/4/PROJ $TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH/Frameworks/UnixImageIO.framework/Versions/E/UnixImageIO\n\ninstall_name_tool -change /Library/Frameworks/PROJ.framework/Versions/4/PROJ @executable_path/../Frameworks/PROJ.framework/Versions/4/PROJ $TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH/Frameworks/SQLite3.framework/Versions/B/SQLite3\ninstall_name_tool -change /Library/Frameworks/GEOS.framework/Versions/3/GEOS @executable_path/../Frameworks/GEOS.framework/Versions/3/GEOS $TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH/Frameworks/SQLite3.framework/Versions/B/SQLite3\ninstall_name_tool -change /Library/Frameworks/UnixImageIO.framework/Versions/E/UnixImageIO @executable_path/../Frameworks/UnixImageIO.framework/Versions/E/UnixImageIO $TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH/Frameworks/SQLite3.framework/Versions/B/SQLite3\n\ninstall_name_tool -change /Library/Frameworks/PROJ.framework/Versions/4/PROJ @executable_path/../Frameworks/PROJ.framework/Versions/4/PROJ $TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH/Frameworks/GDAL.framework/Versions/1.11/GDAL\ninstall_name_tool -change /Library/Frameworks/GEOS.framework/Versions/3/GEOS @executable_path/../Frameworks/GEOS.framework/Versions/3/GEOS $TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH/Frameworks/GDAL.framework/Versions/1.11/GDAL\ninstall_name_tool -change /Library/Frameworks/UnixImageIO.framework/Versions/E/UnixImageIO @executable_path/../Frameworks/UnixImageIO.framework/Versions/E/UnixImageIO  $TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH/Frameworks/GDAL.framework/Versions/1.11/GDAL\ninstall_name_tool -change /Library/Frameworks/SQLite3.framework/Versions/B/SQLite3 @executable_path/../Frameworks/SQLite3.framework/Versions/B/SQLite3 $TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH/Frameworks/GDAL.framework/Versions/1.11/GDAL\n\ninstall_name_tool -change /Library/Frameworks/PROJ.framework/Versions/4/PROJ @executable_path/../Frameworks/PROJ.framework/Versions/4/PROJ $TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH/Frameworks/GDAL.framework/Versions/1.11/Libraries/libogdi.dylib\n";
 		};

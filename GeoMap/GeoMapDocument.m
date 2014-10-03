@@ -120,15 +120,18 @@
 
 - (NSString *)windowNibName
 {
-  // Override returning the nib file name of the document
-  // If you need to use a subclass of NSWindowController or if your document supports multiple NSWindowControllers, you should remove this method and override -makeWindowControllers instead.
-  return @"GeoMapDocument";
+    // Override returning the nib file name of the document
+    // If you need to use a subclass of NSWindowController or if your document
+    // supports multiple NSWindowControllers, you should remove this method and
+    // override -makeWindowControllers instead.
+    return @"GeoMapDocument";
 }
 
 - (void)windowControllerDidLoadNib:(NSWindowController *)aController
 {
-  [super windowControllerDidLoadNib:aController];
-  // Add any code here that needs to be executed once the windowController has loaded the document's window.
+    [super windowControllerDidLoadNib:aController];
+    // Add any code here that needs to be executed once the windowController has
+    // loaded the document's window.
 }
 
 + (BOOL)autosavesInPlace
@@ -136,29 +139,36 @@
     return YES;
 }
 
-- (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError
+- (BOOL) writeToURL: (NSURL *) url
+    ofType: (NSString *) typeName error: (NSError * __autoreleasing *) outError
 {
-  return [self.image TIFFRepresentation];
+    NSData * data = [self.image TIFFRepresentation];
+  
+    return [data writeToURL: url atomically: YES];
 }
 
-- (BOOL) readFromData: (NSData *) data ofType: (NSString *) typeName error: (NSError **) outError
+- (BOOL) readFromURL: (NSURL *) url
+    ofType: (NSString *) typeName error: (NSError * __autoreleasing *) outError
 {
-  self.image = [[NSImage alloc] initWithData: data];
-  
-  for(NSImageRep * rep in [self.image representations])
-    {
-    NSSize size;
+    self.image =
+        [[NSImage alloc] initWithData: [NSData dataWithContentsOfURL: url]];
     
-    size.width = [rep pixelsWide];
-    size.height = [rep pixelsHigh];
+    for(NSImageRep * rep in [self.image representations])
+      {
+      NSSize size;
+      
+      size.width = [rep pixelsWide];
+      size.height = [rep pixelsHigh];
+      
+      NSSize imageSize = self.imageSize;
+      
+      if((size.height > imageSize.height) && (size.width > imageSize.width))
+        self.imageSize = size;
+      }
     
-    if((size.height > self.imageSize.height) && (size.width > self.imageSize.width))
-      self.imageSize = size;
-    }
-  
-  [self.image setSize: self.imageSize];
-  
-  return YES;
+    [self.image setSize: self.imageSize];
+    
+    return YES;
 }
 
 #pragma mark - NSToolbarDelegate conformance
