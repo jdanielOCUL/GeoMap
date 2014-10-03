@@ -393,6 +393,12 @@
     return nil;
 }
 
+- (void) tableViewSelectionDidChange: (NSNotification *) notification
+{
+    for(GeoMapGCP * GCP in self.GCPController.selectedObjects)
+        [self.imageView selectGCP: GCP];
+}
+
 - (IBAction) commitLatitude: (id) sender;
 {
     [self.windowForSheet makeFirstResponder: [sender nextKeyView]];

@@ -9,6 +9,7 @@
 #import <Cocoa/Cocoa.h>
 
 @class GeoMapDocument;
+@class GeoMapGCP;
 
 @interface GeoMapImageView : NSImageView
 
@@ -17,5 +18,6 @@
 @property (assign) double scale;
 
 - (void) drawGCPAt: (NSPoint) point;
+- (void) selectGCP: (GeoMapGCP *) GCP;
 
 @end

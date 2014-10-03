@@ -290,4 +290,18 @@
         self.scale = self.image.size.width / self.bounds.size.width;
 }
 
+- (void) selectGCP: (GeoMapGCP *) GCP
+{
+    NSClipView * clipView = [self.scrollView contentView];
+
+    NSSize size = clipView.bounds.size;
+  
+    NSPoint zoomPoint =
+        NSMakePoint(
+            (GCP.imagePoint.x / self.scale) - (size.width / 2),
+            (GCP.imagePoint.y / self.scale) - (size.height / 2));
+  
+    [self scrollPoint: zoomPoint];
+}
+
 @end
