@@ -177,14 +177,18 @@
   
     for(GeoMapGCP * GCP in self.GCPs)
     {
-        GCP.lon = [GCP.longitude doubleValue];
-        GCP.lat = [GCP.latitude doubleValue];
+        GCP.lon = [self parseCoordinates: GCP.longitude];
+        GCP.lat = [self parseCoordinates: GCP.latitude];
     
         [args addObject: @"-gcp"];
         [args addObject: [NSString stringWithFormat: @"%lf", GCP.imagePoint.x]];
-        [args addObject: [NSString stringWithFormat: @"%lf", GCP.imagePoint.y]];
-        [args addObject: GCP.longitude];
-        [args addObject: GCP.latitude];
+        [args
+            addObject:
+                [NSString
+                    stringWithFormat:
+                        @"%lf", self.image.size.height - GCP.imagePoint.y]];
+        [args addObject: [NSString stringWithFormat: @"%lf", GCP.lon]];
+        [args addObject: [NSString stringWithFormat: @"%lf", GCP.lat]];
     }
 
     NSString * tempName =
@@ -210,6 +214,8 @@
         [GDALPath stringByAppendingPathComponent: @"gdal_translate"];
     translate.arguments = args;
   
+    NSLog(@"%@ %@", translate.launchPath, translate.arguments);
+  
     [translate launch];
     [translate waitUntilExit];
   
@@ -222,6 +228,8 @@
         [url path]
         ];
   
+    NSLog(@"%@ %@", warp.launchPath, warp.arguments);
+
     [warp launch];
     [warp waitUntilExit];
 
@@ -500,6 +508,101 @@
 - (IBAction) commitLongitude: (id) sender
 {
     self.toolMode = kPanTool;
+}
+
+- (double) parseCoordinates: (NSString *) value
+{
+    NSScanner * scanner = [NSScanner scannerWithString: value];
+  
+    double multiplier = 1;
+  
+    NSString * direction;
+  
+    BOOL found =
+        [scanner
+            scanCharactersFromSet:
+                [NSCharacterSet
+                    characterSetWithCharactersInString: @"-NnSsEeWw"]
+            intoString: & direction];
+
+    if(found)
+    {
+        direction = [direction lowercaseString];
+    
+        if([direction hasPrefix: @"s"])
+            multiplier = -1;
+        else if([direction hasPrefix: @"w"])
+            multiplier = -1;
+        else if([direction hasPrefix: @"-"])
+            multiplier = -1;
+    }
+  
+    double degrees;
+  
+    found = [scanner scanDouble: & degrees];
+  
+    if(!found)
+        return 0;
+  
+    found =
+        [scanner
+            scanCharactersFromSet:
+                [NSCharacterSet characterSetWithCharactersInString: @"d°"]
+            intoString: NULL];
+  
+    if(!found)
+        return degrees * multiplier;
+  
+    double minutes;
+  
+    found = [scanner scanDouble: & minutes];
+
+    if(!found)
+        return degrees * multiplier;
+  
+    degrees += (minutes / 60.0);
+  
+    found =
+        [scanner
+            scanCharactersFromSet:
+                [NSCharacterSet characterSetWithCharactersInString: @"m'’"]
+            intoString: NULL];
+  
+    if(!found)
+        return degrees * multiplier;
+
+    double seconds;
+  
+    found = [scanner scanDouble: & seconds];
+
+    if(!found)
+        return degrees * multiplier;
+  
+    degrees += (seconds / 60.0 / 60.0);
+  
+    found =
+        [scanner
+            scanCharactersFromSet:
+                [NSCharacterSet characterSetWithCharactersInString: @"s\"”"]
+            intoString: NULL];
+
+    found =
+        [scanner
+            scanCharactersFromSet:
+                [NSCharacterSet characterSetWithCharactersInString: @"NnSsEeWw"]
+            intoString: NULL];
+
+    if(found)
+    {
+        direction = [direction lowercaseString];
+    
+        if([direction hasPrefix: @"s"])
+            multiplier = -1;
+        else if([direction hasPrefix: @"w"])
+            multiplier = -1;
+    }
+
+    return degrees * multiplier;
 }
 
 @end
