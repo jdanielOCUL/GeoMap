@@ -467,6 +467,8 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
 {
     NSSavePanel * savePanel = [NSSavePanel savePanel];
   
+    savePanel.allowedFileTypes = @[@"tif"];
+  
     if([savePanel runModal] != NSFileHandlingPanelOKButton)
         return;
   
@@ -952,8 +954,11 @@ NSComparisonResult sortViews(id v1, id v2, void * context)
     if((v1 == self.mapView) && self.previewing)
         return NSOrderedDescending;
   
-    if((v2 == self.mapView) && !self.previewing)
-        return NSOrderedAscending;
+    if((v1 == self.imageScrollView) && !self.previewing)
+        return NSOrderedDescending;
+
+    if((v1 == self.imageView) && !self.previewing)
+        return NSOrderedDescending;
 
     return NSOrderedSame;
 }
