@@ -874,6 +874,8 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
         for(GeoMapGCP * GCP in self.GCPs)
             GCP.lon *= -1.0;
   
+    [args addObject: @"-q"];
+  
     for(GeoMapGCP * GCP in self.GCPs)
     {
         [args addObject: @"-gcp"];
@@ -934,6 +936,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     warp.launchPath = [GDALPath stringByAppendingPathComponent: @"gdalwarp"];
     warp.arguments =
         @[
+        @"-q",
         tempPath,
         output
         ];
