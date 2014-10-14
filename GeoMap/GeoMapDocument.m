@@ -20,6 +20,8 @@
 
 #define kTiledMapServiceURL @"http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_StreetMap_World_2D/MapServer"
 
+// View sorter.
+NSComparisonResult sortViews(id v1, id v2, void * context);
 
 @implementation GeoMapDocument
 
@@ -28,6 +30,8 @@
 @synthesize GCPs = myGCPs;
 
 @synthesize canPreview = myCanPreview;
+
+@synthesize opacity = myOpacity;
 
 - (NSUInteger) toolMode
 {
@@ -100,6 +104,37 @@
         }
     }
 }
+
+- (double) opacity
+{
+    return myOpacity;
+}
+
+- (void) setOpacity: (double) opacity
+{
+    if(opacity != myOpacity)
+    {
+        [self willChangeValueForKey: @"opacity"];
+    
+        if(self.previewPath && self.coordinates)
+        {
+            NSMutableArray * args = [NSMutableArray array];
+      
+            [args addObject: self.previewPath];
+            [args addObjectsFromArray: self.coordinates];
+            [args addObject: [NSString stringWithFormat: @"%f", opacity]];
+      
+            id win = [self.mapView windowScriptObject];
+        
+            [win callWebScriptMethod: @"showPreview" withArguments: args];
+        }
+        
+        myOpacity = opacity;
+    
+        [self didChangeValueForKey: @"opacity"];
+    }
+}
+
 
 - (id) init
 {
@@ -306,6 +341,18 @@
               return event;
           }];
   
+    self.mapView.alphaValue = 0.0;
+    self.exportButton.alphaValue = 0.0;
+    self.cancelExportButton.alphaValue = 0.0;
+    self.previewButton.alphaValue = 1.0;
+    self.opacityLabel.alphaValue = 0.0;
+    self.opacitySlider.alphaValue = 0.0;
+
+    [self.exportButton setHidden: YES];
+    [self.cancelExportButton setHidden: YES];
+    [self.opacityLabel setHidden: YES];
+    [self.opacitySlider setHidden: YES];
+
     self.isSetup = YES;
 }
 
@@ -374,23 +421,44 @@
 
 - (void) webView: (WebView *) sender didFinishLoadForFrame: (WebFrame *) frame
 {
-    id win = [sender windowScriptObject];
+    /* id win = [sender windowScriptObject];
   
     NSMutableArray * args = [NSMutableArray array];
   
     [args addObject: self.previewPath];
     [args addObjectsFromArray: self.coordinates];
     [args addObject: @"0.75"];
+    self.opacity = 0.75;
   
-    [win callWebScriptMethod: @"showPreview" withArguments: args];
-
-    [[self.mapView animator] setAlphaValue: 1.0];
+    [win callWebScriptMethod: @"zoomTo" withArguments: self.coordinates];
+    [win callWebScriptMethod: @"showPreview" withArguments: args]; */
 
     [self.exportButton setHidden: NO];
     [self.cancelExportButton setHidden: NO];
-    [self.previewButton setHidden: YES];
     [self.opacityLabel setHidden: NO];
     [self.opacitySlider setHidden: NO];
+
+    [NSAnimationContext
+        runAnimationGroup:
+            ^(NSAnimationContext * context)
+            {
+            context.allowsImplicitAnimation = YES;
+            
+            self.mapView.alphaValue = 1.0;
+            self.exportButton.alphaValue = 1.0;
+            self.cancelExportButton.alphaValue = 1.0;
+            self.previewButton.alphaValue = 0.0;
+            self.opacityLabel.alphaValue = 1.0;
+            self.opacitySlider.alphaValue = 1.0;
+            }
+        completionHandler:
+            ^{
+            }];
+  
+    self.previewing = YES;
+  
+    [[self.windowForSheet contentView]
+        sortSubviewsUsingFunction: sortViews context: (__bridge void *)(self)];
 }
 
 - (IBAction) exportMap: (id) sender
@@ -398,102 +466,32 @@
     if(self.previewPath)
         [[NSFileManager defaultManager]
             removeItemAtPath: self.previewPath error: NULL];
-  
-    self.previewPath = nil;
-  
-    /* GCP * gcps = (GCP *)malloc(self.GCPs.count * sizeof(GCP));
-  
-    int i = 0;
-  
-    for(GeoMapGCP * GCP in self.GCPs)
-    {
-        GCP.lon = [GCP.longitude doubleValue];
-        GCP.lat = [GCP.latitude doubleValue];
-        
-        gcps[i].pixel = GCP.imagePoint.x;
-        gcps[i].line = GCP.imagePoint.y;
-        gcps[i].x = GCP.lon;
-        gcps[i].y = GCP.lat;
-    
-        ++i;
-    }
-  
-    BOOL result =
-        reproject(
-            [self.input fileSystemRepresentation],
-            [url fileSystemRepresentation],
-            (int)self.GCPs.count,
-            gcps);
-  
-    free(gcps);
-  
-    return result; */
-  
-    NSMutableArray * args = [NSMutableArray array];
-  
-    [args addObject: self.input];
-  
-    for(GeoMapGCP * GCP in self.GCPs)
-    {
-        GCP.lon = [self parseCoordinates: GCP.longitude];
-        GCP.lat = [self parseCoordinates: GCP.latitude];
-    
-        [args addObject: @"-gcp"];
-        [args addObject: [NSString stringWithFormat: @"%lf", GCP.imagePoint.x]];
-        [args
-            addObject:
-                [NSString
-                    stringWithFormat:
-                        @"%lf", self.image.size.height - GCP.imagePoint.y]];
-        [args addObject: [NSString stringWithFormat: @"%lf", GCP.lon]];
-        [args addObject: [NSString stringWithFormat: @"%lf", GCP.lat]];
-    }
 
-    NSString * tempName =
-      [[[[self.input lastPathComponent]
-          stringByDeletingPathExtension]
-              stringByAppendingString: @"_gcp"]
-                  stringByAppendingPathExtension:@"tif"];
+    [NSAnimationContext
+        runAnimationGroup:
+            ^(NSAnimationContext * context)
+            {
+                context.allowsImplicitAnimation = YES;
+                
+                self.mapView.alphaValue = 0.0;
+                self.exportButton.alphaValue = 0.0;
+                self.cancelExportButton.alphaValue = 0.0;
+                self.previewButton.alphaValue = 1.0;
+                self.opacityLabel.alphaValue = 0.0;
+                self.opacitySlider.alphaValue = 0.0;
+            }
+        completionHandler:
+            ^{
+                [self.exportButton setHidden: YES];
+                [self.cancelExportButton setHidden: YES];
+                [self.opacityLabel setHidden: YES];
+                [self.opacitySlider setHidden: YES];
+            }];
+
+    self.previewing = NO;
   
-    NSString * tempPath =
-        [NSTemporaryDirectory() stringByAppendingPathComponent: tempName];
-  
-    [args addObject: tempPath];
-  
-    NSString * frameworksPath = [[NSBundle mainBundle] privateFrameworksPath];
-    NSString * GDALPath =
-        [frameworksPath
-            stringByAppendingPathComponent:
-                @"GDAL.framework/Versions/1.11/Programs"];
-  
-    NSTask * translate = [NSTask new];
-  
-    translate.launchPath =
-        [GDALPath stringByAppendingPathComponent: @"gdal_translate"];
-    translate.arguments = args;
-  
-    [translate launch];
-    [translate waitUntilExit];
-  
-    NSTask * warp = [NSTask new];
-  
-    warp.launchPath = [GDALPath stringByAppendingPathComponent: @"gdalwarp"];
-    warp.arguments =
-        @[
-        tempPath,
-        [self.fileURL path]
-        ];
-  
-    [warp launch];
-    [warp waitUntilExit];
-  
-    //[self.mapView removeFromSuperview];
-  
-    [self.exportButton setHidden: YES];
-    [self.cancelExportButton setHidden: YES];
-    [self.previewButton setHidden: NO];
-    [self.opacityLabel setHidden: YES];
-    [self.opacitySlider setHidden: YES];
+    [[self.windowForSheet contentView]
+        sortSubviewsUsingFunction: sortViews context: (__bridge void *)(self)];
 }
 
 - (IBAction) cancelExportMap: (id) sender
@@ -504,13 +502,31 @@
 
     self.previewPath = nil;
   
-    //[self.mapView removeFromSuperview];
+    [NSAnimationContext
+        runAnimationGroup:
+            ^(NSAnimationContext * context)
+            {
+                context.allowsImplicitAnimation = YES;
+                
+                self.mapView.alphaValue = 0.0;
+                self.exportButton.alphaValue = 0.0;
+                self.cancelExportButton.alphaValue = 0.0;
+                self.previewButton.alphaValue = 1.0;
+                self.opacityLabel.alphaValue = 0.0;
+                self.opacitySlider.alphaValue = 0.0;
+            }
+        completionHandler:
+            ^{
+                [self.exportButton setHidden: YES];
+                [self.cancelExportButton setHidden: YES];
+                [self.opacityLabel setHidden: YES];
+                [self.opacitySlider setHidden: YES];
+            }];
+
+    self.previewing = NO;
   
-    [self.exportButton setHidden: YES];
-    [self.cancelExportButton setHidden: YES];
-    [self.previewButton setHidden: NO];
-    [self.opacityLabel setHidden: YES];
-    [self.opacitySlider setHidden: YES];
+    [[self.windowForSheet contentView]
+        sortSubviewsUsingFunction: sortViews context: (__bridge void *)(self)];
 }
 
 - (void) addGCP: (NSPoint) point
@@ -786,18 +802,18 @@
     [warp waitUntilExit];
 }
 
-- (IBAction) changeOpacity: (id) sender
-{
-    NSMutableArray * args = [NSMutableArray array];
-  
-    [args addObject: self.previewPath];
-    [args addObjectsFromArray: self.coordinates];
-    [args addObject: [NSString stringWithFormat: @"%f", self.opacity]];
-  
-    id win = [self.mapView windowScriptObject];
-    
-    [win callWebScriptMethod: @"showPreview" withArguments: args];
-}
-
 @end
 
+// View sorter.
+NSComparisonResult sortViews(id v1, id v2, void * context)
+{
+    GeoMapDocument * self = (__bridge GeoMapDocument *) context;
+  
+    if((v1 == self.mapView) && self.previewing)
+        return NSOrderedDescending;
+  
+    if((v2 == self.mapView) && !self.previewing)
+        return NSOrderedAscending;
+
+    return NSOrderedSame;
+}

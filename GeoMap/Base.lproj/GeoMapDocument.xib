@@ -211,7 +211,7 @@
                                         <action selector="previewMap:" target="-2" id="Fon-5Q-y8t"/>
                                     </connections>
                                 </button>
-                                <button hidden="YES" verticalHuggingPriority="750" id="rBp-HM-4Nr">
+                                <button verticalHuggingPriority="750" id="rBp-HM-4Nr">
                                     <rect key="frame" x="136" y="38" width="81" height="32"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                     <buttonCell key="cell" type="push" title="Export" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Hwp-rJ-I5z">
@@ -222,7 +222,7 @@
                                         <action selector="exportMap:" target="-2" id="BFb-se-1kc"/>
                                     </connections>
                                 </button>
-                                <button hidden="YES" verticalHuggingPriority="750" id="vGN-ew-LXb">
+                                <button verticalHuggingPriority="750" id="vGN-ew-LXb">
                                     <rect key="frame" x="44" y="38" width="82" height="32"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                     <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="qNg-hK-JcT">
@@ -236,16 +236,15 @@ Gw
                                         <action selector="cancelExportMap:" target="-2" id="gvq-UE-1im"/>
                                     </connections>
                                 </button>
-                                <slider hidden="YES" verticalHuggingPriority="750" id="AzE-zQ-lSg">
+                                <slider verticalHuggingPriority="750" id="AzE-zQ-lSg">
                                     <rect key="frame" x="67" y="18" width="168" height="21"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                     <sliderCell key="cell" state="on" alignment="left" maxValue="1" doubleValue="1" tickMarkPosition="above" sliderType="linear" id="WVw-Gs-A5n"/>
                                     <connections>
-                                        <action selector="changeOpacity:" target="-2" id="93s-IM-EEe"/>
-                                        <binding destination="-2" name="value" keyPath="self.opacity" id="oBO-dp-qn3"/>
+                                        <binding destination="-2" name="value" keyPath="self.opacity" id="ZhH-Tl-N1G"/>
                                     </connections>
                                 </slider>
-                                <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" id="cio-dd-ncI">
+                                <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="cio-dd-ncI">
                                     <rect key="frame" x="7" y="22" width="56" height="17"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                     <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Opacity:" id="Lar-YM-Hpr">

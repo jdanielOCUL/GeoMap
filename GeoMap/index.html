@@ -7,7 +7,7 @@
 
         var preview = null;
         
-        function showPreview(url, l_lat, r_lon, u_lat, l_lon, opacity)
+        function zoomTo(l_lat, r_lon, u_lat, l_lon)
         {
             var rect =
               new MQA.RectLL(
@@ -15,7 +15,10 @@
                 new MQA.LatLng(u_lat, l_lon));
               
             window.map.zoomToRect(rect);
+        }
 
+        function showPreview(url, l_lat, r_lon, u_lat, l_lon, opacity)
+        {
             MQA.withModule(
                 'shapes',
                 function()

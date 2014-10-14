@@ -61,6 +61,7 @@
 @property (strong) NSString * previewPath;
 @property (strong) NSArray * coordinates;
 @property (assign) double opacity;
+@property (assign) BOOL previewing;
 
 - (IBAction) setTool: (id) sender;
 
@@ -74,7 +75,5 @@
 
 - (IBAction) commitLatitude: (id) sender;
 - (IBAction) commitLongitude: (id) sender;
-
-- (IBAction) changeOpacity: (id) sender;
 
 @end
