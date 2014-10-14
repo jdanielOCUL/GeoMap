@@ -16,6 +16,7 @@
 @property (strong) GeoMapDocument * document;
 @property (strong) NSScrollView * scrollView;
 @property (assign) double scale;
+@property (assign) BOOL zooming;
 
 - (void) drawGCPAt: (NSPoint) point;
 - (void) selectGCP: (GeoMapGCP *) GCP;

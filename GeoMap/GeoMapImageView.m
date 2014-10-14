@@ -47,8 +47,9 @@
 {
     [super drawRect: dirtyRect];
   
-    for(GeoMapGCP * gcp in self.document.GCPs)
-        [self drawGCPAt: gcp.imagePoint];
+    if(!self.zooming)
+        for(GeoMapGCP * gcp in self.document.GCPs)
+            [self drawGCPAt: gcp.imagePoint];
   
     if(!NSEqualRects(selectionMarquee, NSZeroRect))
     {
@@ -64,7 +65,8 @@
 
 - (void) drawGCPAt: (NSPoint) point
 {
-    double imageSize = self.document.GCPImage.size.height / 6 / magnification * self.scale;
+    double imageSize =
+        self.document.GCPImage.size.height / 6 / magnification * self.scale;
 
     NSRect GCPRect =
         NSMakeRect(
@@ -74,6 +76,21 @@
             imageSize);
 
     [self.document.GCPImage drawInRect: GCPRect];
+}
+
+- (void) clearGCPAt: (NSPoint) point
+{
+    double imageSize =
+        self.document.GCPImage.size.height / 6 / magnification * self.scale;
+
+    NSRect GCPRect =
+        NSMakeRect(
+            (point.x / self.scale) - imageSize/2,
+            (point.y / self.scale) - imageSize/2,
+            imageSize,
+            imageSize);
+
+    [self setNeedsDisplayInRect: GCPRect];
 }
 
 - (void) mouseDown: (NSEvent *) event
@@ -240,6 +257,10 @@
 
 - (void) zoomToRect: (NSRect) rect
 {
+    self.zooming = YES;
+    for(GeoMapGCP * gcp in self.document.GCPs)
+        [self clearGCPAt: gcp.imagePoint];
+
     [NSAnimationContext
         runAnimationGroup:
             ^(NSAnimationContext * context)
@@ -250,12 +271,18 @@
             ^{
                 magnification = [self.scrollView magnification];
                 [self updateScale];
+                self.zooming = NO;
                 [self setNeedsDisplay: YES];
             }];
 }
 
 - (void) zoomToPoint: (NSPoint) point
 {
+    self.zooming = YES;
+  
+    for(GeoMapGCP * gcp in self.document.GCPs)
+        [self clearGCPAt: gcp.imagePoint];
+
     [NSAnimationContext
         runAnimationGroup:
             ^(NSAnimationContext * context)
@@ -268,6 +295,7 @@
             ^{
                 magnification = [self.scrollView magnification];
                 [self updateScale];
+                self.zooming = NO;
                 [self setNeedsDisplay: YES];
             }];
 }
