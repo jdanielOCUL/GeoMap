@@ -4,7 +4,11 @@
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6245"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="NSApplication"/>
+        <customObject id="-2" userLabel="File's Owner" customClass="NSApplication">
+            <connections>
+                <outlet property="delegate" destination="ds3-Qb-rRP" id="u1Y-BN-GZi"/>
+            </connections>
+        </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
         <customObject id="YLy-65-1bz" customClass="NSFontManager"/>
@@ -624,5 +628,6 @@
                 </menuItem>
             </items>
         </menu>
+        <customObject id="ds3-Qb-rRP" customClass="GeoMapApplicationDelegate"/>
     </objects>
 </document>

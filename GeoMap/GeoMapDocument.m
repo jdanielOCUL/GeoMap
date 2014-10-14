@@ -13,6 +13,7 @@
 #import "GeoMapGCPTableCellView.h"
 #import "GeoMapGCP.h"
 #import "GeoMapReproject.h"
+#import <AudioToolbox/AudioToolbox.h>
 
 // Toolbar items.
 #define kImageControlsToolbarItemID @"imagecontrolstoolbaritem"
@@ -421,7 +422,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
 
 - (void) webView: (WebView *) sender didFinishLoadForFrame: (WebFrame *) frame
 {
-    /* id win = [sender windowScriptObject];
+    id win = [sender windowScriptObject];
   
     NSMutableArray * args = [NSMutableArray array];
   
@@ -431,7 +432,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     self.opacity = 0.75;
   
     [win callWebScriptMethod: @"zoomTo" withArguments: self.coordinates];
-    [win callWebScriptMethod: @"showPreview" withArguments: args]; */
+    [win callWebScriptMethod: @"showPreview" withArguments: args];
 
     [self.exportButton setHidden: NO];
     [self.cancelExportButton setHidden: NO];
@@ -455,6 +456,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
             ^{
             }];
   
+    self.toolMode = kPanTool;
     self.previewing = YES;
   
     [[self.windowForSheet contentView]
@@ -463,9 +465,27 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
 
 - (IBAction) exportMap: (id) sender
 {
-    if(self.previewPath)
-        [[NSFileManager defaultManager]
-            removeItemAtPath: self.previewPath error: NULL];
+    NSSavePanel * savePanel = [NSSavePanel savePanel];
+  
+    if([savePanel runModal] != NSFileHandlingPanelOKButton)
+        return;
+  
+    NSString * tempName =
+        [[[[self.input lastPathComponent]
+            stringByDeletingPathExtension]
+                stringByAppendingString: @"_preview"]
+                    stringByAppendingPathExtension:@"tif"];
+    
+    self.previewPath =
+        [NSTemporaryDirectory()
+            stringByAppendingPathComponent: tempName];
+
+    [self projectMapTo: [savePanel.URL path] preview: YES];
+
+    self.coordinates = getCoordinates(self.previewPath);
+
+    [[NSFileManager defaultManager]
+        removeItemAtURL: savePanel.URL error: NULL];
 
     [NSAnimationContext
         runAnimationGroup:
@@ -610,16 +630,59 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
 
 - (IBAction) commitLatitude: (id) sender;
 {
+    double latitude;
+  
+    if(![self parseLatitude: [sender stringValue] to: & latitude])
+    {
+        AudioServicesPlayAlertSound(kSystemSoundID_UserPreferredAlert);
+    
+        [self.windowForSheet makeFirstResponder: sender];
+    
+        return;
+    }
+  
     [self.windowForSheet makeFirstResponder: [sender nextKeyView]];
 }
 
 - (IBAction) commitLongitude: (id) sender
 {
-    self.toolMode = kPanTool;
+    double longitude;
+  
+    if(![self parseLongitude: [sender stringValue] to: & longitude])
+    {
+        AudioServicesPlayAlertSound(kSystemSoundID_UserPreferredAlert);
+    
+        [self.windowForSheet makeFirstResponder: sender];
+    
+        return;
+    }
+
+    self.toolMode = kAddGCPTool;
 }
 
-- (double) parseCoordinates: (NSString *) value
+- (BOOL) parseLatitude: (NSString *) value to: (double *) coordinate
 {
+    if([self parseCoordinate: value to: coordinate])
+        if(fabs(*coordinate) < 90)
+            return YES;
+  
+    return NO;
+}
+
+- (BOOL) parseLongitude: (NSString *) value to: (double *) coordinate
+{
+    if([self parseCoordinate: value to: coordinate])
+        if(fabs(*coordinate) < 180)
+            return YES;
+  
+    return NO;
+}
+
+- (BOOL) parseCoordinate: (NSString *) value to: (double *) coordinate
+{
+    if(!coordinate)
+        return NO;
+  
     NSScanner * scanner = [NSScanner scannerWithString: value];
   
     double multiplier = 1;
@@ -650,7 +713,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     found = [scanner scanDouble: & degrees];
   
     if(!found)
-        return 0;
+        return NO;
   
     found =
         [scanner
@@ -659,14 +722,22 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
             intoString: NULL];
   
     if(!found)
-        return degrees * multiplier;
+    {
+        *coordinate = degrees * multiplier;
+  
+        return YES;
+    }
   
     double minutes;
   
     found = [scanner scanDouble: & minutes];
 
     if(!found)
-        return degrees * multiplier;
+    {
+        *coordinate = degrees * multiplier;
+  
+        return YES;
+    }
   
     degrees += (minutes / 60.0);
   
@@ -677,14 +748,22 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
             intoString: NULL];
   
     if(!found)
-        return degrees * multiplier;
+    {
+        *coordinate = degrees * multiplier;
+  
+        return YES;
+    }
 
     double seconds;
   
     found = [scanner scanDouble: & seconds];
 
     if(!found)
-        return degrees * multiplier;
+    {
+        *coordinate = degrees * multiplier;
+  
+        return YES;
+    }
   
     degrees += (seconds / 60.0 / 60.0);
   
@@ -710,7 +789,9 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
             multiplier = -1;
     }
 
-    return degrees * multiplier;
+    *coordinate = degrees * multiplier;
+  
+    return YES;
 }
 
 - (void) projectMapTo: (NSString *) output preview: (BOOL) preview
@@ -747,22 +828,92 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
   
     [args addObject: self.input];
   
+    BOOL haveMin = NO;
+    double minX = 0;
+    double minLong = 0;
+  
+    bool haveMax = NO;
+    double maxX = 0;
+    double maxLong = 0;
+  
+    double maxY = 0;
+  
     for(GeoMapGCP * GCP in self.GCPs)
     {
-        GCP.lon = [self parseCoordinates: GCP.longitude];
-        GCP.lat = [self parseCoordinates: GCP.latitude];
+        double latitude;
     
+        if([self parseLatitude: GCP.latitude to: & latitude])
+            GCP.lat = latitude;
+
+        double longitude;
+
+        if([self parseLongitude: GCP.longitude to: & longitude])
+            GCP.lon = longitude;
+    
+        if(!haveMin || (GCP.imagePoint.x < minX))
+        {
+            minX = GCP.imagePoint.x;
+            minLong = GCP.lon;
+
+            haveMin = YES;
+        }
+    
+        if(!haveMax || (GCP.imagePoint.x > maxX))
+        {
+            maxX = GCP.imagePoint.x;
+            maxLong = GCP.lon;
+        
+            haveMax = YES;
+        }
+    
+        if(GCP.imagePoint.y > maxY)
+            maxY = GCP.imagePoint.y;
+    }
+  
+    double scaleX = 1.0;
+    double scaleY = 1.0;
+  
+    if(self.image.size.width > 1000)
+        scaleX = 1000.0/self.image.size.width;
+
+    if(self.image.size.height > 1000)
+        scaleY = 1000.0/self.image.size.height;
+  
+    double scale = fmax(scaleX, scaleY);
+  
+    if(minLong > maxLong)
+        for(GeoMapGCP * GCP in self.GCPs)
+            GCP.lon *= -1.0;
+  
+    for(GeoMapGCP * GCP in self.GCPs)
+    {
         [args addObject: @"-gcp"];
-        [args addObject: [NSString stringWithFormat: @"%lf", GCP.imagePoint.x]];
+        [args
+            addObject:
+                [NSString stringWithFormat: @"%lf", scale * GCP.imagePoint.x]];
         [args
             addObject:
                 [NSString
                     stringWithFormat:
-                        @"%lf", self.image.size.height - GCP.imagePoint.y]];
+                        @"%lf",
+                        scale * (self.image.size.height - GCP.imagePoint.y)]];
         [args addObject: [NSString stringWithFormat: @"%lf", GCP.lon]];
         [args addObject: [NSString stringWithFormat: @"%lf", GCP.lat]];
     }
 
+    if(preview)
+    {
+        [args addObject: @"-outsize"];
+        [args
+            addObject:
+                [NSString
+                    stringWithFormat: @"%lf", self.image.size.width * scale]];
+        [args
+            addObject:
+                [NSString
+                    stringWithFormat: @"%lf", self.image.size.height * scale]];
+    }
+  
     NSString * tempName =
       [[[[self.input lastPathComponent]
           stringByDeletingPathExtension]
@@ -800,6 +951,8 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
   
     [warp launch];
     [warp waitUntilExit];
+  
+    [[NSFileManager defaultManager] removeItemAtPath: tempPath error: nil];
 }
 
 @end

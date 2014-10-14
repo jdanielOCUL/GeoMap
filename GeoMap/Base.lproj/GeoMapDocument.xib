@@ -209,6 +209,7 @@
                                     </buttonCell>
                                     <connections>
                                         <action selector="previewMap:" target="-2" id="Fon-5Q-y8t"/>
+                                        <binding destination="-2" name="enabled" keyPath="self.canPreview" id="1bj-tz-Tei"/>
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" id="rBp-HM-4Nr">
@@ -239,7 +240,7 @@ Gw
                                 <slider verticalHuggingPriority="750" id="AzE-zQ-lSg">
                                     <rect key="frame" x="67" y="18" width="168" height="21"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                                    <sliderCell key="cell" state="on" alignment="left" maxValue="1" doubleValue="1" tickMarkPosition="above" sliderType="linear" id="WVw-Gs-A5n"/>
+                                    <sliderCell key="cell" continuous="YES" state="on" alignment="left" minValue="0.5" maxValue="1" doubleValue="1" tickMarkPosition="above" sliderType="linear" id="WVw-Gs-A5n"/>
                                     <connections>
                                         <binding destination="-2" name="value" keyPath="self.opacity" id="ZhH-Tl-N1G"/>
                                     </connections>
