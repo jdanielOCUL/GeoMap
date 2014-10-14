@@ -5,7 +5,9 @@
 
     <script type="text/javascript">
 
-        function showPreview(url, l_lat, r_lon, u_lat, l_lon)
+        var preview = null;
+        
+        function showPreview(url, l_lat, r_lon, u_lat, l_lon, opacity)
         {
             var rect =
               new MQA.RectLL(
@@ -18,12 +20,14 @@
                 'shapes',
                 function()
                 {
+                    var oldPreview = preview;
+                    
                     // Creates a new MQA.ImageOverlay.
-                    var preview = new MQA.ImageOverlay();
+                    preview = new MQA.ImageOverlay();
 
                     // Set the URL of the image.
                     preview.imageURL = url;
-                    preview.imageOpacity = .75;
+                    preview.imageOpacity = opacity;
 
                     // Sets the shape points. They must be in the following order
                     // [upper left latitude, upper left longitude,
@@ -33,6 +37,9 @@
 
                     // Add to the map's default shape collection.
                     window.map.addShape(preview);
+                    
+                    if(oldPreview)
+                        window.map.removeShape(oldPreview);
                 });
         }
 
@@ -91,9 +98,7 @@
 
                 window.map.enableMouseWheelZoom();
                 });
-                
-            showPreview("file:///var/folders/jh/y30n2gb14hx7ldhymsmnnmfw0000gp/T/21I-2_1911_A_preview.tif", 45, -65, 46, -65);
-            });  
+            });
     
     </script>
      

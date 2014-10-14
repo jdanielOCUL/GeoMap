@@ -17,6 +17,8 @@
                 <outlet property="imageScrollView" destination="q2R-me-kjk" id="HrS-8Q-r51"/>
                 <outlet property="imageView" destination="ta4-xg-sds" id="LLb-CJ-Z9Y"/>
                 <outlet property="mapView" destination="YxA-78-y3F" id="f9Y-XL-rzc"/>
+                <outlet property="opacityLabel" destination="cio-dd-ncI" id="E7y-67-DNN"/>
+                <outlet property="opacitySlider" destination="AzE-zQ-lSg" id="KZA-y7-i8L"/>
                 <outlet property="panModeButton" destination="8zt-nw-nK2" id="Y3o-qc-08Y"/>
                 <outlet property="previewButton" destination="21E-19-Ini" id="lRE-tl-fEd"/>
                 <outlet property="selectGCPModeButton" destination="QbD-aj-md6" id="vUC-6B-7X6"/>
@@ -39,7 +41,9 @@
                     <webView wantsLayer="YES" alphaValue="0.0" maintainsBackForwardList="NO" id="YxA-78-y3F">
                         <rect key="frame" x="0.0" y="0.0" width="486" height="413"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12" plugInsEnabled="NO" javaEnabled="NO" javaScriptCanOpenWindowsAutomatically="NO" allowsAnimatedImages="NO" allowsAnimatedImageLooping="NO"/>
+                        <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12" plugInsEnabled="NO" javaEnabled="NO" javaScriptCanOpenWindowsAutomatically="NO" allowsAnimatedImages="NO" allowsAnimatedImageLooping="NO">
+                            <nil key="identifier"/>
+                        </webPreferences>
                     </webView>
                     <scrollView horizontalHuggingPriority="750" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="q2R-me-kjk" customClass="GeoMapScrollView">
                         <rect key="frame" x="-1" y="-1" width="488" height="414"/>
@@ -75,8 +79,8 @@
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <scrollView horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="Bbe-M7-oE4">
-                                    <rect key="frame" x="0.0" y="50" width="252" height="325"/>
-                                    <autoresizingMask key="autoresizingMask" heightSizable="YES"/>
+                                    <rect key="frame" x="-1" y="74" width="252" height="301"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" heightSizable="YES"/>
                                     <clipView key="contentView" id="Wgs-Zq-K2C">
                                         <rect key="frame" x="1" y="17" width="238" height="117"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -167,7 +171,7 @@
                                     </scroller>
                                 </scrollView>
                                 <button verticalHuggingPriority="750" id="zwp-DI-4mx" userLabel="Remove Button">
-                                    <rect key="frame" x="0.0" y="29" width="21" height="23"/>
+                                    <rect key="frame" x="-1" y="53" width="21" height="23"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSRemoveTemplate" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="WTm-Hv-65N">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -180,7 +184,7 @@
                                 </button>
                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="mjQ-Dl-TO3">
                                     <rect key="frame" x="3" y="383" width="56" height="14"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Latitude" id="Upb-ua-LjC">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -189,7 +193,7 @@
                                 </textField>
                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="Wd6-yA-EIV">
                                     <rect key="frame" x="130" y="383" width="68" height="14"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMinY="YES"/>
                                     <textFieldCell key="cell" controlSize="small" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Longitude" id="Ekl-3t-jxw">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -197,7 +201,7 @@
                                     </textFieldCell>
                                 </textField>
                                 <button verticalHuggingPriority="750" id="21E-19-Ini">
-                                    <rect key="frame" x="88" y="14" width="76" height="32"/>
+                                    <rect key="frame" x="88" y="23" width="76" height="32"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                     <buttonCell key="cell" type="push" title="Preview" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="HN6-RD-Mxa">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -208,7 +212,7 @@
                                     </connections>
                                 </button>
                                 <button hidden="YES" verticalHuggingPriority="750" id="rBp-HM-4Nr">
-                                    <rect key="frame" x="136" y="14" width="81" height="32"/>
+                                    <rect key="frame" x="136" y="38" width="81" height="32"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                     <buttonCell key="cell" type="push" title="Export" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Hwp-rJ-I5z">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -219,7 +223,7 @@
                                     </connections>
                                 </button>
                                 <button hidden="YES" verticalHuggingPriority="750" id="vGN-ew-LXb">
-                                    <rect key="frame" x="44" y="14" width="82" height="32"/>
+                                    <rect key="frame" x="44" y="38" width="82" height="32"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                     <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="qNg-hK-JcT">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -232,6 +236,24 @@ Gw
                                         <action selector="cancelExportMap:" target="-2" id="gvq-UE-1im"/>
                                     </connections>
                                 </button>
+                                <slider hidden="YES" verticalHuggingPriority="750" id="AzE-zQ-lSg">
+                                    <rect key="frame" x="67" y="18" width="168" height="21"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                    <sliderCell key="cell" state="on" alignment="left" maxValue="1" doubleValue="1" tickMarkPosition="above" sliderType="linear" id="WVw-Gs-A5n"/>
+                                    <connections>
+                                        <action selector="changeOpacity:" target="-2" id="93s-IM-EEe"/>
+                                        <binding destination="-2" name="value" keyPath="self.opacity" id="oBO-dp-qn3"/>
+                                    </connections>
+                                </slider>
+                                <textField hidden="YES" horizontalHuggingPriority="251" verticalHuggingPriority="750" id="cio-dd-ncI">
+                                    <rect key="frame" x="7" y="22" width="56" height="17"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                    <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Opacity:" id="Lar-YM-Hpr">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
                             </subviews>
                         </view>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>

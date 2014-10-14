@@ -56,7 +56,11 @@
 @property (strong) IBOutlet NSButton * previewButton;
 @property (strong) IBOutlet NSButton * exportButton;
 @property (strong) IBOutlet NSButton * cancelExportButton;
+@property (strong) IBOutlet NSTextField * opacityLabel;
+@property (strong) IBOutlet NSSlider * opacitySlider;
 @property (strong) NSString * previewPath;
+@property (strong) NSArray * coordinates;
+@property (assign) double opacity;
 
 - (IBAction) setTool: (id) sender;
 
@@ -70,5 +74,7 @@
 
 - (IBAction) commitLatitude: (id) sender;
 - (IBAction) commitLongitude: (id) sender;
+
+- (IBAction) changeOpacity: (id) sender;
 
 @end

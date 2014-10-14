@@ -349,6 +349,8 @@
 
               [self projectMapTo: self.previewPath preview: YES];
           
+              self.coordinates = getCoordinates(self.previewPath);
+          
               dispatch_semaphore_signal(semaphore);
           });
   
@@ -377,9 +379,8 @@
     NSMutableArray * args = [NSMutableArray array];
   
     [args addObject: self.previewPath];
-    [args addObjectsFromArray: getCoordinates(self.previewPath)];
-  
-    NSLog(@"Preview with %@", args);
+    [args addObjectsFromArray: self.coordinates];
+    [args addObject: @"0.75"];
   
     [win callWebScriptMethod: @"showPreview" withArguments: args];
 
@@ -388,6 +389,8 @@
     [self.exportButton setHidden: NO];
     [self.cancelExportButton setHidden: NO];
     [self.previewButton setHidden: YES];
+    [self.opacityLabel setHidden: NO];
+    [self.opacitySlider setHidden: NO];
 }
 
 - (IBAction) exportMap: (id) sender
@@ -489,6 +492,8 @@
     [self.exportButton setHidden: YES];
     [self.cancelExportButton setHidden: YES];
     [self.previewButton setHidden: NO];
+    [self.opacityLabel setHidden: YES];
+    [self.opacitySlider setHidden: YES];
 }
 
 - (IBAction) cancelExportMap: (id) sender
@@ -504,6 +509,8 @@
     [self.exportButton setHidden: YES];
     [self.cancelExportButton setHidden: YES];
     [self.previewButton setHidden: NO];
+    [self.opacityLabel setHidden: YES];
+    [self.opacitySlider setHidden: YES];
 }
 
 - (void) addGCP: (NSPoint) point
@@ -777,6 +784,19 @@
   
     [warp launch];
     [warp waitUntilExit];
+}
+
+- (IBAction) changeOpacity: (id) sender
+{
+    NSMutableArray * args = [NSMutableArray array];
+  
+    [args addObject: self.previewPath];
+    [args addObjectsFromArray: self.coordinates];
+    [args addObject: [NSString stringWithFormat: @"%f", self.opacity]];
+  
+    id win = [self.mapView windowScriptObject];
+    
+    [win callWebScriptMethod: @"showPreview" withArguments: args];
 }
 
 @end
