@@ -12,11 +12,14 @@
 #import "GeoMapImageView.h"
 #import "GeoMapGCPTableCellView.h"
 #import "GeoMapGCP.h"
-//#import "GeoMapReproject.h"
+#import "GeoMapReproject.h"
 
 // Toolbar items.
 #define kImageControlsToolbarItemID @"imagecontrolstoolbaritem"
 #define kGCPControlsToolbarItemID @"gcpcontrolstoolbaritem"
+
+#define kTiledMapServiceURL @"http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_StreetMap_World_2D/MapServer"
+
 
 @implementation GeoMapDocument
 
@@ -24,7 +27,6 @@
 
 @synthesize GCPs = myGCPs;
 
-@dynamic actionButtonTitle;
 @synthesize canPreview = myCanPreview;
 
 - (NSUInteger) toolMode
@@ -99,11 +101,6 @@
     }
 }
 
-- (NSString *) actionButtonTitle
-{
-    return NSLocalizedString(@"Preview", NULL);
-}
-
 - (id) init
 {
     self = [super init];
@@ -117,6 +114,17 @@
     }
   
     return self;
+}
+
+- (void) dealloc
+{
+    [self cleanup];
+}
+
+- (void) close
+{
+    [self cleanup];
+    [super close];
 }
 
 - (NSString *)windowNibName
@@ -143,96 +151,6 @@
 - (BOOL) writeToURL: (NSURL *) url
     ofType: (NSString *) typeName error: (NSError * __autoreleasing *) outError
 {
-    /* GCP * gcps = (GCP *)malloc(self.GCPs.count * sizeof(GCP));
-  
-    int i = 0;
-  
-    for(GeoMapGCP * GCP in self.GCPs)
-    {
-        GCP.lon = [GCP.longitude doubleValue];
-        GCP.lat = [GCP.latitude doubleValue];
-        
-        gcps[i].pixel = GCP.imagePoint.x;
-        gcps[i].line = GCP.imagePoint.y;
-        gcps[i].x = GCP.lon;
-        gcps[i].y = GCP.lat;
-    
-        ++i;
-    }
-  
-    BOOL result =
-        reproject(
-            [self.input fileSystemRepresentation],
-            [url fileSystemRepresentation],
-            (int)self.GCPs.count,
-            gcps);
-  
-    free(gcps);
-  
-    return result; */
-  
-    NSMutableArray * args = [NSMutableArray array];
-  
-    [args addObject: self.input];
-  
-    for(GeoMapGCP * GCP in self.GCPs)
-    {
-        GCP.lon = [self parseCoordinates: GCP.longitude];
-        GCP.lat = [self parseCoordinates: GCP.latitude];
-    
-        [args addObject: @"-gcp"];
-        [args addObject: [NSString stringWithFormat: @"%lf", GCP.imagePoint.x]];
-        [args
-            addObject:
-                [NSString
-                    stringWithFormat:
-                        @"%lf", self.image.size.height - GCP.imagePoint.y]];
-        [args addObject: [NSString stringWithFormat: @"%lf", GCP.lon]];
-        [args addObject: [NSString stringWithFormat: @"%lf", GCP.lat]];
-    }
-
-    NSString * tempName =
-      [[[[self.input lastPathComponent]
-          stringByDeletingPathExtension]
-              stringByAppendingString: @"_gcp"]
-                  stringByAppendingPathExtension:@"tif"];
-  
-    NSString * tempPath =
-        [NSTemporaryDirectory() stringByAppendingPathComponent: tempName];
-  
-    [args addObject: tempPath];
-  
-    NSString * frameworksPath = [[NSBundle mainBundle] privateFrameworksPath];
-    NSString * GDALPath =
-        [frameworksPath
-            stringByAppendingPathComponent:
-                @"GDAL.framework/Versions/1.11/Programs"];
-  
-    NSTask * translate = [NSTask new];
-  
-    translate.launchPath =
-        [GDALPath stringByAppendingPathComponent: @"gdal_translate"];
-    translate.arguments = args;
-  
-    NSLog(@"%@ %@", translate.launchPath, translate.arguments);
-  
-    [translate launch];
-    [translate waitUntilExit];
-  
-    NSTask * warp = [NSTask new];
-  
-    warp.launchPath = [GDALPath stringByAppendingPathComponent: @"gdalwarp"];
-    warp.arguments =
-        @[
-        tempPath,
-        [url path]
-        ];
-  
-    NSLog(@"%@ %@", warp.launchPath, warp.arguments);
-
-    [warp launch];
-    [warp waitUntilExit];
-
     return YES;
 }
 
@@ -335,17 +253,14 @@
 
 - (void) awakeFromNib
 {
-    static dispatch_once_t onceToken;
-  
-    dispatch_once(
-        & onceToken,
-        ^{
-            [self setup];
-        });
+    [self setup];
 }
 
 - (void) setup
 {
+    if(self.isSetup)
+        return;
+  
     NSImage * zoomIn = [NSImage imageNamed: @"ZoomIn"];
     NSImage * zoomOut = [NSImage imageNamed: @"ZoomOut"];
     self.GCPImage = [NSImage imageNamed: @"GCP"];
@@ -390,13 +305,17 @@
           
               return event;
           }];
-    
-    //NSRect frame = [self.imageView frame];
-    
-    //frame.size = self.imageSize;
-    
-    //[self.imageView setFrame: frame];
-    //[self.imageView setImageScaling: NSImageScaleNone];
+  
+    self.isSetup = YES;
+}
+
+- (void) cleanup
+{
+    if(self.previewPath)
+        [[NSFileManager defaultManager]
+            removeItemAtPath: self.previewPath error: NULL];
+  
+    self.previewPath = nil;
 }
 
 - (IBAction) setTool: (id) sender
@@ -413,12 +332,178 @@
 
 - (IBAction) previewMap: (id) sender
 {
-    NSLog(@"preview map");
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+  
+    dispatch_async(
+        dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+        ^{
+            NSString * tempName =
+                [[[[self.input lastPathComponent]
+                    stringByDeletingPathExtension]
+                        stringByAppendingString: @"_preview"]
+                            stringByAppendingPathExtension:@"tif"];
+            
+              self.previewPath =
+                  [NSTemporaryDirectory()
+                      stringByAppendingPathComponent: tempName];
+
+              [self projectMapTo: self.previewPath preview: YES];
+          
+              dispatch_semaphore_signal(semaphore);
+          });
+  
+    NSString * htmlPath =
+        [[NSBundle mainBundle] pathForResource: @"index" ofType: @"html"];
+  
+    NSURL * baseURL = [[NSBundle mainBundle] resourceURL];
+  
+    NSString * html =
+        [NSString
+            stringWithContentsOfFile: htmlPath
+            encoding: NSUTF8StringEncoding
+            error: NULL];
+  
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+
+    [self.mapView setFrameLoadDelegate: self];
+  
+    [[self.mapView mainFrame] loadHTMLString: html baseURL: baseURL];
+}
+
+- (void) webView: (WebView *) sender didFinishLoadForFrame: (WebFrame *) frame
+{
+    id win = [sender windowScriptObject];
+  
+    NSMutableArray * args = [NSMutableArray array];
+  
+    [args addObject: self.previewPath];
+    [args addObjectsFromArray: getCoordinates(self.previewPath)];
+  
+    NSLog(@"Preview with %@", args);
+  
+    [win callWebScriptMethod: @"showPreview" withArguments: args];
+
+    [[self.mapView animator] setAlphaValue: 1.0];
+
+    [self.exportButton setHidden: NO];
+    [self.cancelExportButton setHidden: NO];
+    [self.previewButton setHidden: YES];
 }
 
 - (IBAction) exportMap: (id) sender
 {
-    NSLog(@"export map");
+    if(self.previewPath)
+        [[NSFileManager defaultManager]
+            removeItemAtPath: self.previewPath error: NULL];
+  
+    self.previewPath = nil;
+  
+    /* GCP * gcps = (GCP *)malloc(self.GCPs.count * sizeof(GCP));
+  
+    int i = 0;
+  
+    for(GeoMapGCP * GCP in self.GCPs)
+    {
+        GCP.lon = [GCP.longitude doubleValue];
+        GCP.lat = [GCP.latitude doubleValue];
+        
+        gcps[i].pixel = GCP.imagePoint.x;
+        gcps[i].line = GCP.imagePoint.y;
+        gcps[i].x = GCP.lon;
+        gcps[i].y = GCP.lat;
+    
+        ++i;
+    }
+  
+    BOOL result =
+        reproject(
+            [self.input fileSystemRepresentation],
+            [url fileSystemRepresentation],
+            (int)self.GCPs.count,
+            gcps);
+  
+    free(gcps);
+  
+    return result; */
+  
+    NSMutableArray * args = [NSMutableArray array];
+  
+    [args addObject: self.input];
+  
+    for(GeoMapGCP * GCP in self.GCPs)
+    {
+        GCP.lon = [self parseCoordinates: GCP.longitude];
+        GCP.lat = [self parseCoordinates: GCP.latitude];
+    
+        [args addObject: @"-gcp"];
+        [args addObject: [NSString stringWithFormat: @"%lf", GCP.imagePoint.x]];
+        [args
+            addObject:
+                [NSString
+                    stringWithFormat:
+                        @"%lf", self.image.size.height - GCP.imagePoint.y]];
+        [args addObject: [NSString stringWithFormat: @"%lf", GCP.lon]];
+        [args addObject: [NSString stringWithFormat: @"%lf", GCP.lat]];
+    }
+
+    NSString * tempName =
+      [[[[self.input lastPathComponent]
+          stringByDeletingPathExtension]
+              stringByAppendingString: @"_gcp"]
+                  stringByAppendingPathExtension:@"tif"];
+  
+    NSString * tempPath =
+        [NSTemporaryDirectory() stringByAppendingPathComponent: tempName];
+  
+    [args addObject: tempPath];
+  
+    NSString * frameworksPath = [[NSBundle mainBundle] privateFrameworksPath];
+    NSString * GDALPath =
+        [frameworksPath
+            stringByAppendingPathComponent:
+                @"GDAL.framework/Versions/1.11/Programs"];
+  
+    NSTask * translate = [NSTask new];
+  
+    translate.launchPath =
+        [GDALPath stringByAppendingPathComponent: @"gdal_translate"];
+    translate.arguments = args;
+  
+    [translate launch];
+    [translate waitUntilExit];
+  
+    NSTask * warp = [NSTask new];
+  
+    warp.launchPath = [GDALPath stringByAppendingPathComponent: @"gdalwarp"];
+    warp.arguments =
+        @[
+        tempPath,
+        [self.fileURL path]
+        ];
+  
+    [warp launch];
+    [warp waitUntilExit];
+  
+    //[self.mapView removeFromSuperview];
+  
+    [self.exportButton setHidden: YES];
+    [self.cancelExportButton setHidden: YES];
+    [self.previewButton setHidden: NO];
+}
+
+- (IBAction) cancelExportMap: (id) sender
+{  
+    if(self.previewPath)
+        [[NSFileManager defaultManager]
+            removeItemAtPath: self.previewPath error: NULL];
+
+    self.previewPath = nil;
+  
+    //[self.mapView removeFromSuperview];
+  
+    [self.exportButton setHidden: YES];
+    [self.cancelExportButton setHidden: YES];
+    [self.previewButton setHidden: NO];
 }
 
 - (void) addGCP: (NSPoint) point
@@ -429,7 +514,7 @@
 
     [self.GCPController addObject: GCP];
   
-    myCanPreview = ([self.GCPs count] >= 4);
+    self.canPreview = ([self.GCPs count] >= 4);
   
     [self.GCPTableView
         editColumn: 0
@@ -603,6 +688,95 @@
     }
 
     return degrees * multiplier;
+}
+
+- (void) projectMapTo: (NSString *) output preview: (BOOL) preview
+{
+    /* GCP * gcps = (GCP *)malloc(self.GCPs.count * sizeof(GCP));
+  
+    int i = 0;
+  
+    for(GeoMapGCP * GCP in self.GCPs)
+    {
+        GCP.lon = [GCP.longitude doubleValue];
+        GCP.lat = [GCP.latitude doubleValue];
+        
+        gcps[i].pixel = GCP.imagePoint.x;
+        gcps[i].line = GCP.imagePoint.y;
+        gcps[i].x = GCP.lon;
+        gcps[i].y = GCP.lat;
+    
+        ++i;
+    }
+  
+    BOOL result =
+        reproject(
+            [self.input fileSystemRepresentation],
+            [url fileSystemRepresentation],
+            (int)self.GCPs.count,
+            gcps);
+  
+    free(gcps);
+  
+    return result; */
+  
+    NSMutableArray * args = [NSMutableArray array];
+  
+    [args addObject: self.input];
+  
+    for(GeoMapGCP * GCP in self.GCPs)
+    {
+        GCP.lon = [self parseCoordinates: GCP.longitude];
+        GCP.lat = [self parseCoordinates: GCP.latitude];
+    
+        [args addObject: @"-gcp"];
+        [args addObject: [NSString stringWithFormat: @"%lf", GCP.imagePoint.x]];
+        [args
+            addObject:
+                [NSString
+                    stringWithFormat:
+                        @"%lf", self.image.size.height - GCP.imagePoint.y]];
+        [args addObject: [NSString stringWithFormat: @"%lf", GCP.lon]];
+        [args addObject: [NSString stringWithFormat: @"%lf", GCP.lat]];
+    }
+
+    NSString * tempName =
+      [[[[self.input lastPathComponent]
+          stringByDeletingPathExtension]
+              stringByAppendingString: @"_gcp"]
+                  stringByAppendingPathExtension:@"tif"];
+  
+    NSString * tempPath =
+        [NSTemporaryDirectory() stringByAppendingPathComponent: tempName];
+  
+    [args addObject: tempPath];
+  
+    NSString * frameworksPath = [[NSBundle mainBundle] privateFrameworksPath];
+    NSString * GDALPath =
+        [frameworksPath
+            stringByAppendingPathComponent:
+                @"GDAL.framework/Versions/1.11/Programs"];
+  
+    NSTask * translate = [NSTask new];
+  
+    translate.launchPath =
+        [GDALPath stringByAppendingPathComponent: @"gdal_translate"];
+    translate.arguments = args;
+  
+    [translate launch];
+    [translate waitUntilExit];
+  
+    NSTask * warp = [NSTask new];
+  
+    warp.launchPath = [GDALPath stringByAppendingPathComponent: @"gdalwarp"];
+    warp.arguments =
+        @[
+        tempPath,
+        output
+        ];
+  
+    [warp launch];
+    [warp waitUntilExit];
 }
 
 @end

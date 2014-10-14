@@ -7,6 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import <WebKit/WebKit.h>
 
 // Tool modes.
 #define kPanTool     0
@@ -33,6 +34,7 @@
 @property (strong) NSCursor * zoomInCursor;
 @property (strong) NSCursor * zoomOutCursor;
 @property (strong) NSCursor * addGCPCursor;
+@property (assign) BOOL isSetup;
 
 // Toolbars.
 @property (assign) IBOutlet NSView * imageControlsToolbarItemView;
@@ -48,13 +50,19 @@
 @property (strong) IBOutlet NSTableView * GCPTableView;
 @property (strong) NSImage * GCPImage;
 
-@property (readonly) NSString * actionButtonTitle;
-@property (readonly) BOOL canPreview;
+// Preview/Export.
+@property (strong) IBOutlet WebView * mapView;
+@property (assign) BOOL canPreview;
+@property (strong) IBOutlet NSButton * previewButton;
+@property (strong) IBOutlet NSButton * exportButton;
+@property (strong) IBOutlet NSButton * cancelExportButton;
+@property (strong) NSString * previewPath;
 
 - (IBAction) setTool: (id) sender;
 
 - (IBAction) previewMap: (id) sender;
 - (IBAction) exportMap: (id) sender;
+- (IBAction) cancelExportMap: (id) sender;
 
 - (void) addGCP: (NSPoint) point;
 - (IBAction) remove: (id) sender;

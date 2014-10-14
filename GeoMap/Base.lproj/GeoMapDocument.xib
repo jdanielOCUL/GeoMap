@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6245" systemVersion="13F34" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6245"/>
+        <plugIn identifier="com.apple.WebKitIBPlugin" version="6245"/>
     </dependencies>
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="GeoMapDocument">
@@ -10,10 +11,14 @@
                 <outlet property="GCPControlsToolbarItemView" destination="z0o-OP-vYk" id="5af-HT-Qqn"/>
                 <outlet property="GCPTableView" destination="s5d-Y2-UFh" id="rtz-ew-hcn"/>
                 <outlet property="addGCPModeButton" destination="NMw-oP-cJg" id="rYx-QL-0rN"/>
+                <outlet property="cancelExportButton" destination="vGN-ew-LXb" id="Jfm-c9-2us"/>
+                <outlet property="exportButton" destination="rBp-HM-4Nr" id="ScQ-0d-hB8"/>
                 <outlet property="imageControlsToolbarItemView" destination="HFD-sA-8aM" id="uWF-0b-CgY"/>
                 <outlet property="imageScrollView" destination="q2R-me-kjk" id="HrS-8Q-r51"/>
                 <outlet property="imageView" destination="ta4-xg-sds" id="LLb-CJ-Z9Y"/>
+                <outlet property="mapView" destination="YxA-78-y3F" id="f9Y-XL-rzc"/>
                 <outlet property="panModeButton" destination="8zt-nw-nK2" id="Y3o-qc-08Y"/>
+                <outlet property="previewButton" destination="21E-19-Ini" id="lRE-tl-fEd"/>
                 <outlet property="selectGCPModeButton" destination="QbD-aj-md6" id="vUC-6B-7X6"/>
                 <outlet property="window" destination="xOd-HO-29H" id="JIz-fz-R2o"/>
                 <outlet property="zoomModeButton" destination="UXW-Vq-RJ6" id="hxN-SZ-WEs"/>
@@ -31,15 +36,20 @@
                 <rect key="frame" x="0.0" y="0.0" width="736" height="413"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
+                    <webView wantsLayer="YES" alphaValue="0.0" maintainsBackForwardList="NO" id="YxA-78-y3F">
+                        <rect key="frame" x="0.0" y="0.0" width="486" height="413"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12" plugInsEnabled="NO" javaEnabled="NO" javaScriptCanOpenWindowsAutomatically="NO" allowsAnimatedImages="NO" allowsAnimatedImageLooping="NO"/>
+                    </webView>
                     <scrollView horizontalHuggingPriority="750" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" horizontalLineScroll="10" horizontalPageScroll="10" verticalLineScroll="10" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="q2R-me-kjk" customClass="GeoMapScrollView">
-                        <rect key="frame" x="-1" y="-1" width="489" height="415"/>
+                        <rect key="frame" x="-1" y="-1" width="488" height="414"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <clipView key="contentView" id="h6D-LS-U3E">
                             <rect key="frame" x="1" y="1" width="507" height="413"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" id="ta4-xg-sds" customClass="GeoMapImageView">
-                                    <rect key="frame" x="0.0" y="0.0" width="488" height="414"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="467" height="413"/>
                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                     <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageAlignment="bottomLeft" imageScaling="proportionallyDown" id="OuV-q2-d50"/>
                                     <connections>
@@ -65,7 +75,7 @@
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <scrollView horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="Bbe-M7-oE4">
-                                    <rect key="frame" x="0.0" y="31" width="252" height="344"/>
+                                    <rect key="frame" x="0.0" y="50" width="252" height="325"/>
                                     <autoresizingMask key="autoresizingMask" heightSizable="YES"/>
                                     <clipView key="contentView" id="Wgs-Zq-K2C">
                                         <rect key="frame" x="1" y="17" width="238" height="117"/>
@@ -157,7 +167,7 @@
                                     </scroller>
                                 </scrollView>
                                 <button verticalHuggingPriority="750" id="zwp-DI-4mx" userLabel="Remove Button">
-                                    <rect key="frame" x="0.0" y="10" width="21" height="23"/>
+                                    <rect key="frame" x="0.0" y="29" width="21" height="23"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <buttonCell key="cell" type="smallSquare" bezelStyle="smallSquare" image="NSRemoveTemplate" imagePosition="overlaps" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="WTm-Hv-65N">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
@@ -166,19 +176,6 @@
                                     <connections>
                                         <action selector="remove:" target="-2" id="cMK-De-QiY"/>
                                         <binding destination="ueB-MD-AHo" name="enabled" keyPath="self.canRemove" id="5lb-8G-hp7"/>
-                                    </connections>
-                                </button>
-                                <button verticalHuggingPriority="750" id="21E-19-Ini">
-                                    <rect key="frame" x="180" y="11" width="76" height="23"/>
-                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
-                                    <buttonCell key="cell" type="smallSquare" title="Preview" bezelStyle="smallSquare" alignment="center" imageScaling="proportionallyDown" inset="2" id="HN6-RD-Mxa">
-                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                        <font key="font" metaFont="system"/>
-                                    </buttonCell>
-                                    <connections>
-                                        <action selector="previewMap:" target="-2" id="Fon-5Q-y8t"/>
-                                        <binding destination="-2" name="title" keyPath="self.actionButtonTitle" id="dg3-qo-3uF"/>
-                                        <binding destination="-2" name="enabled" keyPath="self.canPreview" id="Db4-Xc-SZC"/>
                                     </connections>
                                 </button>
                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="mjQ-Dl-TO3">
@@ -199,6 +196,42 @@
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
+                                <button verticalHuggingPriority="750" id="21E-19-Ini">
+                                    <rect key="frame" x="88" y="14" width="76" height="32"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                    <buttonCell key="cell" type="push" title="Preview" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="HN6-RD-Mxa">
+                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <action selector="previewMap:" target="-2" id="Fon-5Q-y8t"/>
+                                    </connections>
+                                </button>
+                                <button hidden="YES" verticalHuggingPriority="750" id="rBp-HM-4Nr">
+                                    <rect key="frame" x="136" y="14" width="81" height="32"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                    <buttonCell key="cell" type="push" title="Export" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="Hwp-rJ-I5z">
+                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                    </buttonCell>
+                                    <connections>
+                                        <action selector="exportMap:" target="-2" id="BFb-se-1kc"/>
+                                    </connections>
+                                </button>
+                                <button hidden="YES" verticalHuggingPriority="750" id="vGN-ew-LXb">
+                                    <rect key="frame" x="44" y="14" width="82" height="32"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
+                                    <buttonCell key="cell" type="push" title="Cancel" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="qNg-hK-JcT">
+                                        <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="system"/>
+                                        <string key="keyEquivalent" base64-UTF8="YES">
+Gw
+</string>
+                                    </buttonCell>
+                                    <connections>
+                                        <action selector="cancelExportMap:" target="-2" id="gvq-UE-1im"/>
+                                    </connections>
+                                </button>
                             </subviews>
                         </view>
                         <color key="borderColor" white="0.0" alpha="0.41999999999999998" colorSpace="calibratedWhite"/>

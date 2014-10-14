@@ -24,6 +24,8 @@ typedef struct GCP
 
 int reproject(const char * input, const char * output, int gcpc, GCP * gcpv);
 
+NSArray * getCoordinates(NSString * path);
+
 #ifdef __cplusplus
 }
 #endif
