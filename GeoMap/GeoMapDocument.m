@@ -470,22 +470,9 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     if([savePanel runModal] != NSFileHandlingPanelOKButton)
         return;
   
-    NSString * tempName =
-        [[[[self.input lastPathComponent]
-            stringByDeletingPathExtension]
-                stringByAppendingString: @"_preview"]
-                    stringByAppendingPathExtension:@"tif"];
-    
-    self.previewPath =
-        [NSTemporaryDirectory()
-            stringByAppendingPathComponent: tempName];
-
     [self projectMapTo: [savePanel.URL path] preview: YES];
 
     self.coordinates = getCoordinates(self.previewPath);
-
-    [[NSFileManager defaultManager]
-        removeItemAtURL: savePanel.URL error: NULL];
 
     [NSAnimationContext
         runAnimationGroup:
