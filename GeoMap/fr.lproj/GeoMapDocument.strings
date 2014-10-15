@@ -1,0 +1,51 @@
+
+/* Class = "NSTableColumn"; headerCell.title = "Latitude - Longitude"; ObjectID = "0oc-iy-g4t"; */
+"0oc-iy-g4t.headerCell.title" = "Latitude - Longitude";
+
+/* Class = "NSTextFieldCell"; placeholderString = "Longitude"; ObjectID = "4lM-aX-xis"; */
+"4lM-aX-xis.placeholderString" = "Longitude";
+
+/* Class = "NSBox"; title = "Ground Control Points"; ObjectID = "7pj-zU-UXJ"; */
+"7pj-zU-UXJ.title" = "Points de Contrôle au Sol";
+
+/* Class = "NSButton"; ibShadowedToolTip = "Pan image"; ObjectID = "8zt-nw-nK2"; */
+"8zt-nw-nK2.ibShadowedToolTip" = "Déplacement de l’image";
+
+/* Class = "NSTextFieldCell"; title = "Longitude"; ObjectID = "Ekl-3t-jxw"; */
+"Ekl-3t-jxw.title" = "Longitude";
+
+/* Class = "NSButtonCell"; title = "Preview"; ObjectID = "HN6-RD-Mxa"; */
+"HN6-RD-Mxa.title" = "Aperçu";
+
+/* Class = "NSButtonCell"; title = "Export"; ObjectID = "Hwp-rJ-I5z"; */
+"Hwp-rJ-I5z.title" = "Exporter";
+
+/* Class = "NSTextFieldCell"; title = "Opacity:"; ObjectID = "Lar-YM-Hpr"; */
+"Lar-YM-Hpr.title" = "Opacité :";
+
+/* Class = "NSButton"; ibShadowedToolTip = "Add Ground Control Point"; ObjectID = "NMw-oP-cJg"; */
+"NMw-oP-cJg.ibShadowedToolTip" = "Ajouter Point de Contrôle au Sol";
+
+/* Class = "NSButton"; ibShadowedToolTip = "Select Ground Control Point"; ObjectID = "QbD-aj-md6"; */
+"QbD-aj-md6.ibShadowedToolTip" = "Sélectionner Point de Contrôle au Sol";
+
+/* Class = "NSTextFieldCell"; placeholderString = "Index"; ObjectID = "SnO-cP-Otl"; */
+"SnO-cP-Otl.placeholderString" = "Index";
+
+/* Class = "NSTextFieldCell"; title = "Text Cell"; ObjectID = "SnO-cP-Otl"; */
+"SnO-cP-Otl.title" = "Text Cell";
+
+/* Class = "NSButton"; ibShadowedToolTip = "Zoom image in or out"; ObjectID = "UXW-Vq-RJ6"; */
+"UXW-Vq-RJ6.ibShadowedToolTip" = "Zoom l’image avant ou arrière";
+
+/* Class = "NSTextFieldCell"; title = "Latitude"; ObjectID = "Upb-ua-LjC"; */
+"Upb-ua-LjC.title" = "Latitude";
+
+/* Class = "NSTextFieldCell"; placeholderString = "Latitude"; ObjectID = "ZeZ-yx-GZ3"; */
+"ZeZ-yx-GZ3.placeholderString" = "Latitude";
+
+/* Class = "NSButtonCell"; title = "Cancel"; ObjectID = "qNg-hK-JcT"; */
+"qNg-hK-JcT.title" = "Annuler";
+
+/* Class = "NSWindow"; title = "Window"; ObjectID = "xOd-HO-29H"; */
+"xOd-HO-29H.title" = "Window";
