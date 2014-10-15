@@ -10,6 +10,7 @@
 
 @implementation GeoMapToolbarButton
 
+// Crazy how much stuff needs to be done at a low level.
 - (void) drawRect: (NSRect) dirtyRect
 {
     if(self.state == NSOnState)
@@ -23,8 +24,6 @@
     }
     
     [super drawRect: dirtyRect];
-    
-    // Drawing code here.
 }
 
 @end

@@ -24,6 +24,7 @@
 // View sorter.
 NSComparisonResult sortViews(id v1, id v2, void * context);
 
+// A document type for georeferencing an image.
 @implementation GeoMapDocument
 
 @synthesize toolMode = myToolMode;
@@ -39,6 +40,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     return myToolMode;
 }
 
+// Update the user interface to match the tool mode.
 - (void) setToolMode: (NSUInteger) toolMode
 {
     if(toolMode != myToolMode)
@@ -111,6 +113,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     return myOpacity;
 }
 
+// Update the opacity of the image preview to match the slider.
 - (void) setOpacity: (double) opacity
 {
     if(opacity != myOpacity)
@@ -136,7 +139,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     }
 }
 
-
+// Constructor.
 - (id) init
 {
     self = [super init];
@@ -152,18 +155,20 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     return self;
 }
 
+// Why does Apple make documents so hard to clean up?
 - (void) dealloc
 {
     [self cleanup];
 }
 
+// Clean up on manual close.
 - (void) close
 {
     [self cleanup];
     [super close];
 }
 
-- (NSString *)windowNibName
+- (NSString *) windowNibName
 {
     // Override returning the nib file name of the document
     // If you need to use a subclass of NSWindowController or if your document
@@ -172,24 +177,27 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     return @"GeoMapDocument";
 }
 
-- (void)windowControllerDidLoadNib:(NSWindowController *)aController
+- (void) windowControllerDidLoadNib: (NSWindowController *) aController
 {
-    [super windowControllerDidLoadNib:aController];
+    [super windowControllerDidLoadNib: aController];
     // Add any code here that needs to be executed once the windowController has
     // loaded the document's window.
 }
 
-+ (BOOL)autosavesInPlace
+// I don't want modern document-handling architecture for this application.
++ (BOOL) autosavesInPlace
 {
     return NO;
 }
 
+// I don't save existing documents.
 - (BOOL) writeToURL: (NSURL *) url
     ofType: (NSString *) typeName error: (NSError * __autoreleasing *) outError
 {
-    return YES;
+    return NO;
 }
 
+// Read a new document.
 - (BOOL) readFromURL: (NSURL *) url
     ofType: (NSString *) typeName error: (NSError * __autoreleasing *) outError
 {
@@ -287,20 +295,26 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
   // the "allowed" list of items.
   }
 
+#pragma - Setup
+
 - (void) awakeFromNib
 {
     [self setup];
 }
 
+// In documents, awakeFromNib can get called multiple times. Only do the setup
+// once.
 - (void) setup
 {
     if(self.isSetup)
         return;
   
+    // Grab images from resource.
     NSImage * zoomIn = [NSImage imageNamed: @"ZoomIn"];
     NSImage * zoomOut = [NSImage imageNamed: @"ZoomOut"];
     self.GCPImage = [NSImage imageNamed: @"GCP"];
-    
+  
+    // Setup tools and cursors.
     self.toolMode = kPanTool;
     self.zoomInCursor =
         [[NSCursor alloc]
@@ -311,10 +325,12 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     self.addGCPCursor =
         [[NSCursor alloc]
             initWithImage: self.GCPImage hotSpot: NSMakePoint(12.5, 12.5)];
-    
+  
+    // Get some more images.
     NSImage * zoomInToolbar = [NSImage imageNamed: @"ZoomInToolbar"];
     NSImage * GCPToolbar = [NSImage imageNamed: @"GCPToolbar"];
 
+    // Setup toolbar buttons.
     [self.panModeButton setImage: [[NSCursor openHandCursor] image]];
     [self.zoomModeButton setImage: zoomInToolbar];
     [self.addGCPModeButton setImage: GCPToolbar];
@@ -322,7 +338,8 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     [self.selectGCPModeButton setImage: [[NSCursor arrowCursor] image]];
 
     self.imageView.document = self;
-    
+  
+    // Keep track of modifier keys to have optional tool modes.
     [NSEvent
       addLocalMonitorForEventsMatchingMask: NSFlagsChangedMask
       handler:
@@ -342,6 +359,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
               return event;
           }];
   
+    // Setup buttons in their initial state.
     self.mapView.alphaValue = 0.0;
     self.exportButton.alphaValue = 0.0;
     self.cancelExportButton.alphaValue = 0.0;
@@ -357,6 +375,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     self.isSetup = YES;
 }
 
+// Clean up resources.
 - (void) cleanup
 {
     if(self.previewPath)
@@ -366,6 +385,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     self.previewPath = nil;
 }
 
+// Set the tool mode.
 - (IBAction) setTool: (id) sender
 {
     if(sender == self.panModeButton)
@@ -378,10 +398,13 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
         self.toolMode = kAddGCPTool;
 }
 
+// Preview the map.
 - (IBAction) previewMap: (id) sender
 {
+    // TODO: Improve the timing and handoff here.
     dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
   
+    // Generate the preview asynchronously.
     dispatch_async(
         dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
         ^{
@@ -402,6 +425,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
               dispatch_semaphore_signal(semaphore);
           });
   
+    // Setup the web view to display the preview.
     NSString * htmlPath =
         [[NSBundle mainBundle] pathForResource: @"index" ofType: @"html"];
   
@@ -413,13 +437,14 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
             encoding: NSUTF8StringEncoding
             error: NULL];
   
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-
     [self.mapView setFrameLoadDelegate: self];
   
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+
     [[self.mapView mainFrame] loadHTMLString: html baseURL: baseURL];
 }
 
+// The web view is loaded.
 - (void) webView: (WebView *) sender didFinishLoadForFrame: (WebFrame *) frame
 {
     id win = [sender windowScriptObject];
@@ -463,54 +488,35 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
         sortSubviewsUsingFunction: sortViews context: (__bridge void *)(self)];
 }
 
+// Export a full-resolution georeferenced image.
 - (IBAction) exportMap: (id) sender
 {
     NSSavePanel * savePanel = [NSSavePanel savePanel];
   
+    // TODO: Initialize the file name with a variant of the original name.
     savePanel.allowedFileTypes = @[@"tif"];
   
     if([savePanel runModal] != NSFileHandlingPanelOKButton)
         return;
   
-    [self projectMapTo: [savePanel.URL path] preview: YES];
+    // Project the map, but not in preview mode.
+    [self projectMapTo: [savePanel.URL path] preview: NO];
 
-    self.coordinates = getCoordinates(self.previewPath);
-
-    [NSAnimationContext
-        runAnimationGroup:
-            ^(NSAnimationContext * context)
-            {
-                context.allowsImplicitAnimation = YES;
-                
-                self.mapView.alphaValue = 0.0;
-                self.exportButton.alphaValue = 0.0;
-                self.cancelExportButton.alphaValue = 0.0;
-                self.previewButton.alphaValue = 1.0;
-                self.opacityLabel.alphaValue = 0.0;
-                self.opacitySlider.alphaValue = 0.0;
-            }
-        completionHandler:
-            ^{
-                [self.exportButton setHidden: YES];
-                [self.cancelExportButton setHidden: YES];
-                [self.opacityLabel setHidden: YES];
-                [self.opacitySlider setHidden: YES];
-            }];
-
-    self.previewing = NO;
-  
-    [[self.windowForSheet contentView]
-        sortSubviewsUsingFunction: sortViews context: (__bridge void *)(self)];
+    // Leave preview mode.
+    [self cancelExportMap: sender];
 }
 
+// Leave preview mode.
 - (IBAction) cancelExportMap: (id) sender
-{  
+{
+    // Clean up the preview file.
     if(self.previewPath)
         [[NSFileManager defaultManager]
             removeItemAtPath: self.previewPath error: NULL];
 
     self.previewPath = nil;
   
+    // Leave preview mode.
     [NSAnimationContext
         runAnimationGroup:
             ^(NSAnimationContext * context)
@@ -532,12 +538,14 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
                 [self.opacitySlider setHidden: YES];
             }];
 
+    // Re-order the views.
     self.previewing = NO;
   
     [[self.windowForSheet contentView]
         sortSubviewsUsingFunction: sortViews context: (__bridge void *)(self)];
 }
 
+// Add a new GCP. This UI still needs work.
 - (void) addGCP: (NSPoint) point
 {
     GeoMapGCP * GCP = [GeoMapGCP new];
@@ -546,19 +554,23 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
 
     [self.GCPController addObject: GCP];
   
+    // Update the preview button in case I have enough points now.
     self.canPreview = ([self.GCPs count] >= 4);
   
+    // Start editing.
     [self.GCPTableView
         editColumn: 0
         row: [self.GCPs count] - 1
         withEvent: nil
         select: YES];
   
+    // Draw the GCP.
     self.toolMode = kEditGCPTool;
     [self.imageView drawGCPAt: GCP.imagePoint];
     [self.imageView setNeedsDisplay: YES];
 }
 
+// Remove the selected GCP.
 - (void) remove: (id) sender
 {
     [self.GCPController remove: sender];
@@ -566,8 +578,10 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     [self.imageView setNeedsDisplay: YES];
 }
 
+// Select a GCP.
 - (void) selectGCPAt: (NSPoint) point
 {
+    // Find the closest GCP to the clicked point and select it.
     double closetDistance = 0;
     GeoMapGCP * closest = nil;
   
@@ -590,6 +604,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
         [self.GCPController setSelectedObjects: @[closest]];
 }
 
+#pragma mark - NSTableViewDelegate conformance.
 - (NSView *) tableView: (NSTableView *) tableView
     viewForTableColumn: (NSTableColumn *) tableColumn
     row: (NSInteger) row
@@ -617,6 +632,9 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
         [self.imageView selectGCP: GCP];
 }
 
+#pragma mark - UI actions.
+
+// Validate and save a latitude value for a GCP.
 - (IBAction) commitLatitude: (id) sender;
 {
     double latitude;
@@ -633,6 +651,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     [self.windowForSheet makeFirstResponder: [sender nextKeyView]];
 }
 
+// Validate and save a longitude value for a GCP.
 - (IBAction) commitLongitude: (id) sender
 {
     double longitude;
@@ -649,6 +668,9 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     self.toolMode = kAddGCPTool;
 }
 
+#pragma mark - Coordinate helpers.
+
+// Parse a latitude text value.
 - (BOOL) parseLatitude: (NSString *) value to: (double *) coordinate
 {
     if([self parseCoordinate: value to: coordinate])
@@ -658,6 +680,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     return NO;
 }
 
+// Parse a longitude text value.
 - (BOOL) parseLongitude: (NSString *) value to: (double *) coordinate
 {
     if([self parseCoordinate: value to: coordinate])
@@ -667,13 +690,19 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     return NO;
 }
 
+// Parse a coordinate in various formats.
+// Return YES if the coordinate is valid.
+// I have to admit, a Swift optional would be handy here.
 - (BOOL) parseCoordinate: (NSString *) value to: (double *) coordinate
 {
     if(!coordinate)
         return NO;
   
+    // Use a good 'ole scanner.
     NSScanner * scanner = [NSScanner scannerWithString: value];
   
+    // First, look for directional indicators like NSEW or +=.
+    // I won't use my other multiplier logic since I may have + and - too.
     double multiplier = 1;
   
     NSString * direction;
@@ -697,6 +726,8 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
             multiplier = -1;
     }
   
+    // Now look for degrees. If this is a stand-alone, fractional degree value,
+    // I can go ahead and quit.
     double degrees;
   
     found = [scanner scanDouble: & degrees];
@@ -704,69 +735,93 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     if(!found)
         return NO;
   
+    // Now look for some character that might signal the beginning of a DMS
+    // format.
     found =
         [scanner
             scanCharactersFromSet:
                 [NSCharacterSet characterSetWithCharactersInString: @"d°"]
             intoString: NULL];
   
+    // Maybe I am done.
     if(!found)
     {
-        *coordinate = degrees * multiplier;
+        *coordinate = [self scanDirection: degrees scanner: scanner];
   
         return YES;
     }
   
+    // Look for a minutes value. Again, a fractional value is fine.
     double minutes;
   
     found = [scanner scanDouble: & minutes];
 
+    // Maybe I am done.
     if(!found)
     {
-        *coordinate = degrees * multiplier;
+        *coordinate = [self scanDirection: degrees scanner: scanner];
   
         return YES;
     }
   
+    // Increment the degrees now.
     degrees += (minutes / 60.0);
   
+    // Look for a units indicator and toss it.
     found =
         [scanner
             scanCharactersFromSet:
                 [NSCharacterSet characterSetWithCharactersInString: @"m'’"]
             intoString: NULL];
   
+    // This is fine. I'm done.
     if(!found)
     {
-        *coordinate = degrees * multiplier;
+        *coordinate = [self scanDirection: degrees scanner: scanner];
   
         return YES;
     }
 
+    // Now look for a seconds value. This may very well be a fractional.
     double seconds;
   
     found = [scanner scanDouble: & seconds];
 
+    // If I didn't find anything, I'm still good.
     if(!found)
     {
-        *coordinate = degrees * multiplier;
+        *coordinate = [self scanDirection: degrees scanner: scanner];
   
         return YES;
     }
   
+    // Increment the degrees.
     degrees += (seconds / 60.0 / 60.0);
   
+    // Scan and toss the seconds unit.
     found =
         [scanner
             scanCharactersFromSet:
                 [NSCharacterSet characterSetWithCharactersInString: @"s\"”"]
             intoString: NULL];
 
-    found =
+    *coordinate = [self scanDirection: degrees scanner: scanner];
+
+    return YES;
+}
+
+// Check for a trailing directional indicator.
+- (double) scanDirection: (double) degrees scanner: (NSScanner *) scanner
+{
+    double multiplier = 1.0;
+  
+    NSString * direction = nil;
+  
+    BOOL found =
         [scanner
             scanCharactersFromSet:
                 [NSCharacterSet characterSetWithCharactersInString: @"NnSsEeWw"]
-            intoString: NULL];
+            intoString: & direction];
 
     if(found)
     {
@@ -777,14 +832,14 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
         else if([direction hasPrefix: @"w"])
             multiplier = -1;
     }
-
-    *coordinate = degrees * multiplier;
   
-    return YES;
+    return degrees * multiplier;
 }
 
+// Project an image.
 - (void) projectMapTo: (NSString *) output preview: (BOOL) preview
 {
+    // Maybe try this again at some point. It should be in an XPC though.
     /* GCP * gcps = (GCP *)malloc(self.GCPs.count * sizeof(GCP));
   
     int i = 0;
@@ -813,10 +868,16 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
   
     return result; */
   
+    // Get the gdal_translate arguments
     NSMutableArray * args = [NSMutableArray array];
   
     [args addObject: self.input];
   
+    // Users may not add the Longitude coordinates correctly and they really
+    // shouldn't have to. Calculate the max and min GCP X positions and the
+    // max and min longitude positions. If they are out of order, then this
+    // image is a western hemisphere image without the proper directional
+    // indicators on the coordinates. If so, fix 'em.
     BOOL haveMin = NO;
     double minX = 0;
     double minLong = 0;
@@ -859,26 +920,33 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
             maxY = GCP.imagePoint.y;
     }
   
-    double scaleX = 1.0;
-    double scaleY = 1.0;
-  
-    if(self.image.size.width > 1000)
-        scaleX = 1000.0/self.image.size.width;
-
-    if(self.image.size.height > 1000)
-        scaleY = 1000.0/self.image.size.height;
-  
-    double scale = fmax(scaleX, scaleY);
-  
     if(minLong > maxLong)
         for(GeoMapGCP * GCP in self.GCPs)
             GCP.lon *= -1.0;
   
+    // See what the scale would be if I were previewing this projection.
+    double scaleX = 1.0;
+    double scaleY = 1.0;
+  
+    if(preview)
+    {
+        if(self.image.size.width > 1000)
+            scaleX = 1000.0/self.image.size.width;
+
+        if(self.image.size.height > 1000)
+            scaleY = 1000.0/self.image.size.height;
+    }
+  
+    double scale = fmax(scaleX, scaleY);
+  
+    // Don't display progress to standard out.
     [args addObject: @"-q"];
   
+    // Add GCPs. Scale the coordinates based on the preview scale, if necessary.
     for(GeoMapGCP * GCP in self.GCPs)
     {
         [args addObject: @"-gcp"];
+    
         [args
             addObject:
                 [NSString stringWithFormat: @"%lf", scale * GCP.imagePoint.x]];
@@ -888,13 +956,16 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
                     stringWithFormat:
                         @"%lf",
                         scale * (self.image.size.height - GCP.imagePoint.y)]];
+    
         [args addObject: [NSString stringWithFormat: @"%lf", GCP.lon]];
         [args addObject: [NSString stringWithFormat: @"%lf", GCP.lat]];
     }
 
+    // If previewing, scale the output.
     if(preview)
     {
         [args addObject: @"-outsize"];
+    
         [args
             addObject:
                 [NSString
@@ -905,6 +976,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
                     stringWithFormat: @"%lf", self.image.size.height * scale]];
     }
   
+    // Now use gdal_translate to create a TIFF file with GCPs.
     NSString * tempName =
       [[[[self.input lastPathComponent]
           stringByDeletingPathExtension]
@@ -931,6 +1003,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     [translate launch];
     [translate waitUntilExit];
   
+    // Now do a true projection and create a GeoTiff.
     NSTask * warp = [NSTask new];
   
     warp.launchPath = [GDALPath stringByAppendingPathComponent: @"gdalwarp"];
@@ -949,7 +1022,8 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
 
 @end
 
-// View sorter.
+// View sorter. This will make sure either the image view or the map preview
+// is the top-most view, as appropriate.
 NSComparisonResult sortViews(id v1, id v2, void * context)
 {
     GeoMapDocument * self = (__bridge GeoMapDocument *) context;

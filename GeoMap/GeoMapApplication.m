@@ -10,6 +10,7 @@
 
 @implementation GeoMapApplicationDelegate
 
+// Don't open an untitled file.
 - (BOOL) applicationShouldOpenUntitledFile: (NSApplication *) sender
 {
     return NO;

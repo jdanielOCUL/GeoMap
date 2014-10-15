@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+// Associate a given location on an image with a hand-entered location in any
+// format and actual corresponding latitude and longitude coordinates.
 @interface GeoMapGCP : NSObject
 
 @property (assign) NSPoint imagePoint;

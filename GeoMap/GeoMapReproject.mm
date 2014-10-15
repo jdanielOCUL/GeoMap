@@ -19,6 +19,9 @@
 #include "GDAL/cpl_conv.h"
 #include "GDAL/cpl_multiproc.h"
 
+// Reproject an image. This part isn't working yet. I am just feeding
+// coordinates to gdal_translate and gdalwarp for now.
+// Should this ever work, ideally it should be in an XPC.
 int reproject(const char * input, const char * output, int gcpc, GCP * gcpv)
 {
     printf("Reprojecting from %s to %s", input, output);
@@ -152,17 +155,22 @@ int reproject(const char * input, const char * output, int gcpc, GCP * gcpv)
     return 1;
 }
 
-static void
-GDALInfoReportCorner( GDALDatasetH hDataset, 
-                      OGRCoordinateTransformationH hTransform,
-                      double x, double y,
-                      NSMutableArray * coordinates );
+// Get coordinates from a projected image. This is working but should be in an
+// XPC.
+
+static void GDALInfoReportCorner(
+    GDALDatasetH hDataset,
+    OGRCoordinateTransformationH hTransform,
+    double x,
+    double y,
+    NSMutableArray * coordinates);
 
 NSArray * getCoordinates(NSString * path)
 {
     GDALAllRegister();
 
-    GDALDatasetH hDataset = GDALOpen( [path fileSystemRepresentation], GA_ReadOnly );
+    GDALDatasetH hDataset =
+        GDALOpen([path fileSystemRepresentation], GA_ReadOnly);
 
     if(!hDataset)
         return nil;
@@ -171,28 +179,28 @@ NSArray * getCoordinates(NSString * path)
     const char * pszProjection = NULL;
     double adfGeoTransform[6];
 
-    if( GDALGetGeoTransform( hDataset, adfGeoTransform ) == CE_None )
+    if(GDALGetGeoTransform( hDataset, adfGeoTransform ) == CE_None)
         pszProjection = GDALGetProjectionRef(hDataset);
 
-    if( pszProjection != NULL && strlen(pszProjection) > 0 )
+    if(pszProjection && strlen(pszProjection) > 0)
     {
         OGRSpatialReferenceH hProj, hLatLong = NULL;
 
-        hProj = OSRNewSpatialReference( pszProjection );
+        hProj = OSRNewSpatialReference(pszProjection);
         if( hProj != NULL )
-            hLatLong = OSRCloneGeogCS( hProj );
+            hLatLong = OSRCloneGeogCS(hProj);
 
-        if( hLatLong != NULL )
+        if(hLatLong)
         {
-            CPLPushErrorHandler( CPLQuietErrorHandler );
-            hTransform = OCTNewCoordinateTransformation( hProj, hLatLong );
+            CPLPushErrorHandler(CPLQuietErrorHandler);
+            hTransform = OCTNewCoordinateTransformation(hProj, hLatLong);
             CPLPopErrorHandler();
             
-            OSRDestroySpatialReference( hLatLong );
+            OSRDestroySpatialReference(hLatLong);
         }
 
-        if( hProj != NULL )
-            OSRDestroySpatialReference( hProj );
+        if(hProj)
+            OSRDestroySpatialReference(hProj);
     }
 
     NSMutableArray * result = [NSMutableArray array];
@@ -205,54 +213,59 @@ NSArray * getCoordinates(NSString * path)
         result);
   
     // Upper left.
-    GDALInfoReportCorner(
-        hDataset, hTransform, 0.0, 0.0, result);
+    GDALInfoReportCorner(hDataset, hTransform, 0.0, 0.0, result);
 
-    if( hTransform != NULL )
-    {
-        OCTDestroyCoordinateTransformation( hTransform );
-        hTransform = NULL;
-    }
+    if(hTransform)
+        OCTDestroyCoordinateTransformation(hTransform);
   
-    GDALClose( hDataset );
+    GDALClose(hDataset);
     
     GDALDestroyDriverManager();
 
-    CPLDumpSharedList( NULL );
+    CPLDumpSharedList(NULL);
     CPLCleanupTLS();
   
     return result;
 }
 
-/************************************************************************/
-/*                        GDALInfoReportCorner()                        */
-/************************************************************************/
-
-static void
-GDALInfoReportCorner( GDALDatasetH hDataset, 
-                      OGRCoordinateTransformationH hTransform,
-                      double x, double y, NSMutableArray * coordinates )
-
+static void GDALInfoReportCorner(
+    GDALDatasetH hDataset,
+    OGRCoordinateTransformationH hTransform,
+    double x,
+    double y,
+    NSMutableArray * coordinates)
 {
-    double dfGeoX, dfGeoY;
     double adfGeoTransform[6];
         
-    if( GDALGetGeoTransform( hDataset, adfGeoTransform ) == CE_None )
+    if(GDALGetGeoTransform( hDataset, adfGeoTransform ) == CE_None)
     {
-        dfGeoX = adfGeoTransform[0] + adfGeoTransform[1] * x
-            + adfGeoTransform[2] * y;
-        dfGeoY = adfGeoTransform[3] + adfGeoTransform[4] * x
-            + adfGeoTransform[5] * y;
+        double dfGeoX =
+            adfGeoTransform[0] +
+            adfGeoTransform[1] *
+            x +
+            adfGeoTransform[2] *
+            y;
+    
+        double dfGeoY =
+            adfGeoTransform[3] +
+            adfGeoTransform[4] *
+            x +
+            adfGeoTransform[5] *
+            y;
 
-        if( ABS(dfGeoX) < 181 && ABS(dfGeoY) < 91 )
+        if(fabs(dfGeoX) <= 180 && fabs(dfGeoY) <= 90)
         {
-            [coordinates addObject: [NSString stringWithFormat: @"%12.7f", dfGeoY]];
-            [coordinates addObject: [NSString stringWithFormat: @"%12.7f", dfGeoX]];
+            [coordinates
+                addObject: [NSString stringWithFormat: @"%12.7f", dfGeoY]];
+            [coordinates
+                addObject: [NSString stringWithFormat: @"%12.7f", dfGeoX]];
         }
         else
         {
-            [coordinates addObject: [NSString stringWithFormat: @"%12.3f", dfGeoY]];
-            [coordinates addObject: [NSString stringWithFormat: @"%12.3f", dfGeoX]];
+            [coordinates
+                addObject: [NSString stringWithFormat: @"%12.3f", dfGeoY]];
+            [coordinates
+                addObject: [NSString stringWithFormat: @"%12.3f", dfGeoX]];
         }
     }
 }

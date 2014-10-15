@@ -13,6 +13,11 @@
 extern "C" {
 #endif
 
+// Native interface to GDAL.
+
+// Reproject an image. This part isn't working yet. I am just feeding
+// coordinates to gdal_translate and gdalwarp for now.
+// Should this ever work, ideally it should be in an XPC.
 typedef struct GCP
 {
     double pixel;
@@ -24,6 +29,8 @@ typedef struct GCP
 
 int reproject(const char * input, const char * output, int gcpc, GCP * gcpv);
 
+// Get coordinates from a projected image. This is working but should be in an
+// XPC.
 NSArray * getCoordinates(NSString * path);
 
 #ifdef __cplusplus

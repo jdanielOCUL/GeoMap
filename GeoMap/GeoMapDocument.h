@@ -21,19 +21,33 @@
 @class GeoMapScrollView;
 @class GeoMapImageView;
 
+// A document type for georeferencing an image.
 @interface GeoMapDocument : NSDocument
     <NSToolbarDelegate,
     NSTableViewDelegate>
 
+// The input file.
 @property (strong) NSString * input;
+
+// The image itself.
 @property (strong) NSImage * image;
+
+// The image size.
 @property (assign) NSSize imageSize;
+
+// Some views for displaying an image nicely.
 @property (strong) IBOutlet GeoMapScrollView * imageScrollView;
 @property (strong) IBOutlet GeoMapImageView * imageView;
+
+// The current tool mode.
 @property (assign) NSUInteger toolMode;
+
+// Cursors to refect the tool mode.
 @property (strong) NSCursor * zoomInCursor;
 @property (strong) NSCursor * zoomOutCursor;
 @property (strong) NSCursor * addGCPCursor;
+
+// Only do setup once per document.
 @property (assign) BOOL isSetup;
 
 // Toolbars.

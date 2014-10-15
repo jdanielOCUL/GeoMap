@@ -10,24 +10,29 @@
 #import "GeoMapDocument.h"
 #import "GeoMapGCP.h"
 
+// Standard zoom factors.
 #define kZoomInFactor  1.414214
 #define kZoomOutFactor 0.7071068
 
+// Wrap an image view into something a bit smarter. But don't fall for the
+// IKImageView trap again.
 @interface GeoMapImageView ()
 
-@property (strong) NSColor * selectionFrameColor;
+// Use the same color for the selection marquee.
 @property (strong) NSColor * selectionFillColor;
 
 @end
 
 @implementation GeoMapImageView
 {
+    // I will need to keep track of various values between mouse events.
     NSPoint mouseDownLocation;
     NSRect mouseDownRect;
     double magnification;
     NSRect selectionMarquee;
 }
 
+// Setup the view.
 - (void) awakeFromNib
 {
     magnification = 1.0;
@@ -43,14 +48,18 @@
     [self updateScale];
 }
 
+// Draw the view, including GCPs and any in-progress selection marquee.
 - (void) drawRect: (NSRect) dirtyRect
 {
     [super drawRect: dirtyRect];
   
+    // Only draw GCPs if I am not in the middle of a zoom operation. Otherwise,
+    // the GCP markers themselves zoom in really big.
     if(!self.zooming)
         for(GeoMapGCP * gcp in self.document.GCPs)
             [self drawGCPAt: gcp.imagePoint];
   
+    // If I have a selection rectangle, draw a marquee around it.
     if(!NSEqualRects(selectionMarquee, NSZeroRect))
     {
         NSRect drawRect = NSInsetRect(selectionMarquee, 1, 1);
@@ -63,6 +72,7 @@
     }
 }
 
+// Draw a GCP icon at the correct place on the image.
 - (void) drawGCPAt: (NSPoint) point
 {
     double imageSize =
@@ -78,6 +88,7 @@
     [self.document.GCPImage drawInRect: GCPRect];
 }
 
+// Clear a GCP icon from the image - before zooming in.
 - (void) clearGCPAt: (NSPoint) point
 {
     double imageSize =
@@ -93,17 +104,22 @@
     [self setNeedsDisplayInRect: GCPRect];
 }
 
+// Handle a mouse down event.
 - (void) mouseDown: (NSEvent *) event
 {
+    // Remember where we parked.
     mouseDownLocation = [event locationInWindow];
     mouseDownRect = [self visibleRect];
   
+    // Some tools need to start specific actions on mouse down.
     switch(self.document.toolMode)
     {
+        // Drag the clip view around.
         case kPanTool:
             [[NSCursor closedHandCursor] push];
             break;
       
+        // Start a selection marquee.
         case kZoomInTool:
             [self drawMarquee: event];
             break;
@@ -119,6 +135,7 @@
     }
 }
 
+// Draw a selection marquee.
 - (void) drawMarquee: (NSEvent *) event
 {
     // Dequeue and handle mouse events until the user lets go of the mouse
@@ -176,6 +193,8 @@
     selectionMarquee = NSZeroRect;
 }
 
+// Handle a drag of the mouse. This only has an effect for the pan tool. The
+// behaviour isn't quite right though.
 - (void) mouseDragged: (NSEvent *) event
 {
     NSPoint dragLocation = [event locationInWindow];
@@ -195,6 +214,7 @@
     }
 }
 
+// Handle a mouse up event.
 - (void) mouseUp: (NSEvent *) event
 {
     // The clip view is the big driver. With magnification, it shrinks down to
@@ -212,12 +232,15 @@
     imagePosition.x *= self.scale;
     imagePosition.y *= self.scale;
 
+    // Take the appropriate action for the current tool.
     switch(self.document.toolMode)
     {
+        // Stop dragging around.
         case kPanTool:
             [NSCursor pop];
             break;
       
+        // Perform a zoom in.
         case kZoomInTool:
             if(magnification < self.scrollView.maxMagnification)
             {
@@ -230,6 +253,7 @@
             }
             break;
     
+        // Perform a zoom out.
         case kZoomOutTool:
             if(magnification > self.scrollView.minMagnification)
             {
@@ -242,10 +266,12 @@
             }
             break;
 
+        // Select a GCP.
         case kSelectGCPTool:
             [self.document selectGCPAt: imagePosition];
             break;
       
+        // Add a GCP.
         case kAddGCPTool:
             [self.document addGCP: imagePosition];
             break;
@@ -255,12 +281,19 @@
     }
 }
 
+// Zoom in on an image view. This uses the new magnification options for
+// NSImageView. It is a bit clunky, but far better than IKImageView and easier
+// to get up and running. Ideally, figure out how to do this properly at some
+// point.
 - (void) zoomToRect: (NSRect) rect
 {
+    // Go into zooming mode and erase any GCPs so they don't get zoomed too.
     self.zooming = YES;
+  
     for(GeoMapGCP * gcp in self.document.GCPs)
         [self clearGCPAt: gcp.imagePoint];
 
+    // Now do a nice zoom with animation.
     [NSAnimationContext
         runAnimationGroup:
             ^(NSAnimationContext * context)
@@ -276,13 +309,19 @@
             }];
 }
 
+// Zoom in on an image view. This uses the new magnification options for
+// NSImageView. It is a bit clunky, but far better than IKImageView and easier
+// to get up and running. Ideally, figure out how to do this properly at some
+// point.
 - (void) zoomToPoint: (NSPoint) point
 {
+    // Go into zooming mode and erase any GCPs so they don't get zoomed too.
     self.zooming = YES;
   
     for(GeoMapGCP * gcp in self.document.GCPs)
         [self clearGCPAt: gcp.imagePoint];
 
+    // Now do a nice zoom with animation.
     [NSAnimationContext
         runAnimationGroup:
             ^(NSAnimationContext * context)
@@ -300,6 +339,7 @@
             }];
 }
 
+// Keep track of the scale of the image.
 - (void) updateScale
 {
     // Now for the tricky part. The aspect ratio of the image probably doesn't
@@ -318,6 +358,7 @@
         self.scale = self.image.size.width / self.bounds.size.width;
 }
 
+// Pan around to the given GCP.
 - (void) selectGCP: (GeoMapGCP *) GCP
 {
     NSClipView * clipView = [self.scrollView contentView];
