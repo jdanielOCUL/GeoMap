@@ -401,8 +401,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
 // Preview the map.
 - (IBAction) previewMap: (id) sender
 {
-    // TODO: Improve the timing and handoff here.
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    self.previewReady = dispatch_semaphore_create(0);
   
     // Generate the preview asynchronously.
     dispatch_async(
@@ -422,7 +421,8 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
           
               self.coordinates = getCoordinates(self.previewPath);
           
-              dispatch_semaphore_signal(semaphore);
+              // Now I can preview.
+              dispatch_semaphore_signal(self.previewReady);
           });
   
     // Setup the web view to display the preview.
@@ -439,26 +439,14 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
   
     [self.mapView setFrameLoadDelegate: self];
   
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-
     [[self.mapView mainFrame] loadHTMLString: html baseURL: baseURL];
 }
 
 // The web view is loaded.
 - (void) webView: (WebView *) sender didFinishLoadForFrame: (WebFrame *) frame
 {
-    id win = [sender windowScriptObject];
-  
-    NSMutableArray * args = [NSMutableArray array];
-  
-    [args addObject: self.previewPath];
-    [args addObjectsFromArray: self.coordinates];
-    [args addObject: @"0.75"];
     self.opacity = 0.75;
   
-    [win callWebScriptMethod: @"zoomTo" withArguments: self.coordinates];
-    [win callWebScriptMethod: @"showPreview" withArguments: args];
-
     [self.exportButton setHidden: NO];
     [self.cancelExportButton setHidden: NO];
     [self.opacityLabel setHidden: NO];
@@ -479,6 +467,28 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
             }
         completionHandler:
             ^{
+              // Now wait for the preview to be ready.
+              dispatch_semaphore_wait(self.previewReady, DISPATCH_TIME_FOREVER);
+          
+              // Display the preview in the web view.
+              dispatch_async(
+                  dispatch_get_main_queue(),
+                  ^{
+                      NSMutableArray * args = [NSMutableArray array];
+                    
+                      [args addObject: self.previewPath];
+                      [args addObjectsFromArray: self.coordinates];
+                      [args addObject: @"0.75"];
+
+                      id win = [self.mapView windowScriptObject];
+                  
+                      [win
+                          callWebScriptMethod: @"zoomTo"
+                          withArguments: self.coordinates];
+                      [win
+                          callWebScriptMethod: @"showPreview"
+                          withArguments: args];
+                  });
             }];
   
     self.toolMode = kPanTool;
@@ -493,7 +503,14 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
 {
     NSSavePanel * savePanel = [NSSavePanel savePanel];
   
-    // TODO: Initialize the file name with a variant of the original name.
+    // Initialize the file name with a variant of the original name.
+    savePanel.nameFieldStringValue =
+        [NSString
+            stringWithFormat:
+                NSLocalizedString(@"%@_WGS84", NULL),
+                [[self.input lastPathComponent] stringByDeletingPathExtension]];
+  
+    // I only create GeoTiff files.
     savePanel.allowedFileTypes = @[@"tif"];
   
     if([savePanel runModal] != NSFileHandlingPanelOKButton)

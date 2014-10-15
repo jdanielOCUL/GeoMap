@@ -76,6 +76,7 @@
 @property (strong) NSArray * coordinates;
 @property (assign) double opacity;
 @property (assign) BOOL previewing;
+@property (strong) dispatch_semaphore_t previewReady;
 
 - (IBAction) setTool: (id) sender;
 
