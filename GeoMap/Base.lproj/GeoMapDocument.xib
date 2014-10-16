@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="6245" systemVersion="13F34" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none">
     <dependencies>
+        <deployment defaultVersion="1080" identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6245"/>
         <plugIn identifier="com.apple.WebKitIBPlugin" version="6245"/>
     </dependencies>
@@ -21,6 +22,8 @@
                 <outlet property="opacitySlider" destination="AzE-zQ-lSg" id="KZA-y7-i8L"/>
                 <outlet property="panModeButton" destination="8zt-nw-nK2" id="Y3o-qc-08Y"/>
                 <outlet property="previewButton" destination="21E-19-Ini" id="lRE-tl-fEd"/>
+                <outlet property="progressIndicator" destination="cDm-12-RXr" id="rhf-8f-abx"/>
+                <outlet property="progressPanel" destination="1uG-hf-K9l" id="7lh-Uq-SSu"/>
                 <outlet property="selectGCPModeButton" destination="QbD-aj-md6" id="vUC-6B-7X6"/>
                 <outlet property="window" destination="xOd-HO-29H" id="JIz-fz-R2o"/>
                 <outlet property="zoomModeButton" destination="UXW-Vq-RJ6" id="hxN-SZ-WEs"/>
@@ -344,6 +347,38 @@ Gw
                 <binding destination="-2" name="contentArray" keyPath="self.GCPs" id="4at-1V-8wS"/>
             </connections>
         </arrayController>
+        <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="1uG-hf-K9l" userLabel="Preview progress" customClass="NSPanel">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="2116" y="112" width="503" height="58"/>
+            <rect key="screenRect" x="1920" y="0.0" width="1920" height="1058"/>
+            <view key="contentView" id="Lhl-sP-VGE">
+                <rect key="frame" x="0.0" y="5" width="503" height="58"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="wye-oL-WzO">
+                        <rect key="frame" x="18" y="21" width="101" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" title="Exportation..." id="ROJ-Re-mnj">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <connections>
+                            <binding destination="-2" name="value" keyPath="self.progressLabel" id="tk1-Hh-QoR"/>
+                        </connections>
+                    </textField>
+                    <progressIndicator maxValue="200" indeterminate="YES" style="bar" id="cDm-12-RXr">
+                        <rect key="frame" x="120" y="19" width="363" height="20"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <connections>
+                            <binding destination="-2" name="value" keyPath="self.progress" id="WMy-9S-e1B"/>
+                        </connections>
+                    </progressIndicator>
+                </subviews>
+            </view>
+            <point key="canvasLocation" x="263.5" y="-655"/>
+        </window>
     </objects>
     <resources>
         <image name="NSActionTemplate" width="14" height="14"/>

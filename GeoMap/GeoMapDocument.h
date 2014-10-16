@@ -77,6 +77,11 @@
 @property (assign) double opacity;
 @property (assign) BOOL previewing;
 @property (strong) dispatch_semaphore_t previewReady;
+@property (strong) NSNumber * progress;
+@property (strong) IBOutlet NSPanel * progressPanel;
+@property (strong) IBOutlet NSProgressIndicator * progressIndicator;
+@property (strong) NSString * progressLabel;
+@property (strong) NSTimer * progressTimer;
 
 - (IBAction) setTool: (id) sender;
 

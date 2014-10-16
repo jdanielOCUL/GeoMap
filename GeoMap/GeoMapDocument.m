@@ -956,9 +956,6 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
   
     double scale = fmax(scaleX, scaleY);
   
-    // Don't display progress to standard out.
-    [args addObject: @"-q"];
-  
     // Add GCPs. Scale the coordinates based on the preview scale, if necessary.
     for(GeoMapGCP * GCP in self.GCPs)
     {
@@ -1017,6 +1014,22 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
         [GDALPath stringByAppendingPathComponent: @"gdal_translate"];
     translate.arguments = args;
   
+    NSPipe * pipe = [NSPipe pipe];
+  
+    translate.standardOutput = pipe.fileHandleForWriting;
+  
+    pipe.fileHandleForReading.readabilityHandler =
+        ^(NSFileHandle * input)
+        {
+            [self updateProgress: input start: 0];
+        };
+  
+    [self
+        showProgress:
+            preview
+                ? NSLocalizedString(@"Previewing...", NULL)
+                : NSLocalizedString(@"Exporting...", NULL)];
+  
     [translate launch];
     [translate waitUntilExit];
   
@@ -1026,15 +1039,106 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     warp.launchPath = [GDALPath stringByAppendingPathComponent: @"gdalwarp"];
     warp.arguments =
         @[
-        @"-q",
         tempPath,
         output
         ];
   
+    pipe = [NSPipe pipe];
+  
+    warp.standardOutput = pipe.fileHandleForWriting;
+
+    pipe.fileHandleForReading.readabilityHandler =
+        ^(NSFileHandle * input)
+        {
+            [self updateProgress: input start: 100];
+        };
+
     [warp launch];
     [warp waitUntilExit];
   
     [[NSFileManager defaultManager] removeItemAtPath: tempPath error: nil];
+  
+    [self hideProgress];
+}
+
+// Show the progress panel.
+- (void) showProgress: (NSString *) labelString
+{
+    dispatch_async(
+        dispatch_get_main_queue(),
+        ^{
+            [self.progressIndicator setIndeterminate: YES];
+            [self.progressIndicator startAnimation: nil];
+          
+            self.progressLabel = labelString;
+            self.progressTimer =
+                [NSTimer
+                    scheduledTimerWithTimeInterval: 0.5
+                    target: self
+                    selector: @selector(timerShowProgress:)
+                    userInfo: NULL
+                    repeats: NO];
+        });
+}
+
+- (void) timerShowProgress: (NSTimer *) timer
+{
+    [[NSApplication sharedApplication]
+        beginSheet: self.progressPanel
+        modalForWindow: self.windowForSheet
+        modalDelegate: nil
+        didEndSelector: nil
+        contextInfo: NULL];
+}
+
+// Hide the progress panel.
+- (void) hideProgress
+{
+    dispatch_async(
+        dispatch_get_main_queue(),
+        ^{
+            if([self.progressPanel isVisible])
+            {
+                [self.progressIndicator stopAnimation: nil];
+                [[NSApplication sharedApplication]
+                    endSheet: self.progressPanel];
+                [self.progressPanel orderOut: self];
+            }
+            else
+                [self.progressTimer invalidate];
+        });
+}
+
+// Update the progress with output from GDAL status.
+- (void) updateProgress: (NSFileHandle *) input start: (int) start
+{
+    NSData * data = [input availableData];
+    NSString * string =
+        [[NSString alloc]
+            initWithBytes: data.bytes
+            length: data.length
+            encoding: NSUTF8StringEncoding];
+    
+    NSScanner * scanner = [NSScanner scannerWithString: string];
+    
+    scanner.charactersToBeSkipped =
+        [NSCharacterSet characterSetWithCharactersInString: @"."];
+
+    int progress = 0;
+    
+    BOOL found = [scanner scanInt: & progress];
+
+    while(found)
+    {
+        dispatch_async(
+            dispatch_get_main_queue(),
+            ^{
+                [self.progressIndicator setIndeterminate: NO];
+                self.progress = [NSNumber numberWithInt: progress + start];
+            });
+    
+        found = [scanner scanInt: & progress];
+    }
 }
 
 @end

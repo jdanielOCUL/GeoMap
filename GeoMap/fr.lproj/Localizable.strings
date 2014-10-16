@@ -1,0 +1,12 @@
+/* 
+  Localizable.strings
+  GeoMap
+
+  Created by John Daniel on 2014-10-16.
+  Copyright (c) 2014 John Daniel. All rights reserved.
+*/
+
+"Image controls" = "Contrôle des images";
+"GCP controls" = "Contrôle des points au sol";
+"Previewing..." = "Aperçu...";
+"Exporting..." = "Exportation...";
