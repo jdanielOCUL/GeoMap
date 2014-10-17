@@ -10,21 +10,13 @@
 		27222EE719E855DC00F379A3 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27222EE619E855DC00F379A3 /* WebKit.framework */; };
 		27222EEA19E859AA00F379A3 /* index.html in Resources */ = {isa = PBXBuildFile; fileRef = 27222EE819E859AA00F379A3 /* index.html */; };
 		27222EEB19E859AA00F379A3 /* TemplateIcon2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 27222EE919E859AA00F379A3 /* TemplateIcon2x.png */; };
-		27497F1919DED504009B4E79 /* GDAL.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 270F1D7C19DECC890047DD67 /* GDAL.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		27497F1A19DED504009B4E79 /* GEOS.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 270F1D7D19DECC890047DD67 /* GEOS.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		27497F1B19DED504009B4E79 /* PROJ.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 270F1D7E19DECC890047DD67 /* PROJ.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		27497F1C19DED504009B4E79 /* SQLite3.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 270F1D7F19DECC890047DD67 /* SQLite3.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		27497F1D19DED504009B4E79 /* UnixImageIO.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 270F1D8019DECC890047DD67 /* UnixImageIO.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		27497F1E19DED523009B4E79 /* GDAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 270F1D7C19DECC890047DD67 /* GDAL.framework */; };
-		27497F1F19DED523009B4E79 /* GEOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 270F1D7D19DECC890047DD67 /* GEOS.framework */; };
-		27497F2019DED523009B4E79 /* PROJ.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 270F1D7E19DECC890047DD67 /* PROJ.framework */; };
-		27497F2119DED523009B4E79 /* SQLite3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 270F1D7F19DECC890047DD67 /* SQLite3.framework */; };
-		27497F2219DED523009B4E79 /* UnixImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 270F1D8019DECC890047DD67 /* UnixImageIO.framework */; };
 		27497F2519DEDDF3009B4E79 /* GeoMapReproject.mm in Sources */ = {isa = PBXBuildFile; fileRef = 27497F2319DEDDF3009B4E79 /* GeoMapReproject.mm */; };
 		2758C36319DAF382004810CF /* GeoMapGCPTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2758C36219DAF382004810CF /* GeoMapGCPTableCellView.m */; };
 		2758C36919DB01FB004810CF /* GeoMapToolbarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2758C36819DB01FB004810CF /* GeoMapToolbarButton.m */; };
 		276A598719D9E9AC0013A00F /* GeoMapGCP.m in Sources */ = {isa = PBXBuildFile; fileRef = 276A598619D9E9AC0013A00F /* GeoMapGCP.m */; };
 		278CC20D19D33C04002E34C7 /* GeoMapImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 278CC20C19D33C04002E34C7 /* GeoMapImageView.m */; };
+		279BA7BB19F15A3A00F00D8E /* GDAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 279BA7BA19F15A3A00F00D8E /* GDAL.framework */; };
+		279BA7BC19F15A6000F00D8E /* GDAL.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 279BA7BA19F15A3A00F00D8E /* GDAL.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		27B003B919F01CAC00DCE8E1 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 27B003BB19F01CAC00DCE8E1 /* Localizable.strings */; };
 		27B55D0019C9D4AE0018F328 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 27B55CFE19C9D4AE0018F328 /* InfoPlist.strings */; };
 		27B55D0219C9D4AE0018F328 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 27B55D0119C9D4AE0018F328 /* main.m */; };
@@ -60,30 +52,16 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				27497F1919DED504009B4E79 /* GDAL.framework in CopyFiles */,
-				27497F1A19DED504009B4E79 /* GEOS.framework in CopyFiles */,
-				27497F1B19DED504009B4E79 /* PROJ.framework in CopyFiles */,
-				27497F1C19DED504009B4E79 /* SQLite3.framework in CopyFiles */,
-				27497F1D19DED504009B4E79 /* UnixImageIO.framework in CopyFiles */,
+				279BA7BC19F15A6000F00D8E /* GDAL.framework in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		270F1D7C19DECC890047DD67 /* GDAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GDAL.framework; sourceTree = "<group>"; };
-		270F1D7D19DECC890047DD67 /* GEOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GEOS.framework; sourceTree = "<group>"; };
-		270F1D7E19DECC890047DD67 /* PROJ.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = PROJ.framework; sourceTree = "<group>"; };
-		270F1D7F19DECC890047DD67 /* SQLite3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SQLite3.framework; sourceTree = "<group>"; };
-		270F1D8019DECC890047DD67 /* UnixImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = UnixImageIO.framework; sourceTree = "<group>"; };
 		27222EE619E855DC00F379A3 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		27222EE819E859AA00F379A3 /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = index.html; sourceTree = "<group>"; };
 		27222EE919E859AA00F379A3 /* TemplateIcon2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = TemplateIcon2x.png; sourceTree = "<group>"; };
-		27497F0E19DED3BC009B4E79 /* GDAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GDAL.framework; path = ../../../../Library/Frameworks/GDAL.framework; sourceTree = "<group>"; };
-		27497F0F19DED3BC009B4E79 /* GEOS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GEOS.framework; path = ../../../../Library/Frameworks/GEOS.framework; sourceTree = "<group>"; };
-		27497F1019DED3BC009B4E79 /* PROJ.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PROJ.framework; path = ../../../../Library/Frameworks/PROJ.framework; sourceTree = "<group>"; };
-		27497F1119DED3BC009B4E79 /* SQLite3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SQLite3.framework; path = ../../../../Library/Frameworks/SQLite3.framework; sourceTree = "<group>"; };
-		27497F1219DED3BC009B4E79 /* UnixImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UnixImageIO.framework; path = ../../../../Library/Frameworks/UnixImageIO.framework; sourceTree = "<group>"; };
 		27497F2319DEDDF3009B4E79 /* GeoMapReproject.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GeoMapReproject.mm; sourceTree = "<group>"; };
 		27497F2419DEDDF3009B4E79 /* GeoMapReproject.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = GeoMapReproject.h; sourceTree = "<group>"; };
 		2758C36119DAF382004810CF /* GeoMapGCPTableCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeoMapGCPTableCellView.h; sourceTree = "<group>"; };
@@ -94,7 +72,7 @@
 		276A598619D9E9AC0013A00F /* GeoMapGCP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeoMapGCP.m; sourceTree = "<group>"; };
 		278CC20B19D33C04002E34C7 /* GeoMapImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeoMapImageView.h; sourceTree = "<group>"; };
 		278CC20C19D33C04002E34C7 /* GeoMapImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeoMapImageView.m; sourceTree = "<group>"; };
-		27AE05BA19E70CD800848D83 /* ArcGIS.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ArcGIS.framework; path = ../../Library/SDKs/ArcGIS/OSX/ArcGIS.framework; sourceTree = "<group>"; };
+		279BA7BA19F15A3A00F00D8E /* GDAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GDAL.framework; path = ../../Library/Frameworks/GDAL.framework; sourceTree = "<group>"; };
 		27AE05BF19E7105400848D83 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		27AE05C119E7105A00848D83 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
 		27AE05C319E7106000848D83 /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = System/Library/Frameworks/QTKit.framework; sourceTree = SDKROOT; };
@@ -142,13 +120,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				279BA7BB19F15A3A00F00D8E /* GDAL.framework in Frameworks */,
 				27FE0D2819ED995C00EABA5C /* AudioToolbox.framework in Frameworks */,
 				27222EE719E855DC00F379A3 /* WebKit.framework in Frameworks */,
-				27497F1E19DED523009B4E79 /* GDAL.framework in Frameworks */,
-				27497F1F19DED523009B4E79 /* GEOS.framework in Frameworks */,
-				27497F2019DED523009B4E79 /* PROJ.framework in Frameworks */,
-				27497F2119DED523009B4E79 /* SQLite3.framework in Frameworks */,
-				27497F2219DED523009B4E79 /* UnixImageIO.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -164,22 +138,9 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		27497F1819DED4D0009B4E79 /* GDAL */ = {
-			isa = PBXGroup;
-			children = (
-				270F1D7C19DECC890047DD67 /* GDAL.framework */,
-				270F1D7D19DECC890047DD67 /* GEOS.framework */,
-				270F1D7E19DECC890047DD67 /* PROJ.framework */,
-				270F1D7F19DECC890047DD67 /* SQLite3.framework */,
-				270F1D8019DECC890047DD67 /* UnixImageIO.framework */,
-			);
-			path = GDAL;
-			sourceTree = "<group>";
-		};
 		27B55CE919C9D4AE0018F328 = {
 			isa = PBXGroup;
 			children = (
-				27497F1819DED4D0009B4E79 /* GDAL */,
 				27B55CFB19C9D4AE0018F328 /* GeoMap */,
 				27B55D1C19C9D4AE0018F328 /* GeoMapTests */,
 				27B55CF419C9D4AE0018F328 /* Frameworks */,
@@ -199,6 +160,7 @@
 		27B55CF419C9D4AE0018F328 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				279BA7BA19F15A3A00F00D8E /* GDAL.framework */,
 				27FE0D2719ED995C00EABA5C /* AudioToolbox.framework */,
 				27222EE619E855DC00F379A3 /* WebKit.framework */,
 				27AE05C919E7107800848D83 /* libc++.dylib */,
@@ -207,12 +169,6 @@
 				27AE05C319E7106000848D83 /* QTKit.framework */,
 				27AE05C119E7105A00848D83 /* Quartz.framework */,
 				27AE05BF19E7105400848D83 /* CoreLocation.framework */,
-				27AE05BA19E70CD800848D83 /* ArcGIS.framework */,
-				27497F0E19DED3BC009B4E79 /* GDAL.framework */,
-				27497F0F19DED3BC009B4E79 /* GEOS.framework */,
-				27497F1019DED3BC009B4E79 /* PROJ.framework */,
-				27497F1119DED3BC009B4E79 /* SQLite3.framework */,
-				27497F1219DED3BC009B4E79 /* UnixImageIO.framework */,
 				27B55CF519C9D4AE0018F328 /* Cocoa.framework */,
 				27B55D1719C9D4AE0018F328 /* XCTest.framework */,
 				27B55CF719C9D4AE0018F328 /* Other Frameworks */,
@@ -405,7 +361,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "install_name_tool -change /Library/Frameworks/GDAL.framework/Versions/1.11/GDAL  @executable_path/../Frameworks/GDAL.framework/Versions/1.11/GDAL $TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/$EXECUTABLE_NAME\ninstall_name_tool -change /Library/Frameworks/GEOS.framework/Versions/3/GEOS @executable_path/../Frameworks/GEOS.framework/Versions/3/GEOS $TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/$EXECUTABLE_NAME\ninstall_name_tool -change /Library/Frameworks/PROJ.framework/Versions/4/PROJ @executable_path/../Frameworks/PROJ.framework/Versions/4/PROJ $TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/$EXECUTABLE_NAME\ninstall_name_tool -change /Library/Frameworks/SQLite3.framework/Versions/B/SQLite3 @executable_path/../Frameworks/SQLite3.framework/Versions/B/SQLite3 $TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/$EXECUTABLE_NAME\ninstall_name_tool -change /Library/Frameworks/UnixImageIO.framework/Versions/E/UnixImageIO @executable_path/../Frameworks/UnixImageIO.framework/Versions/E/UnixImageIO $TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/$EXECUTABLE_NAME\n\ninstall_name_tool -change /Library/Frameworks/PROJ.framework/Versions/4/PROJ @executable_path/../Frameworks/PROJ.framework/Versions/4/PROJ $TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH/Frameworks/UnixImageIO.framework/Versions/E/UnixImageIO\n\ninstall_name_tool -change /Library/Frameworks/PROJ.framework/Versions/4/PROJ @executable_path/../Frameworks/PROJ.framework/Versions/4/PROJ $TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH/Frameworks/SQLite3.framework/Versions/B/SQLite3\ninstall_name_tool -change /Library/Frameworks/GEOS.framework/Versions/3/GEOS @executable_path/../Frameworks/GEOS.framework/Versions/3/GEOS $TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH/Frameworks/SQLite3.framework/Versions/B/SQLite3\ninstall_name_tool -change /Library/Frameworks/UnixImageIO.framework/Versions/E/UnixImageIO @executable_path/../Frameworks/UnixImageIO.framework/Versions/E/UnixImageIO $TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH/Frameworks/SQLite3.framework/Versions/B/SQLite3\n\ninstall_name_tool -change /Library/Frameworks/PROJ.framework/Versions/4/PROJ @executable_path/../Frameworks/PROJ.framework/Versions/4/PROJ $TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH/Frameworks/GDAL.framework/Versions/1.11/GDAL\ninstall_name_tool -change /Library/Frameworks/GEOS.framework/Versions/3/GEOS @executable_path/../Frameworks/GEOS.framework/Versions/3/GEOS $TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH/Frameworks/GDAL.framework/Versions/1.11/GDAL\ninstall_name_tool -change /Library/Frameworks/UnixImageIO.framework/Versions/E/UnixImageIO @executable_path/../Frameworks/UnixImageIO.framework/Versions/E/UnixImageIO  $TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH/Frameworks/GDAL.framework/Versions/1.11/GDAL\ninstall_name_tool -change /Library/Frameworks/SQLite3.framework/Versions/B/SQLite3 @executable_path/../Frameworks/SQLite3.framework/Versions/B/SQLite3 $TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH/Frameworks/GDAL.framework/Versions/1.11/GDAL\n\ninstall_name_tool -change /Library/Frameworks/PROJ.framework/Versions/4/PROJ @executable_path/../Frameworks/PROJ.framework/Versions/4/PROJ $TARGET_BUILD_DIR/$CONTENTS_FOLDER_PATH/Frameworks/GDAL.framework/Versions/1.11/Libraries/libogdi.dylib\n\ninstall_name_tool -change /Library/Frameworks/GDAL.framework/Versions/1.11/GDAL  @executable_path/../GDAL $TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/GDAL.framework/Versions/1.11/Programs/gdal_translate\ninstall_name_tool -change /Library/Frameworks/GDAL.framework/Versions/1.11/GDAL  @executable_path/../GDAL $TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/GDAL.framework/Versions/1.11/Programs/gdalwarp\n\n";
+			shellScript = "install_name_tool -change $HOME/Library/Frameworks/GDAL.framework/Versions/1.11.1/unix/lib/libgdal.1.dylib  @executable_path/../Frameworks/GDAL.framework/Versions/Current/GDAL $TARGET_BUILD_DIR/$EXECUTABLE_FOLDER_PATH/$EXECUTABLE_NAME\n\ninstall_name_tool -change $HOME/Library/Frameworks/GDAL.framework/Versions/1.11.1/unix/lib/libgdal.1.dylib  @executable_path/../../GDAL $TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/GDAL.framework/Versions/Current/Programs/gdal_translate\ninstall_name_tool -change $HOME/Library/Frameworks/GDAL.framework/Versions/1.11.1/unix/lib/libgdal.1.dylib  @executable_path/../../GDAL $TARGET_BUILD_DIR/$FRAMEWORKS_FOLDER_PATH/GDAL.framework/Versions/Current/Programs/gdalwarp\n\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -581,8 +537,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
-					"$(PROJECT_DIR)/GDAL",
-					"$(USER_LIBRARY_DIR)/SDKs/ArcGIS/OSX",
+					"$(USER_LIBRARY_DIR)/Frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GeoMap/GeoMap-Prefix.pch";
@@ -602,8 +557,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
-					"$(PROJECT_DIR)/GDAL",
-					"$(USER_LIBRARY_DIR)/SDKs/ArcGIS/OSX",
+					"$(USER_LIBRARY_DIR)/Frameworks",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "GeoMap/GeoMap-Prefix.pch";

@@ -1005,8 +1005,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     NSString * frameworksPath = [[NSBundle mainBundle] privateFrameworksPath];
     NSString * GDALPath =
         [frameworksPath
-            stringByAppendingPathComponent:
-                @"GDAL.framework/Versions/1.11/Programs"];
+            stringByAppendingPathComponent: @"GDAL.framework/Programs"];
   
     NSTask * translate = [NSTask new];
   
