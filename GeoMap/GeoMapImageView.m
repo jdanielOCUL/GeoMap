@@ -85,7 +85,11 @@
             imageSize,
             imageSize);
 
-    [self.document.GCPImage drawInRect: GCPRect];
+    [self.document.GCPImage
+        drawInRect: GCPRect
+        fromRect: NSZeroRect
+        operation: NSCompositeSourceOver
+        fraction: 1.0];
 }
 
 // Clear a GCP icon from the image - before zooming in.

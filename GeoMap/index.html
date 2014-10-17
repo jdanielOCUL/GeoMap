@@ -47,66 +47,91 @@
         }
 
         MQA.EventUtil.observe(
-          window, 
-          'load', 
-          function() 
+            window,
+            'load', 
+            function() 
             {
-            // Create an object for options.
-            var options =
-              {
-              // ID of element on the page where you want the map added.
-              elt: document.getElementById('map'),       
-              
-              // Initial zoom level of the map.
-              zoom: 11,           
-                                     
-              // Centre of map in latitude/longitude.
-              latLng: { lat: 43.7, lng: -79.4 },   
-              
-              // Map type (osm).
-              mtype: 'osm',      
-                                      
-              // Margin offset from the map viewport when applying a bestfit 
-              // on shapes. 
-              bestFitMargin: 0,   
-                                     
-              // Zoom in when double-clicking on map.
-              zoomOnDoubleClick: true                    
-              };
-
-            // Construct an instance of MQA.TileMap with the options object*/ 
-            window.map = new MQA.TileMap(options);
-
-            MQA.withModule(
-              'largezoom',
-              'viewoptions',
-              'mousewheel', 
-              function() 
-                {
-                window.map.addControl(
-                  new MQA.LargeZoom(),
-                  new MQA.MapCornerPlacement(
-                    MQA.MapCorner.TOP_LEFT, new MQA.Size(5,5)));
-
-                window.map.addControl(new MQA.ViewOptions());
-
-                // Inset Map Control options. 
+                // Create an object for options.
                 var options =
-                  {
-                  size: { width: 150, height: 125 },
-                  zoom: 3,
-                  mapType: 'osmsat',
-                  minimized: false 
-                  };
+                    {
+                    // ID of element on the page where you want the map added.
+                    elt: document.getElementById('map'),       
+                    
+                    // Initial zoom level of the map.
+                    zoom: 11,           
+                                           
+                    // Centre of map in latitude/longitude.
+                    latLng: { lat: 43.7, lng: -79.4 },   
+                    
+                    // Map type (osm).
+                    mtype: 'osm',      
+                                            
+                    // Margin offset from the map viewport when applying a bestfit 
+                    // on shapes. 
+                    bestFitMargin: 0,   
+                                           
+                    // Zoom in when double-clicking on map.
+                    zoomOnDoubleClick: true                    
+                    };
 
-                window.map.enableMouseWheelZoom();
-                });
-            });
+                // Construct an instance of MQA.TileMap with the options object*/ 
+                window.map = new MQA.TileMap(options);
+
+                window.map.setSize();
+
+                MQA.withModule(
+                    'largezoom',
+                    'viewoptions',
+                    'mousewheel', 
+                    function() 
+                    {
+                        window.map.addControl(
+                            new MQA.LargeZoom(),
+                            new MQA.MapCornerPlacement(
+                                MQA.MapCorner.TOP_LEFT, new MQA.Size(5,5)));
+
+                        window.map.addControl(new MQA.ViewOptions());
+
+                        // Inset Map Control options. 
+                        var options =
+                            {
+                            size: { width: 150, height: 125 },
+                            zoom: 3,
+                            mapType: 'osmsat',
+                            minimized: false
+                            };
+
+                        window.map.enableMouseWheelZoom();
+                    });
+              });
     
+        MQA.EventUtil.observe(
+            window,
+            'resize',
+            function() 
+            {
+                var eDiv = document.getElementById('map');
+                eDiv.style.width = (window.innerWidth - 15) + 'px';
+                eDiv.style.height = (window.innerHeight - 15) + 'px';
+                
+                var size = new MQA.Size(eDiv.style.width, eDiv.style.height)
+                
+                window.console.log(size);
+                window.map.setSize(size)
+            });
+
     </script>
      
     <style>
-        #map { width: 100%; height: 100%; }
+        #map
+        {
+            height: 100%; width: 100%;
+        }
+    
+        body
+        {
+            overflow: hidden; overflow-x: hidden; overflow-y: hidden;
+        }
     </style>  </head>
   <body>
     <div id="map"></div>

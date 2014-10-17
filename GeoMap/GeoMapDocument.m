@@ -445,6 +445,26 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
 // The web view is loaded.
 - (void) webView: (WebView *) sender didFinishLoadForFrame: (WebFrame *) frame
 {
+    // Now wait for the preview to be ready.
+    dispatch_semaphore_wait(self.previewReady, DISPATCH_TIME_FOREVER);
+
+    // Display the preview in the web view.
+    dispatch_async(
+        dispatch_get_main_queue(),
+        ^{
+            NSMutableArray * args = [NSMutableArray array];
+          
+            [args addObject: self.previewPath];
+            [args addObjectsFromArray: self.coordinates];
+            [args addObject: @"0.75"];
+
+            id win = [self.mapView windowScriptObject];
+        
+            [win
+                callWebScriptMethod: @"zoomTo" withArguments: self.coordinates];
+            [win callWebScriptMethod: @"showPreview" withArguments: args];
+        });
+
     self.opacity = 0.75;
   
     [self.exportButton setHidden: NO];
@@ -465,31 +485,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
             self.opacityLabel.alphaValue = 1.0;
             self.opacitySlider.alphaValue = 1.0;
             }
-        completionHandler:
-            ^{
-              // Now wait for the preview to be ready.
-              dispatch_semaphore_wait(self.previewReady, DISPATCH_TIME_FOREVER);
-          
-              // Display the preview in the web view.
-              dispatch_async(
-                  dispatch_get_main_queue(),
-                  ^{
-                      NSMutableArray * args = [NSMutableArray array];
-                    
-                      [args addObject: self.previewPath];
-                      [args addObjectsFromArray: self.coordinates];
-                      [args addObject: @"0.75"];
-
-                      id win = [self.mapView windowScriptObject];
-                  
-                      [win
-                          callWebScriptMethod: @"zoomTo"
-                          withArguments: self.coordinates];
-                      [win
-                          callWebScriptMethod: @"showPreview"
-                          withArguments: args];
-                  });
-            }];
+        completionHandler: nil];
   
     self.toolMode = kPanTool;
     self.previewing = YES;
@@ -758,17 +754,8 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     // format.
     found =
         [scanner
-            scanCharactersFromSet:
-                [NSCharacterSet characterSetWithCharactersInString: @"d°"]
+            scanUpToCharactersFromSet: [NSCharacterSet decimalDigitCharacterSet]
             intoString: NULL];
-  
-    // Maybe I am done.
-    if(!found)
-    {
-        *coordinate = [self scanDirection: degrees scanner: scanner];
-  
-        return YES;
-    }
   
     // Look for a minutes value. Again, a fractional value is fine.
     double minutes;
