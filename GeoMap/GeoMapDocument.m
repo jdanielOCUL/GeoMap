@@ -569,6 +569,8 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
   
     GCP.imagePoint = point;
 
+    [self.GCPController setSelectedObjects: nil];
+  
     [self.GCPController addObject: GCP];
   
     // Update the preview button in case I have enough points now.
