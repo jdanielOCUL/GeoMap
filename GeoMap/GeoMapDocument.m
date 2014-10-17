@@ -512,11 +512,19 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     if([savePanel runModal] != NSFileHandlingPanelOKButton)
         return;
   
-    // Project the map, but not in preview mode.
-    [self projectMapTo: [savePanel.URL path] preview: NO];
+    dispatch_async(
+        dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
+        ^{
+            // Project the map, but not in preview mode.
+            [self projectMapTo: [savePanel.URL path] preview: NO];
 
-    // Leave preview mode.
-    [self cancelExportMap: sender];
+            dispatch_async(
+                dispatch_get_main_queue(),
+                ^{
+                    // Leave preview mode.
+                    [self cancelExportMap: sender];
+                });
+        });
 }
 
 // Leave preview mode.
@@ -874,6 +882,16 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
   
     return result; */
   
+    NSString * frameworksPath = [[NSBundle mainBundle] privateFrameworksPath];
+    NSString * GDALPath =
+        [frameworksPath
+            stringByAppendingPathComponent: @"GDAL.framework/Programs"];
+  
+    NSString * GDAL_DATA =
+        [frameworksPath
+            stringByAppendingPathComponent:
+                @"GDAL.framework/Versions/Current/unix/share"];
+
     // Get the gdal_translate arguments
     NSMutableArray * args = [NSMutableArray array];
   
@@ -943,6 +961,9 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
             scaleY = 1000.0/self.image.size.height;
     }
   
+    [args addObjectsFromArray: @[@"--config", @"GDAL_DATA", GDAL_DATA]];
+    [args addObjectsFromArray: @[@"--config", @"GDAL_CACHEMAX", @"1024"]];
+  
     double scale = fmax(scaleX, scaleY);
   
     // Add GCPs. Scale the coordinates based on the preview scale, if necessary.
@@ -964,6 +985,16 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
         [args addObject: [NSString stringWithFormat: @"%lf", GCP.lat]];
     }
 
+    // Add metadata.
+    for(NSString * tag in self.metadata)
+    {
+        [args addObject: @"-mo"];
+        [args
+            addObject:
+                [NSString
+                    stringWithFormat: @"\"%@=%@\"", tag, self.metadata[tag]]];
+    }
+  
     // If previewing, scale the output.
     if(preview)
     {
@@ -990,11 +1021,6 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
         [NSTemporaryDirectory() stringByAppendingPathComponent: tempName];
   
     [args addObject: tempPath];
-  
-    NSString * frameworksPath = [[NSBundle mainBundle] privateFrameworksPath];
-    NSString * GDALPath =
-        [frameworksPath
-            stringByAppendingPathComponent: @"GDAL.framework/Programs"];
   
     NSTask * translate = [NSTask new];
   
@@ -1027,6 +1053,9 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     warp.launchPath = [GDALPath stringByAppendingPathComponent: @"gdalwarp"];
     warp.arguments =
         @[
+        @"--config", @"GDAL_DATA", GDAL_DATA,
+        @"--config", @"GDAL_CACHEMAX", @"1024",
+        @"-multi",
         tempPath,
         output
         ];

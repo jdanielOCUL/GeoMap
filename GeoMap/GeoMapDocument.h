@@ -64,6 +64,9 @@
 @property (strong) IBOutlet NSTableView * GCPTableView;
 @property (strong) NSImage * GCPImage;
 
+// Metadata.
+@property (strong) NSMutableDictionary * metadata;
+
 // Preview/Export.
 @property (strong) IBOutlet WebView * mapView;
 @property (assign) BOOL canPreview;
