@@ -24,6 +24,7 @@
                 <outlet property="previewButton" destination="21E-19-Ini" id="lRE-tl-fEd"/>
                 <outlet property="progressIndicator" destination="cDm-12-RXr" id="rhf-8f-abx"/>
                 <outlet property="progressPanel" destination="1uG-hf-K9l" id="7lh-Uq-SSu"/>
+                <outlet property="saveOptionslPanel" destination="whl-fP-yx4" id="aR6-q0-ZhM"/>
                 <outlet property="selectGCPModeButton" destination="QbD-aj-md6" id="vUC-6B-7X6"/>
                 <outlet property="window" destination="xOd-HO-29H" id="JIz-fz-R2o"/>
                 <outlet property="zoomModeButton" destination="UXW-Vq-RJ6" id="hxN-SZ-WEs"/>
@@ -379,6 +380,96 @@ Gw
                 </subviews>
             </view>
             <point key="canvasLocation" x="263.5" y="-655"/>
+        </window>
+        <window title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" hidesOnDeactivate="YES" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="rU8-1o-5aF" userLabel="Export options" customClass="NSPanel">
+            <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" utility="YES"/>
+            <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
+            <rect key="contentRect" x="2116" y="112" width="524" height="123"/>
+            <rect key="screenRect" x="1920" y="0.0" width="1920" height="1058"/>
+            <view key="contentView" id="whl-fP-yx4">
+                <rect key="frame" x="0.0" y="5" width="524" height="123"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="fAP-0Q-Aji">
+                        <rect key="frame" x="20" y="55" width="120" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Datum:" id="lyK-ZA-0EK">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <popUpButton verticalHuggingPriority="750" id="eCw-ze-kS2">
+                        <rect key="frame" x="144" y="50" width="100" height="26"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <popUpButtonCell key="cell" type="push" title="GCP" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="c4t-UY-FzA" id="MOD-0d-b0U">
+                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="menu"/>
+                            <menu key="menu" id="hIy-Mk-lnd">
+                                <items>
+                                    <menuItem title="GCP" state="on" id="c4t-UY-FzA"/>
+                                    <menuItem title="WGS 84" id="rXQ-Ri-cNy"/>
+                                    <menuItem title="NAD 83" id="RzN-OI-Orn"/>
+                                    <menuItem title="NAD 27" id="arx-qQ-nBp"/>
+                                    <menuItem title="WWW" id="CnT-Ex-Lif"/>
+                                    <menuItem title="Custom" id="eP5-0U-kLM"/>
+                                </items>
+                            </menu>
+                        </popUpButtonCell>
+                        <connections>
+                            <binding destination="-2" name="selectedIndex" keyPath="self.datumIndex" id="5ev-v3-df4"/>
+                        </connections>
+                    </popUpButton>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="MiQ-Bs-b74">
+                        <rect key="frame" x="18" y="86" width="122" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Format:" id="qUD-Gm-HkM">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <popUpButton verticalHuggingPriority="750" id="sll-O0-594">
+                        <rect key="frame" x="144" y="81" width="100" height="26"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <popUpButtonCell key="cell" type="push" title="GeoTIFF" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" imageScaling="proportionallyDown" inset="2" selectedItem="Pod-yU-Hi0" id="Y9V-Lq-4Nb">
+                            <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                            <font key="font" metaFont="menu"/>
+                            <menu key="menu" id="bzv-Oq-erm">
+                                <items>
+                                    <menuItem title="GeoTIFF" state="on" id="Pod-yU-Hi0"/>
+                                </items>
+                            </menu>
+                        </popUpButtonCell>
+                        <connections>
+                            <binding destination="-2" name="selectedIndex" keyPath="self.formatIndex" id="U9E-Vv-W94"/>
+                        </connections>
+                    </popUpButton>
+                    <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" id="XWX-kO-7vL">
+                        <rect key="frame" x="-55" y="22" width="195" height="17"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" sendsActionOnEndEditing="YES" alignment="right" title="Coordinate System:" id="aSd-af-BcH">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                    </textField>
+                    <textField verticalHuggingPriority="750" id="Zgq-gX-bS0">
+                        <rect key="frame" x="146" y="20" width="358" height="22"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                        <textFieldCell key="cell" scrollable="YES" lineBreakMode="clipping" selectable="YES" editable="YES" sendsActionOnEndEditing="YES" state="on" borderStyle="bezel" drawsBackground="YES" id="5XO-qR-VKo">
+                            <font key="font" metaFont="system"/>
+                            <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                            <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                        </textFieldCell>
+                        <connections>
+                            <binding destination="-2" name="enabled" keyPath="self.srsEnabled" id="ECh-Sa-7Ks"/>
+                            <binding destination="-2" name="value" keyPath="self.srs" id="MvL-xK-kjg"/>
+                        </connections>
+                    </textField>
+                </subviews>
+            </view>
+            <point key="canvasLocation" x="90" y="387.5"/>
         </window>
     </objects>
     <resources>

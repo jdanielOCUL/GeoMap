@@ -88,6 +88,14 @@
 @property (strong) NSString * progressLabel;
 @property (strong) NSTimer * progressTimer;
 @property (assign) double previewScale;
+@property (assign) NSUInteger formatIndex;
+@property (strong) NSString * format;
+@property (assign) NSUInteger datumIndex;
+@property (strong) NSString * datum;
+@property (assign) BOOL srsEnabled;
+@property (strong) NSString * srs;
+@property (strong) NSSavePanel * savePanel;
+@property (strong) IBOutlet NSView * saveOptionslPanel;
 
 - (IBAction) setTool: (id) sender;
 

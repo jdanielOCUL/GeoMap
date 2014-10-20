@@ -21,6 +21,16 @@
 
 #define kTiledMapServiceURL @"http://server.arcgisonline.com/ArcGIS/rest/services/ESRI_StreetMap_World_2D/MapServer"
 
+#define kFormatGeoTIFF 0
+#define kFormatGeoPDF  1
+
+#define kDatumGCP    0
+#define kDatumWGS84  1
+#define kDatumNAD83  2
+#define kDatumNAD27  3
+#define kDatumWWW    4
+#define kDatumCustom 5
+
 // View sorter.
 NSComparisonResult sortViews(id v1, id v2, void * context);
 
@@ -34,6 +44,9 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
 @synthesize canPreview = myCanPreview;
 
 @synthesize opacity = myOpacity;
+
+@synthesize formatIndex = myFormatIndex;
+@synthesize datumIndex = myDatumIndex;
 
 - (NSUInteger) toolMode
 {
@@ -136,6 +149,100 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
         myOpacity = opacity;
     
         [self didChangeValueForKey: @"opacity"];
+    }
+}
+
+- (NSUInteger) formatIndex
+{
+    return myFormatIndex;
+}
+
+- (void) setFormatIndex: (NSUInteger) formatIndex
+{
+    if(myFormatIndex != formatIndex)
+    {
+        [self willChangeValueForKey: @"formatIndex"];
+    
+        myFormatIndex = formatIndex;
+    
+        [self didChangeValueForKey: @"formatIndex"];
+    
+        switch(myFormatIndex)
+        {
+            case kFormatGeoTIFF:
+                [self.savePanel setAllowedFileTypes: @[@"tif"]];
+                self.format = @"GTiff";
+                break;
+
+            case kFormatGeoPDF:
+                [self.savePanel setAllowedFileTypes: @[@"pdf"]];
+                self.format = @"PDF";
+                break;
+        }
+    }
+}
+
+- (NSUInteger) datumIndex
+{
+    return myDatumIndex;
+}
+
+- (void) setDatumIndex: (NSUInteger) datumIndex
+{
+    if(myDatumIndex != datumIndex)
+    {
+        [self willChangeValueForKey: @"datumIndex"];
+    
+        myDatumIndex = datumIndex;
+    
+        [self didChangeValueForKey: @"datumIndex"];
+
+        switch(myDatumIndex)
+        {
+            case kDatumGCP:
+                self.srs = @"";
+                self.srsEnabled = NO;
+                self.datum = @"GCP";
+                break;
+
+            case kDatumWGS84:
+                self.srs = @"+proj=latlong +datum=WGS84";
+                self.srsEnabled = YES;
+                self.datum = @"WGS84";
+                break;
+
+            case kDatumNAD83:
+                self.srs = @"+proj=latlong +datum=NAD83";
+                self.srsEnabled = YES;
+                self.datum = @"NAD83";
+                break;
+
+            case kDatumNAD27:
+                self.srs = @"+proj=latlong +datum=NAD27";
+                self.srsEnabled = YES;
+                self.datum = @"NAD27";
+                break;
+
+            case kDatumWWW:
+                self.srs = @"EPSG:3857";
+                self.srsEnabled = YES;
+                self.datum = @"WWW";
+                break;
+
+            case kDatumCustom:
+                self.srs = @"";
+                self.srsEnabled = YES;
+                self.datum = NSLocalizedString(@"Custom", NULL);
+                break;
+        }
+
+        // Initialize the file name with a variant of the original name.
+        self.savePanel.nameFieldStringValue =
+            [NSString
+                stringWithFormat:
+                    NSLocalizedString(@"%@_%@", NULL),
+                    [[self.input lastPathComponent] stringByDeletingPathExtension],
+                    [self.datum uppercaseString]];
     }
 }
 
@@ -453,7 +560,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
                   [NSTemporaryDirectory()
                       stringByAppendingPathComponent: tempName];
 
-              [self projectMapTo: self.previewPath preview: YES];
+              [self previewMapTo: self.previewPath];
           
               self.coordinates = getCoordinates(self.previewPath);
           
@@ -533,27 +640,28 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
 // Export a full-resolution georeferenced image.
 - (IBAction) exportMap: (id) sender
 {
-    NSSavePanel * savePanel = [NSSavePanel savePanel];
+    self.savePanel = [NSSavePanel savePanel];
   
-    // Initialize the file name with a variant of the original name.
-    savePanel.nameFieldStringValue =
-        [NSString
-            stringWithFormat:
-                NSLocalizedString(@"%@_WGS84", NULL),
-                [[self.input lastPathComponent] stringByDeletingPathExtension]];
+    self.savePanel.accessoryView = self.saveOptionslPanel;
   
-    // I only create GeoTiff files.
-    savePanel.allowedFileTypes = @[@"tif"];
+    // Force a change.
+    myFormatIndex = 10;
+    self.formatIndex = kFormatGeoTIFF;
   
-    if([savePanel runModal] != NSFileHandlingPanelOKButton)
+    myDatumIndex = 10;
+    self.datumIndex = kDatumGCP;
+  
+    if([self.savePanel runModal] != NSFileHandlingPanelOKButton)
         return;
   
     dispatch_async(
         dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
         ^{
-            // Project the map, but not in preview mode.
-            [self projectMapTo: [savePanel.URL path] preview: NO];
-
+            if(self.datumIndex == kDatumGCP)
+              [self exportMapTo: [self.savePanel.URL path]];
+            else
+              [self projectMapTo: [self.savePanel.URL path]];
+           
             dispatch_async(
                 dispatch_get_main_queue(),
                 ^{
@@ -900,38 +1008,9 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     return degrees * multiplier;
 }
 
-// Project an image.
-- (void) projectMapTo: (NSString *) output preview: (BOOL) preview
+// Preview an image.
+- (void) previewMapTo: (NSString *) output
 {
-    // Maybe try this again at some point. It should be in an XPC though.
-    /* GCP * gcps = (GCP *)malloc(self.GCPs.count * sizeof(GCP));
-  
-    int i = 0;
-  
-    for(GeoMapGCP * GCP in self.GCPs)
-    {
-        GCP.lon = [GCP.longitude doubleValue];
-        GCP.lat = [GCP.latitude doubleValue];
-        
-        gcps[i].pixel = GCP.imagePoint.x;
-        gcps[i].line = GCP.imagePoint.y;
-        gcps[i].x = GCP.lon;
-        gcps[i].y = GCP.lat;
-    
-        ++i;
-    }
-  
-    BOOL result =
-        reproject(
-            [self.input fileSystemRepresentation],
-            [url fileSystemRepresentation],
-            (int)self.GCPs.count,
-            gcps);
-  
-    free(gcps);
-  
-    return result; */
-  
     NSString * frameworksPath = [[NSBundle mainBundle] privateFrameworksPath];
     NSString * GDALPath =
         [frameworksPath
@@ -1002,14 +1081,11 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     double scaleX = 1.0;
     double scaleY = 1.0;
   
-    if(preview)
-    {
-        if(self.image.size.width > 1000)
-            scaleX = 1000.0/self.image.size.width;
+    if(self.image.size.width > 1000)
+        scaleX = 1000.0/self.image.size.width;
 
-        if(self.image.size.height > 1000)
-            scaleY = 1000.0/self.image.size.height;
-    }
+    if(self.image.size.height > 1000)
+        scaleY = 1000.0/self.image.size.height;
   
     [args addObjectsFromArray: @[@"--config", @"GDAL_DATA", GDAL_DATA]];
     [args addObjectsFromArray: @[@"--config", @"GDAL_CACHEMAX", @"1024"]];
@@ -1021,10 +1097,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     {
         [args addObject: @"-gcp"];
     
-        NSPoint point = GCP.imagePoint;
-    
-        if(preview)
-            point = GCP.previewPoint;
+        NSPoint point = GCP.previewPoint;
     
         [args
             addObject:
@@ -1051,18 +1124,340 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     }
   
     // If previewing, scale the output.
-    if(preview)
+    [args addObject: @"-outsize"];
+
+    [args
+        addObject:
+            [NSString
+                stringWithFormat: @"%lf", self.image.size.width * scale]];
+    [args
+        addObject:
+            [NSString
+                stringWithFormat: @"%lf", self.image.size.height * scale]];
+  
+    // Now use gdal_translate to create a TIFF file with GCPs.
+    NSString * tempName =
+      [[[[self.input lastPathComponent]
+          stringByDeletingPathExtension]
+              stringByAppendingString: @"_gcp"]
+                  stringByAppendingPathExtension:@"tif"];
+  
+    NSString * tempPath =
+        [NSTemporaryDirectory() stringByAppendingPathComponent: tempName];
+  
+    [args addObject: tempPath];
+  
+    NSTask * translate = [NSTask new];
+  
+    translate.launchPath =
+        [GDALPath stringByAppendingPathComponent: @"gdal_translate"];
+    translate.arguments = args;
+  
+    NSPipe * pipe = [NSPipe pipe];
+  
+    translate.standardOutput = pipe.fileHandleForWriting;
+  
+    pipe.fileHandleForReading.readabilityHandler =
+        ^(NSFileHandle * input)
+        {
+            [self updateProgress: input start: 0];
+        };
+  
+    [self showProgress: NSLocalizedString(@"Previewing...", NULL)];
+  
+    NSLog(@"%@ %@", translate.launchPath, translate.arguments);
+
+    [translate launch];
+    [translate waitUntilExit];
+  
+    // Now do a true projection and create a GeoTiff.
+    NSTask * warp = [NSTask new];
+  
+    warp.launchPath = [GDALPath stringByAppendingPathComponent: @"gdalwarp"];
+    warp.arguments =
+        @[
+        @"--config", @"GDAL_DATA", GDAL_DATA,
+        @"--config", @"GDAL_CACHEMAX", @"1024",
+        @"--config", @"GDAL_DATA", GDAL_DATA,
+        @"--config", @"GDAL_CACHEMAX", @"1024",
+        @"-multi",
+        @"-of",
+        @"GTiff",
+        @"-t_srs",
+        @"EPSG:3857",
+        tempPath,
+        output
+        ];
+  
+    pipe = [NSPipe pipe];
+  
+    warp.standardOutput = pipe.fileHandleForWriting;
+
+    pipe.fileHandleForReading.readabilityHandler =
+        ^(NSFileHandle * input)
+        {
+            [self updateProgress: input start: 100];
+        };
+
+    NSLog(@"%@ %@", warp.launchPath, warp.arguments);
+
+    [warp launch];
+    [warp waitUntilExit];
+  
+    [[NSFileManager defaultManager] removeItemAtPath: tempPath error: nil];
+  
+    [self hideProgress];
+}
+
+// Export an image.
+- (void) exportMapTo: (NSString *) output
+{
+    NSString * frameworksPath = [[NSBundle mainBundle] privateFrameworksPath];
+    NSString * GDALPath =
+        [frameworksPath
+            stringByAppendingPathComponent: @"GDAL.framework/Programs"];
+  
+    NSString * GDAL_DATA =
+        [frameworksPath
+            stringByAppendingPathComponent:
+                @"GDAL.framework/Versions/Current/unix/share"];
+
+    // Get the gdal_translate arguments
+    NSMutableArray * args = [NSMutableArray array];
+  
+    [args addObject: self.input];
+  
+    // Users may not add the Longitude coordinates correctly and they really
+    // shouldn't have to. Calculate the max and min GCP X positions and the
+    // max and min longitude positions. If they are out of order, then this
+    // image is a western hemisphere image without the proper directional
+    // indicators on the coordinates. If so, fix 'em.
+    BOOL haveMin = NO;
+    double minX = 0;
+    double minLong = 0;
+  
+    bool haveMax = NO;
+    double maxX = 0;
+    double maxLong = 0;
+  
+    double maxY = 0;
+  
+    for(GeoMapGCP * GCP in self.GCPs)
     {
-        [args addObject: @"-outsize"];
+        double latitude;
+    
+        if([self parseLatitude: GCP.latitude to: & latitude])
+            GCP.lat = latitude;
+
+        double longitude;
+
+        if([self parseLongitude: GCP.longitude to: & longitude])
+            GCP.lon = longitude;
+    
+        if(!haveMin || (GCP.previewPoint.x < minX))
+        {
+            minX = GCP.previewPoint.x;
+            minLong = GCP.lon;
+
+            haveMin = YES;
+        }
+    
+        if(!haveMax || (GCP.previewPoint.x > maxX))
+        {
+            maxX = GCP.previewPoint.x;
+            maxLong = GCP.lon;
+        
+            haveMax = YES;
+        }
+    
+        if(GCP.previewPoint.y > maxY)
+            maxY = GCP.previewPoint.y;
+    }
+  
+    if(minLong > maxLong)
+        for(GeoMapGCP * GCP in self.GCPs)
+            GCP.lon *= -1.0;
+  
+    // See what the scale would be if I were previewing this projection.
+    double scaleX = 1.0;
+    double scaleY = 1.0;
+  
+    [args addObjectsFromArray: @[@"--config", @"GDAL_DATA", GDAL_DATA]];
+    [args addObjectsFromArray: @[@"--config", @"GDAL_CACHEMAX", @"1024"]];
+  
+    double scale = fmax(scaleX, scaleY);
+  
+    // Add GCPs. Scale the coordinates based on the preview scale, if necessary.
+    for(GeoMapGCP * GCP in self.GCPs)
+    {
+        [args addObject: @"-gcp"];
+    
+        NSPoint point = GCP.imagePoint;
     
         [args
             addObject:
-                [NSString
-                    stringWithFormat: @"%lf", self.image.size.width * scale]];
+                [NSString stringWithFormat: @"%lf", scale * point.x]];
         [args
             addObject:
                 [NSString
-                    stringWithFormat: @"%lf", self.image.size.height * scale]];
+                    stringWithFormat:
+                        @"%lf",
+                        scale * (self.imageSize.height - point.y)]];
+    
+        [args addObject: [NSString stringWithFormat: @"%lf", GCP.lon]];
+        [args addObject: [NSString stringWithFormat: @"%lf", GCP.lat]];
+    }
+
+    // Add metadata.
+    for(NSString * tag in self.metadata)
+    {
+        [args addObject: @"-mo"];
+        [args
+            addObject:
+                [NSString
+                    stringWithFormat: @"\"%@=%@\"", tag, self.metadata[tag]]];
+    }
+  
+    [args addObject: @"-of"];
+    [args addObject: self.format];
+  
+    [args addObject: output];
+  
+    NSTask * translate = [NSTask new];
+  
+    translate.launchPath =
+        [GDALPath stringByAppendingPathComponent: @"gdal_translate"];
+    translate.arguments = args;
+  
+    NSPipe * pipe = [NSPipe pipe];
+  
+    translate.standardOutput = pipe.fileHandleForWriting;
+  
+    pipe.fileHandleForReading.readabilityHandler =
+        ^(NSFileHandle * input)
+        {
+            [self updateProgress: input start: 0];
+        };
+  
+    [self showProgress: NSLocalizedString(@"Exporting...", NULL)];
+  
+    [[NSFileManager defaultManager] removeItemAtPath: output error: NULL];
+  
+    NSLog(@"%@ %@", translate.launchPath, translate.arguments);
+
+    [translate launch];
+    [translate waitUntilExit];
+  
+    [self hideProgress];
+}
+
+// Project an image.
+- (void) projectMapTo: (NSString *) output
+{
+    NSString * frameworksPath = [[NSBundle mainBundle] privateFrameworksPath];
+    NSString * GDALPath =
+        [frameworksPath
+            stringByAppendingPathComponent: @"GDAL.framework/Programs"];
+  
+    NSString * GDAL_DATA =
+        [frameworksPath
+            stringByAppendingPathComponent:
+                @"GDAL.framework/Versions/Current/unix/share"];
+
+    // Get the gdal_translate arguments
+    NSMutableArray * args = [NSMutableArray array];
+  
+    [args addObject: self.input];
+  
+    // Users may not add the Longitude coordinates correctly and they really
+    // shouldn't have to. Calculate the max and min GCP X positions and the
+    // max and min longitude positions. If they are out of order, then this
+    // image is a western hemisphere image without the proper directional
+    // indicators on the coordinates. If so, fix 'em.
+    BOOL haveMin = NO;
+    double minX = 0;
+    double minLong = 0;
+  
+    bool haveMax = NO;
+    double maxX = 0;
+    double maxLong = 0;
+  
+    double maxY = 0;
+  
+    for(GeoMapGCP * GCP in self.GCPs)
+    {
+        double latitude;
+    
+        if([self parseLatitude: GCP.latitude to: & latitude])
+            GCP.lat = latitude;
+
+        double longitude;
+
+        if([self parseLongitude: GCP.longitude to: & longitude])
+            GCP.lon = longitude;
+    
+        if(!haveMin || (GCP.previewPoint.x < minX))
+        {
+            minX = GCP.previewPoint.x;
+            minLong = GCP.lon;
+
+            haveMin = YES;
+        }
+    
+        if(!haveMax || (GCP.previewPoint.x > maxX))
+        {
+            maxX = GCP.previewPoint.x;
+            maxLong = GCP.lon;
+        
+            haveMax = YES;
+        }
+    
+        if(GCP.previewPoint.y > maxY)
+            maxY = GCP.previewPoint.y;
+    }
+  
+    if(minLong > maxLong)
+        for(GeoMapGCP * GCP in self.GCPs)
+            GCP.lon *= -1.0;
+  
+    // See what the scale would be if I were previewing this projection.
+    double scaleX = 1.0;
+    double scaleY = 1.0;
+  
+    [args addObjectsFromArray: @[@"--config", @"GDAL_DATA", GDAL_DATA]];
+    [args addObjectsFromArray: @[@"--config", @"GDAL_CACHEMAX", @"1024"]];
+  
+    double scale = fmax(scaleX, scaleY);
+  
+    // Add GCPs. Scale the coordinates based on the preview scale, if necessary.
+    for(GeoMapGCP * GCP in self.GCPs)
+    {
+        [args addObject: @"-gcp"];
+    
+        NSPoint point = GCP.imagePoint;
+    
+        [args
+            addObject:
+                [NSString stringWithFormat: @"%lf", scale * point.x]];
+        [args
+            addObject:
+                [NSString
+                    stringWithFormat:
+                        @"%lf",
+                        scale * (self.imageSize.height - point.y)]];
+    
+        [args addObject: [NSString stringWithFormat: @"%lf", GCP.lon]];
+        [args addObject: [NSString stringWithFormat: @"%lf", GCP.lat]];
+    }
+
+    // Add metadata.
+    for(NSString * tag in self.metadata)
+    {
+        [args addObject: @"-mo"];
+        [args
+            addObject:
+                [NSString
+                    stringWithFormat: @"\"%@=%@\"", tag, self.metadata[tag]]];
     }
   
     // Now use gdal_translate to create a TIFF file with GCPs.
@@ -1093,12 +1488,12 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
             [self updateProgress: input start: 0];
         };
   
-    [self
-        showProgress:
-            preview
-                ? NSLocalizedString(@"Previewing...", NULL)
-                : NSLocalizedString(@"Exporting...", NULL)];
+    [self showProgress: NSLocalizedString(@"Exporting...", NULL)];
   
+    [[NSFileManager defaultManager] removeItemAtPath: tempPath error: NULL];
+
+    NSLog(@"%@ %@", translate.launchPath, translate.arguments);
+
     [translate launch];
     [translate waitUntilExit];
   
@@ -1111,6 +1506,10 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
         @"--config", @"GDAL_DATA", GDAL_DATA,
         @"--config", @"GDAL_CACHEMAX", @"1024",
         @"-multi",
+        @"-of",
+        self.format,
+        @"-t_srs",
+        self.srs,
         tempPath,
         output
         ];
@@ -1125,6 +1524,10 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
             [self updateProgress: input start: 100];
         };
 
+    [[NSFileManager defaultManager] removeItemAtPath: output error: NULL];
+
+    NSLog(@"%@ %@", warp.launchPath, warp.arguments);
+  
     [warp launch];
     [warp waitUntilExit];
   
