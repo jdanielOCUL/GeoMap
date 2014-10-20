@@ -218,8 +218,42 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
       if((size.height > imageSize.height) && (size.width > imageSize.width))
         self.imageSize = size;
       }
+  
+    self.previewScale = 1.0;
+  
+    NSSize maxSize = self.imageSize;
+  
+    double area = maxSize.height * maxSize.width;
+  
+    // If the image is way too big, shrink it down to a manageable size.
+    if(area > (4096 * 4096))
+    {
+        self.previewScale = sqrt(4096 * 4096 / area);
     
-    [self.image setSize: self.imageSize];
+        maxSize.height *= self.previewScale;
+        maxSize.width *= self.previewScale;
+
+        NSImage * previewImage = [[NSImage alloc] initWithSize: maxSize];
+    
+        [previewImage lockFocus];
+    
+        [self.image setSize: maxSize];
+    
+        [[NSGraphicsContext currentContext]
+            setImageInterpolation: NSImageInterpolationHigh];
+            
+        [self.image
+            drawAtPoint: NSZeroPoint
+            fromRect: NSZeroRect
+            operation: NSCompositeCopy
+            fraction: 1];
+    
+        [previewImage unlockFocus];
+    
+        self.image = previewImage;
+    }
+  
+    [self.image setSize: maxSize];
     
     return YES;
 }
@@ -372,6 +406,8 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     [self.opacityLabel setHidden: YES];
     [self.opacitySlider setHidden: YES];
 
+    self.imageView.image = self.image;
+    
     self.isSetup = YES;
 }
 
@@ -571,8 +607,11 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
 {
     GeoMapGCP * GCP = [GeoMapGCP new];
   
+    GCP.previewPoint = point;
+    point.x /= self.previewScale;
+    point.y /= self.previewScale;
     GCP.imagePoint = point;
-
+  
     [self.GCPController setSelectedObjects: nil];
   
     [self.GCPController addObject: GCP];
@@ -621,8 +660,8 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
         double distance =
             sqrt(
                 pow(
-                    GCP.imagePoint.x - point.x, 2) +
-                    pow(GCP.imagePoint.y - point.y, 2));
+                    GCP.previewPoint.x - point.x, 2) +
+                    pow(GCP.previewPoint.y - point.y, 2));
     
         if((distance < closetDistance) || !closest)
         {
@@ -935,24 +974,24 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
         if([self parseLongitude: GCP.longitude to: & longitude])
             GCP.lon = longitude;
     
-        if(!haveMin || (GCP.imagePoint.x < minX))
+        if(!haveMin || (GCP.previewPoint.x < minX))
         {
-            minX = GCP.imagePoint.x;
+            minX = GCP.previewPoint.x;
             minLong = GCP.lon;
 
             haveMin = YES;
         }
     
-        if(!haveMax || (GCP.imagePoint.x > maxX))
+        if(!haveMax || (GCP.previewPoint.x > maxX))
         {
-            maxX = GCP.imagePoint.x;
+            maxX = GCP.previewPoint.x;
             maxLong = GCP.lon;
         
             haveMax = YES;
         }
     
-        if(GCP.imagePoint.y > maxY)
-            maxY = GCP.imagePoint.y;
+        if(GCP.previewPoint.y > maxY)
+            maxY = GCP.previewPoint.y;
     }
   
     if(minLong > maxLong)
@@ -982,15 +1021,20 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     {
         [args addObject: @"-gcp"];
     
+        NSPoint point = GCP.imagePoint;
+    
+        if(preview)
+            point = GCP.previewPoint;
+    
         [args
             addObject:
-                [NSString stringWithFormat: @"%lf", scale * GCP.imagePoint.x]];
+                [NSString stringWithFormat: @"%lf", scale * point.x]];
         [args
             addObject:
                 [NSString
                     stringWithFormat:
                         @"%lf",
-                        scale * (self.image.size.height - GCP.imagePoint.y)]];
+                        scale * (self.image.size.height - point.y)]];
     
         [args addObject: [NSString stringWithFormat: @"%lf", GCP.lon]];
         [args addObject: [NSString stringWithFormat: @"%lf", GCP.lat]];

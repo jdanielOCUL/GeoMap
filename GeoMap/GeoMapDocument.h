@@ -87,6 +87,7 @@
 @property (strong) IBOutlet NSProgressIndicator * progressIndicator;
 @property (strong) NSString * progressLabel;
 @property (strong) NSTimer * progressTimer;
+@property (assign) double previewScale;
 
 - (IBAction) setTool: (id) sender;
 

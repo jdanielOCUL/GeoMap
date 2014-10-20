@@ -13,6 +13,7 @@
 @interface GeoMapGCP : NSObject
 
 @property (assign) NSPoint imagePoint;
+@property (assign) NSPoint previewPoint;
 @property (assign) double lat;
 @property (assign) double lon;
 @property (strong) NSString * latitude;

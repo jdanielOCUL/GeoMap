@@ -74,8 +74,8 @@
 
     NSRect GCPRect =
         NSMakeRect(
-            (GCP.imagePoint.x / self.scale) - imageSize/2,
-            (GCP.imagePoint.y / self.scale) - imageSize/2,
+            (GCP.previewPoint.x / self.scale) - imageSize/2,
+            (GCP.previewPoint.y / self.scale) - imageSize/2,
             imageSize,
             imageSize);
 
@@ -95,8 +95,8 @@
   
     NSPoint zoomPoint =
         NSMakePoint(
-            (GCP.imagePoint.x / self.scale) - (size.width / 2),
-            (GCP.imagePoint.y / self.scale) - (size.height / 2));
+            (GCP.previewPoint.x / self.scale) - (size.width / 2),
+            (GCP.previewPoint.y / self.scale) - (size.height / 2));
   
     [self scrollPoint: zoomPoint];
 }
