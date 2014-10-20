@@ -14,6 +14,7 @@
 		2758C36319DAF382004810CF /* GeoMapGCPTableCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2758C36219DAF382004810CF /* GeoMapGCPTableCellView.m */; };
 		2758C36919DB01FB004810CF /* GeoMapToolbarButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2758C36819DB01FB004810CF /* GeoMapToolbarButton.m */; };
 		276A598719D9E9AC0013A00F /* GeoMapGCP.m in Sources */ = {isa = PBXBuildFile; fileRef = 276A598619D9E9AC0013A00F /* GeoMapGCP.m */; };
+		278332EA19F5597D00A64597 /* GeoMapGCPTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 278332E919F5597D00A64597 /* GeoMapGCPTableView.m */; };
 		278CC20D19D33C04002E34C7 /* GeoMapImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 278CC20C19D33C04002E34C7 /* GeoMapImageView.m */; };
 		279BA7BB19F15A3A00F00D8E /* GDAL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 279BA7BA19F15A3A00F00D8E /* GDAL.framework */; };
 		279BA7BC19F15A6000F00D8E /* GDAL.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 279BA7BA19F15A3A00F00D8E /* GDAL.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -70,6 +71,8 @@
 		2758C36819DB01FB004810CF /* GeoMapToolbarButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeoMapToolbarButton.m; sourceTree = "<group>"; };
 		276A598519D9E9AC0013A00F /* GeoMapGCP.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeoMapGCP.h; sourceTree = "<group>"; };
 		276A598619D9E9AC0013A00F /* GeoMapGCP.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeoMapGCP.m; sourceTree = "<group>"; };
+		278332E819F5597D00A64597 /* GeoMapGCPTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeoMapGCPTableView.h; sourceTree = "<group>"; };
+		278332E919F5597D00A64597 /* GeoMapGCPTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeoMapGCPTableView.m; sourceTree = "<group>"; };
 		278CC20B19D33C04002E34C7 /* GeoMapImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeoMapImageView.h; sourceTree = "<group>"; };
 		278CC20C19D33C04002E34C7 /* GeoMapImageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeoMapImageView.m; sourceTree = "<group>"; };
 		279BA7BA19F15A3A00F00D8E /* GDAL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GDAL.framework; path = ../../Library/Frameworks/GDAL.framework; sourceTree = "<group>"; };
@@ -191,6 +194,8 @@
 			children = (
 				27B55D2C19C9D4C60018F328 /* GeoMapToolbarItem.h */,
 				27B55D2D19C9D4C60018F328 /* GeoMapToolbarItem.m */,
+				278332E819F5597D00A64597 /* GeoMapGCPTableView.h */,
+				278332E919F5597D00A64597 /* GeoMapGCPTableView.m */,
 				27B55D3019C9E6710018F328 /* GeoMapScrollView.h */,
 				27B55D3119C9E6720018F328 /* GeoMapScrollView.m */,
 				278CC20B19D33C04002E34C7 /* GeoMapImageView.h */,
@@ -370,6 +375,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				278332EA19F5597D00A64597 /* GeoMapGCPTableView.m in Sources */,
 				2758C36919DB01FB004810CF /* GeoMapToolbarButton.m in Sources */,
 				2758C36319DAF382004810CF /* GeoMapGCPTableCellView.m in Sources */,
 				276A598719D9E9AC0013A00F /* GeoMapGCP.m in Sources */,

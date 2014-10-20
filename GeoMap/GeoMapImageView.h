@@ -24,13 +24,13 @@
 // Keep track of the current image scale factor.
 @property (assign) double scale;
 
-// A special zooming mode to prevent display artifacts.
-@property (assign) BOOL zooming;
-
-// Draw a GCP location.
-- (void) drawGCPAt: (NSPoint) point;
+// Add a GCP.
+- (void) addGCP: (GeoMapGCP *) GCP;
 
 // Select a GCP by zooming to it.
 - (void) selectGCP: (GeoMapGCP *) GCP;
+
+// Remove a GCP.
+- (void) removeGCP: (GeoMapGCP *) GCP;
 
 @end

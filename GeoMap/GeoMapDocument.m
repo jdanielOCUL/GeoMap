@@ -589,16 +589,24 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
   
     // Draw the GCP.
     self.toolMode = kEditGCPTool;
-    [self.imageView drawGCPAt: GCP.imagePoint];
-    [self.imageView setNeedsDisplay: YES];
+    [self.imageView addGCP: GCP];
+    self.currentGCP = GCP;
+  
+    dispatch_after(
+      dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)),
+      dispatch_get_main_queue(),
+      ^{
+          [[GCP.view animator] setAlphaValue: 0.5];
+      });
 }
 
 // Remove the selected GCP.
 - (void) remove: (id) sender
 {
+    for(GeoMapGCP * GCP in self.GCPController.selectedObjects)
+        [self.imageView removeGCP: GCP];
+
     [self.GCPController remove: sender];
-  
-    [self.imageView setNeedsDisplay: YES];
 }
 
 // Select a GCP.
@@ -628,6 +636,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
 }
 
 #pragma mark - NSTableViewDelegate conformance.
+
 - (NSView *) tableView: (NSTableView *) tableView
     viewForTableColumn: (NSTableColumn *) tableColumn
     row: (NSInteger) row
@@ -689,6 +698,8 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     }
 
     self.toolMode = kAddGCPTool;
+
+    [[self.currentGCP.view animator] setAlphaValue: 1.0];
 }
 
 #pragma mark - Coordinate helpers.

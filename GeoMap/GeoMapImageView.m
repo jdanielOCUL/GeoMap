@@ -53,12 +53,6 @@
 {
     [super drawRect: dirtyRect];
   
-    // Only draw GCPs if I am not in the middle of a zoom operation. Otherwise,
-    // the GCP markers themselves zoom in really big.
-    if(!self.zooming)
-        for(GeoMapGCP * gcp in self.document.GCPs)
-            [self drawGCPAt: gcp.imagePoint];
-  
     // If I have a selection rectangle, draw a marquee around it.
     if(!NSEqualRects(selectionMarquee, NSZeroRect))
     {
@@ -72,40 +66,45 @@
     }
 }
 
-// Draw a GCP icon at the correct place on the image.
-- (void) drawGCPAt: (NSPoint) point
+// Add a GCP.
+- (void) addGCP: (GeoMapGCP *) GCP
 {
     double imageSize =
         self.document.GCPImage.size.height / 6 / magnification * self.scale;
 
     NSRect GCPRect =
         NSMakeRect(
-            (point.x / self.scale) - imageSize/2,
-            (point.y / self.scale) - imageSize/2,
+            (GCP.imagePoint.x / self.scale) - imageSize/2,
+            (GCP.imagePoint.y / self.scale) - imageSize/2,
             imageSize,
             imageSize);
 
-    [self.document.GCPImage
-        drawInRect: GCPRect
-        fromRect: NSZeroRect
-        operation: NSCompositeSourceOver
-        fraction: 1.0];
+    GCP.view = [[NSImageView alloc] initWithFrame: GCPRect];
+  
+    GCP.view.image = self.document.GCPImage;
+  
+    [self addSubview: GCP.view];
 }
 
-// Clear a GCP icon from the image - before zooming in.
-- (void) clearGCPAt: (NSPoint) point
+// Pan around to the given GCP.
+- (void) selectGCP: (GeoMapGCP *) GCP
 {
-    double imageSize =
-        self.document.GCPImage.size.height / 6 / magnification * self.scale;
+    NSClipView * clipView = [self.scrollView contentView];
 
-    NSRect GCPRect =
-        NSMakeRect(
-            (point.x / self.scale) - imageSize/2,
-            (point.y / self.scale) - imageSize/2,
-            imageSize,
-            imageSize);
+    NSSize size = clipView.bounds.size;
+  
+    NSPoint zoomPoint =
+        NSMakePoint(
+            (GCP.imagePoint.x / self.scale) - (size.width / 2),
+            (GCP.imagePoint.y / self.scale) - (size.height / 2));
+  
+    [self scrollPoint: zoomPoint];
+}
 
-    [self setNeedsDisplayInRect: GCPRect];
+// Remove a GCP.
+- (void) removeGCP: (GeoMapGCP *) GCP
+{
+    [GCP.view removeFromSuperview];
 }
 
 // Handle a mouse down event.
@@ -291,12 +290,6 @@
 // point.
 - (void) zoomToRect: (NSRect) rect
 {
-    // Go into zooming mode and erase any GCPs so they don't get zoomed too.
-    self.zooming = YES;
-  
-    for(GeoMapGCP * gcp in self.document.GCPs)
-        [self clearGCPAt: gcp.imagePoint];
-
     // Now do a nice zoom with animation.
     [NSAnimationContext
         runAnimationGroup:
@@ -308,8 +301,6 @@
             ^{
                 magnification = [self.scrollView magnification];
                 [self updateScale];
-                self.zooming = NO;
-                [self setNeedsDisplay: YES];
             }];
 }
 
@@ -319,12 +310,6 @@
 // point.
 - (void) zoomToPoint: (NSPoint) point
 {
-    // Go into zooming mode and erase any GCPs so they don't get zoomed too.
-    self.zooming = YES;
-  
-    for(GeoMapGCP * gcp in self.document.GCPs)
-        [self clearGCPAt: gcp.imagePoint];
-
     // Now do a nice zoom with animation.
     [NSAnimationContext
         runAnimationGroup:
@@ -338,8 +323,6 @@
             ^{
                 magnification = [self.scrollView magnification];
                 [self updateScale];
-                self.zooming = NO;
-                [self setNeedsDisplay: YES];
             }];
 }
 
@@ -360,21 +343,6 @@
     // at the top and bottom, or none at all.
     else
         self.scale = self.image.size.width / self.bounds.size.width;
-}
-
-// Pan around to the given GCP.
-- (void) selectGCP: (GeoMapGCP *) GCP
-{
-    NSClipView * clipView = [self.scrollView contentView];
-
-    NSSize size = clipView.bounds.size;
-  
-    NSPoint zoomPoint =
-        NSMakePoint(
-            (GCP.imagePoint.x / self.scale) - (size.width / 2),
-            (GCP.imagePoint.y / self.scale) - (size.height / 2));
-  
-    [self scrollPoint: zoomPoint];
 }
 
 @end

@@ -20,6 +20,7 @@
 
 @class GeoMapScrollView;
 @class GeoMapImageView;
+@class GeoMapGCP;
 
 // A document type for georeferencing an image.
 @interface GeoMapDocument : NSDocument
@@ -63,6 +64,7 @@
 @property (strong) IBOutlet NSArrayController * GCPController;
 @property (strong) IBOutlet NSTableView * GCPTableView;
 @property (strong) NSImage * GCPImage;
+@property (strong) GeoMapGCP * currentGCP;
 
 // Metadata.
 @property (strong) NSMutableDictionary * metadata;

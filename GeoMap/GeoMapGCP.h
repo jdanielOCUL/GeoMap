@@ -17,5 +17,6 @@
 @property (assign) double lon;
 @property (strong) NSString * latitude;
 @property (strong) NSString * longitude;
+@property (strong) NSImageView * view;
 
 @end
