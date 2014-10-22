@@ -15,6 +15,8 @@
 @property (assign) NSPoint normalizedImagePoint;
 @property (assign) double latitude;
 @property (assign) double longitude;
+@property (strong) NSString * latitudeString;
+@property (strong) NSString * longitudeString;
 @property (strong) NSImageView * view;
 
 @end

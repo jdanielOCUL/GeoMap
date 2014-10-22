@@ -200,7 +200,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
         switch(myDatumIndex)
         {
             case kDatumGCP:
-                self.srs = @"";
+                self.srs = NSLocalizedString(@"None - using GCPs only", NULL);
                 self.srsEnabled = NO;
                 self.datum = @"GCP";
                 break;
@@ -821,37 +821,188 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
 // Validate and save a latitude value for a GCP.
 - (IBAction) commitLatitude: (id) sender;
 {
-    if(fabs(self.currentGCP.latitude) > 180)
+    double latitude;
+  
+    BOOL valid = [self parseCoordinate: [sender stringValue] to: & latitude];
+  
+    if(valid)
+        valid = fabs(latitude) < 90;
+  
+    if(!valid)
     {
         AudioServicesPlayAlertSound(kSystemSoundID_UserPreferredAlert);
-    
-        self.currentGCP.latitude = 0;
     
         [self.windowForSheet makeFirstResponder: sender];
     
         return;
     }
   
+    self.currentGCP.latitude = latitude;
+    
     [self.windowForSheet makeFirstResponder: [sender nextKeyView]];
 }
 
 // Validate and save a longitude value for a GCP.
 - (IBAction) commitLongitude: (id) sender
 {
-    if(fabs(self.currentGCP.longitude) > 180)
+    double longitude;
+  
+    BOOL valid = [self parseCoordinate: [sender stringValue] to: & longitude];
+  
+    if(valid)
+        valid = fabs(longitude) < 180;
+  
+    if(!valid)
     {
         AudioServicesPlayAlertSound(kSystemSoundID_UserPreferredAlert);
-    
-        self.currentGCP.longitude = 0;
     
         [self.windowForSheet makeFirstResponder: sender];
     
         return;
     }
 
+    self.currentGCP.longitude = longitude;
+
     self.toolMode = kAddGCPTool;
 
     [[self.currentGCP.view animator] setAlphaValue: 1.0];
+}
+
+// Parse a coordinate in various formats.
+// Return YES if the coordinate is valid.
+// I have to admit, a Swift optional would be handy here.
+- (BOOL) parseCoordinate: (NSString *) value to: (double *) coordinate
+{
+    if(!coordinate)
+        return NO;
+  
+    // Use a good 'ole scanner.
+    NSScanner * scanner = [NSScanner scannerWithString: value];
+  
+    // First, look for directional indicators like NSEW or +=.
+    // I won't use my other multiplier logic since I may have + and - too.
+    double multiplier = 1;
+  
+    NSString * direction;
+  
+    BOOL found =
+        [scanner
+            scanCharactersFromSet:
+                [NSCharacterSet
+                    characterSetWithCharactersInString: @"-NnSsEeWw"]
+            intoString: & direction];
+
+    if(found)
+    {
+        direction = [direction lowercaseString];
+    
+        if([direction hasPrefix: @"s"])
+            multiplier = -1;
+        else if([direction hasPrefix: @"w"])
+            multiplier = -1;
+        else if([direction hasPrefix: @"-"])
+            multiplier = -1;
+    }
+  
+    // Now look for degrees. If this is a stand-alone, fractional degree value,
+    // I can go ahead and quit.
+    double degrees;
+  
+    found = [scanner scanDouble: & degrees];
+  
+    if(!found)
+        return NO;
+  
+    // Now look for some character that might signal the beginning of a DMS
+    // format.
+    found =
+        [scanner
+            scanUpToCharactersFromSet: [NSCharacterSet decimalDigitCharacterSet]
+            intoString: NULL];
+  
+    // Look for a minutes value. Again, a fractional value is fine.
+    double minutes;
+  
+    found = [scanner scanDouble: & minutes];
+
+    // Maybe I am done.
+    if(!found)
+    {
+        *coordinate = [self scanDirection: degrees scanner: scanner];
+  
+        return YES;
+    }
+  
+    // Increment the degrees now.
+    degrees += (minutes / 60.0);
+  
+    // Look for a units indicator and toss it.
+    found =
+        [scanner
+            scanCharactersFromSet:
+                [NSCharacterSet characterSetWithCharactersInString: @"m'’"]
+            intoString: NULL];
+  
+    // This is fine. I'm done.
+    if(!found)
+    {
+        *coordinate = [self scanDirection: degrees scanner: scanner];
+  
+        return YES;
+    }
+
+    // Now look for a seconds value. This may very well be a fractional.
+    double seconds;
+  
+    found = [scanner scanDouble: & seconds];
+
+    // If I didn't find anything, I'm still good.
+    if(!found)
+    {
+        *coordinate = [self scanDirection: degrees scanner: scanner];
+  
+        return YES;
+    }
+  
+    // Increment the degrees.
+    degrees += (seconds / 60.0 / 60.0);
+  
+    // Scan and toss the seconds unit.
+    found =
+        [scanner
+            scanCharactersFromSet:
+                [NSCharacterSet characterSetWithCharactersInString: @"s\"”"]
+            intoString: NULL];
+
+    *coordinate = [self scanDirection: degrees scanner: scanner];
+
+    return YES;
+}
+
+// Check for a trailing directional indicator.
+- (double) scanDirection: (double) degrees scanner: (NSScanner *) scanner
+{
+    double multiplier = 1.0;
+  
+    NSString * direction = nil;
+  
+    BOOL found =
+        [scanner
+            scanCharactersFromSet:
+                [NSCharacterSet characterSetWithCharactersInString: @"NnSsEeWw"]
+            intoString: & direction];
+
+    if(found)
+    {
+        direction = [direction lowercaseString];
+    
+        if([direction hasPrefix: @"s"])
+            multiplier = -1;
+        else if([direction hasPrefix: @"w"])
+            multiplier = -1;
+    }
+  
+    return degrees * multiplier;
 }
 
 // Preview an image.
@@ -967,7 +1118,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
   
     [self showProgress: NSLocalizedString(@"Previewing...", NULL)];
   
-    NSLog(@"%@ %@", translate.launchPath, translate.arguments);
+    //NSLog(@"%@ %@", translate.launchPath, translate.arguments);
 
     [translate launch];
     [translate waitUntilExit];
@@ -1001,7 +1152,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
             [self updateProgress: input start: 100];
         };
 
-    NSLog(@"%@ %@", warp.launchPath, warp.arguments);
+    //NSLog(@"%@ %@", warp.launchPath, warp.arguments);
 
     [warp launch];
     [warp waitUntilExit];
@@ -1101,7 +1252,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
   
     [[NSFileManager defaultManager] removeItemAtPath: output error: NULL];
   
-    NSLog(@"%@ %@", translate.launchPath, translate.arguments);
+    //NSLog(@"%@ %@", translate.launchPath, translate.arguments);
 
     [translate launch];
     [translate waitUntilExit];
@@ -1206,7 +1357,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
   
     [[NSFileManager defaultManager] removeItemAtPath: tempPath error: NULL];
 
-    NSLog(@"%@ %@", translate.launchPath, translate.arguments);
+    //NSLog(@"%@ %@", translate.launchPath, translate.arguments);
 
     [translate launch];
     [translate waitUntilExit];
@@ -1240,7 +1391,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
 
     [[NSFileManager defaultManager] removeItemAtPath: output error: NULL];
 
-    NSLog(@"%@ %@", warp.launchPath, warp.arguments);
+    //NSLog(@"%@ %@", warp.launchPath, warp.arguments);
   
     [warp launch];
     [warp waitUntilExit];

@@ -10,3 +10,5 @@
 "GCP controls" = "Contrôle des points au sol";
 "Previewing..." = "Aperçu...";
 "Exporting..." = "Exportation...";
+"Custom" = "Autre";
+"None - using GCPs only" = "Aucun - utilisant les points au sol seulement";

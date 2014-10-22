@@ -129,9 +129,9 @@
                                                                         </textFieldCell>
                                                                         <connections>
                                                                             <action selector="commitLatitude:" target="-2" id="7MW-qK-40a"/>
-                                                                            <binding destination="xUL-Sf-yb4" name="value" keyPath="objectValue.latitude" id="gN7-45-VF4">
+                                                                            <binding destination="xUL-Sf-yb4" name="value" keyPath="objectValue.latitudeString" id="ACQ-zp-wNh">
                                                                                 <dictionary key="options">
-                                                                                    <string key="NSValueTransformerName">GeoMapCoordinateValueTransformer</string>
+                                                                                    <string key="NSNullPlaceholder">Latitude</string>
                                                                                 </dictionary>
                                                                             </binding>
                                                                             <outlet property="nextKeyView" destination="GwY-MV-PyU" id="hVn-AT-kKP"/>
@@ -147,9 +147,9 @@
                                                                         </textFieldCell>
                                                                         <connections>
                                                                             <action selector="commitLongitude:" target="-2" id="tGo-Bp-ifO"/>
-                                                                            <binding destination="xUL-Sf-yb4" name="value" keyPath="objectValue.longitude" id="bdt-re-PCM">
+                                                                            <binding destination="xUL-Sf-yb4" name="value" keyPath="objectValue.longitudeString" id="hs4-cm-wFk">
                                                                                 <dictionary key="options">
-                                                                                    <string key="NSValueTransformerName">GeoMapCoordinateValueTransformer</string>
+                                                                                    <string key="NSNullPlaceholder">Longitude</string>
                                                                                 </dictionary>
                                                                             </binding>
                                                                         </connections>
