@@ -326,6 +326,8 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
         self.imageSize = size;
       }
   
+    [self.GCPs addObjectsFromArray: getGCPs(self.input)];
+    
     self.previewScale = 1.0;
   
     NSSize maxSize = self.imageSize;
@@ -361,7 +363,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     }
   
     [self.image setSize: maxSize];
-    
+  
     return YES;
 }
 
@@ -514,7 +516,13 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     [self.opacitySlider setHidden: YES];
 
     self.imageView.image = self.image;
-    
+  
+    // I might have loaded a file with GCPs.
+    self.canPreview = ([self.GCPs count] >= 4);
+  
+    for(GeoMapGCP * GCP in self.GCPs)
+        [self.imageView addGCP: GCP];
+
     self.isSetup = YES;
 }
 
@@ -715,10 +723,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
 {
     GeoMapGCP * GCP = [GeoMapGCP new];
   
-    GCP.previewPoint = point;
-    point.x /= self.previewScale;
-    point.y /= self.previewScale;
-    GCP.imagePoint = point;
+    GCP.normalizedImagePoint = point;
   
     [self.GCPController setSelectedObjects: nil];
   
@@ -768,8 +773,8 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
         double distance =
             sqrt(
                 pow(
-                    GCP.previewPoint.x - point.x, 2) +
-                    pow(GCP.previewPoint.y - point.y, 2));
+                    GCP.normalizedImagePoint.x - point.x, 2) +
+                    pow(GCP.normalizedImagePoint.y - point.y, 2));
     
         if((distance < closetDistance) || !closest)
         {
@@ -816,11 +821,11 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
 // Validate and save a latitude value for a GCP.
 - (IBAction) commitLatitude: (id) sender;
 {
-    double latitude;
-  
-    if(![self parseLatitude: [sender stringValue] to: & latitude])
+    if(fabs(self.currentGCP.latitude) > 180)
     {
         AudioServicesPlayAlertSound(kSystemSoundID_UserPreferredAlert);
+    
+        self.currentGCP.latitude = 0;
     
         [self.windowForSheet makeFirstResponder: sender];
     
@@ -833,11 +838,11 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
 // Validate and save a longitude value for a GCP.
 - (IBAction) commitLongitude: (id) sender
 {
-    double longitude;
-  
-    if(![self parseLongitude: [sender stringValue] to: & longitude])
+    if(fabs(self.currentGCP.longitude) > 180)
     {
         AudioServicesPlayAlertSound(kSystemSoundID_UserPreferredAlert);
+    
+        self.currentGCP.longitude = 0;
     
         [self.windowForSheet makeFirstResponder: sender];
     
@@ -847,165 +852,6 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     self.toolMode = kAddGCPTool;
 
     [[self.currentGCP.view animator] setAlphaValue: 1.0];
-}
-
-#pragma mark - Coordinate helpers.
-
-// Parse a latitude text value.
-- (BOOL) parseLatitude: (NSString *) value to: (double *) coordinate
-{
-    if([self parseCoordinate: value to: coordinate])
-        if(fabs(*coordinate) < 90)
-            return YES;
-  
-    return NO;
-}
-
-// Parse a longitude text value.
-- (BOOL) parseLongitude: (NSString *) value to: (double *) coordinate
-{
-    if([self parseCoordinate: value to: coordinate])
-        if(fabs(*coordinate) < 180)
-            return YES;
-  
-    return NO;
-}
-
-// Parse a coordinate in various formats.
-// Return YES if the coordinate is valid.
-// I have to admit, a Swift optional would be handy here.
-- (BOOL) parseCoordinate: (NSString *) value to: (double *) coordinate
-{
-    if(!coordinate)
-        return NO;
-  
-    // Use a good 'ole scanner.
-    NSScanner * scanner = [NSScanner scannerWithString: value];
-  
-    // First, look for directional indicators like NSEW or +=.
-    // I won't use my other multiplier logic since I may have + and - too.
-    double multiplier = 1;
-  
-    NSString * direction;
-  
-    BOOL found =
-        [scanner
-            scanCharactersFromSet:
-                [NSCharacterSet
-                    characterSetWithCharactersInString: @"-NnSsEeWw"]
-            intoString: & direction];
-
-    if(found)
-    {
-        direction = [direction lowercaseString];
-    
-        if([direction hasPrefix: @"s"])
-            multiplier = -1;
-        else if([direction hasPrefix: @"w"])
-            multiplier = -1;
-        else if([direction hasPrefix: @"-"])
-            multiplier = -1;
-    }
-  
-    // Now look for degrees. If this is a stand-alone, fractional degree value,
-    // I can go ahead and quit.
-    double degrees;
-  
-    found = [scanner scanDouble: & degrees];
-  
-    if(!found)
-        return NO;
-  
-    // Now look for some character that might signal the beginning of a DMS
-    // format.
-    found =
-        [scanner
-            scanUpToCharactersFromSet: [NSCharacterSet decimalDigitCharacterSet]
-            intoString: NULL];
-  
-    // Look for a minutes value. Again, a fractional value is fine.
-    double minutes;
-  
-    found = [scanner scanDouble: & minutes];
-
-    // Maybe I am done.
-    if(!found)
-    {
-        *coordinate = [self scanDirection: degrees scanner: scanner];
-  
-        return YES;
-    }
-  
-    // Increment the degrees now.
-    degrees += (minutes / 60.0);
-  
-    // Look for a units indicator and toss it.
-    found =
-        [scanner
-            scanCharactersFromSet:
-                [NSCharacterSet characterSetWithCharactersInString: @"m'’"]
-            intoString: NULL];
-  
-    // This is fine. I'm done.
-    if(!found)
-    {
-        *coordinate = [self scanDirection: degrees scanner: scanner];
-  
-        return YES;
-    }
-
-    // Now look for a seconds value. This may very well be a fractional.
-    double seconds;
-  
-    found = [scanner scanDouble: & seconds];
-
-    // If I didn't find anything, I'm still good.
-    if(!found)
-    {
-        *coordinate = [self scanDirection: degrees scanner: scanner];
-  
-        return YES;
-    }
-  
-    // Increment the degrees.
-    degrees += (seconds / 60.0 / 60.0);
-  
-    // Scan and toss the seconds unit.
-    found =
-        [scanner
-            scanCharactersFromSet:
-                [NSCharacterSet characterSetWithCharactersInString: @"s\"”"]
-            intoString: NULL];
-
-    *coordinate = [self scanDirection: degrees scanner: scanner];
-
-    return YES;
-}
-
-// Check for a trailing directional indicator.
-- (double) scanDirection: (double) degrees scanner: (NSScanner *) scanner
-{
-    double multiplier = 1.0;
-  
-    NSString * direction = nil;
-  
-    BOOL found =
-        [scanner
-            scanCharactersFromSet:
-                [NSCharacterSet characterSetWithCharactersInString: @"NnSsEeWw"]
-            intoString: & direction];
-
-    if(found)
-    {
-        direction = [direction lowercaseString];
-    
-        if([direction hasPrefix: @"s"])
-            multiplier = -1;
-        else if([direction hasPrefix: @"w"])
-            multiplier = -1;
-    }
-  
-    return degrees * multiplier;
 }
 
 // Preview an image.
@@ -1031,51 +877,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     // max and min longitude positions. If they are out of order, then this
     // image is a western hemisphere image without the proper directional
     // indicators on the coordinates. If so, fix 'em.
-    BOOL haveMin = NO;
-    double minX = 0;
-    double minLong = 0;
-  
-    bool haveMax = NO;
-    double maxX = 0;
-    double maxLong = 0;
-  
-    double maxY = 0;
-  
-    for(GeoMapGCP * GCP in self.GCPs)
-    {
-        double latitude;
-    
-        if([self parseLatitude: GCP.latitude to: & latitude])
-            GCP.lat = latitude;
-
-        double longitude;
-
-        if([self parseLongitude: GCP.longitude to: & longitude])
-            GCP.lon = longitude;
-    
-        if(!haveMin || (GCP.previewPoint.x < minX))
-        {
-            minX = GCP.previewPoint.x;
-            minLong = GCP.lon;
-
-            haveMin = YES;
-        }
-    
-        if(!haveMax || (GCP.previewPoint.x > maxX))
-        {
-            maxX = GCP.previewPoint.x;
-            maxLong = GCP.lon;
-        
-            haveMax = YES;
-        }
-    
-        if(GCP.previewPoint.y > maxY)
-            maxY = GCP.previewPoint.y;
-    }
-  
-    if(minLong > maxLong)
-        for(GeoMapGCP * GCP in self.GCPs)
-            GCP.lon *= -1.0;
+    [self fixLongitude];
   
     // See what the scale would be if I were previewing this projection.
     double scaleX = 1.0;
@@ -1097,20 +899,20 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     {
         [args addObject: @"-gcp"];
     
-        NSPoint point = GCP.previewPoint;
+        NSPoint point = GCP.normalizedImagePoint;
+    
+        point.x *= self.image.size.width;
+        point.y *= self.image.size.height;
     
         [args
             addObject:
                 [NSString stringWithFormat: @"%lf", scale * point.x]];
         [args
             addObject:
-                [NSString
-                    stringWithFormat:
-                        @"%lf",
-                        scale * (self.image.size.height - point.y)]];
+                [NSString stringWithFormat: @"%lf", scale * point.y]];
     
-        [args addObject: [NSString stringWithFormat: @"%lf", GCP.lon]];
-        [args addObject: [NSString stringWithFormat: @"%lf", GCP.lat]];
+        [args addObject: [NSString stringWithFormat: @"%lf", GCP.longitude]];
+        [args addObject: [NSString stringWithFormat: @"%lf", GCP.latitude]];
     }
 
     // Add metadata.
@@ -1232,51 +1034,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     // max and min longitude positions. If they are out of order, then this
     // image is a western hemisphere image without the proper directional
     // indicators on the coordinates. If so, fix 'em.
-    BOOL haveMin = NO;
-    double minX = 0;
-    double minLong = 0;
-  
-    bool haveMax = NO;
-    double maxX = 0;
-    double maxLong = 0;
-  
-    double maxY = 0;
-  
-    for(GeoMapGCP * GCP in self.GCPs)
-    {
-        double latitude;
-    
-        if([self parseLatitude: GCP.latitude to: & latitude])
-            GCP.lat = latitude;
-
-        double longitude;
-
-        if([self parseLongitude: GCP.longitude to: & longitude])
-            GCP.lon = longitude;
-    
-        if(!haveMin || (GCP.previewPoint.x < minX))
-        {
-            minX = GCP.previewPoint.x;
-            minLong = GCP.lon;
-
-            haveMin = YES;
-        }
-    
-        if(!haveMax || (GCP.previewPoint.x > maxX))
-        {
-            maxX = GCP.previewPoint.x;
-            maxLong = GCP.lon;
-        
-            haveMax = YES;
-        }
-    
-        if(GCP.previewPoint.y > maxY)
-            maxY = GCP.previewPoint.y;
-    }
-  
-    if(minLong > maxLong)
-        for(GeoMapGCP * GCP in self.GCPs)
-            GCP.lon *= -1.0;
+    [self fixLongitude];
   
     // See what the scale would be if I were previewing this projection.
     double scaleX = 1.0;
@@ -1292,20 +1050,20 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     {
         [args addObject: @"-gcp"];
     
-        NSPoint point = GCP.imagePoint;
+        NSPoint point = GCP.normalizedImagePoint;
     
+        point.x *= self.imageSize.width;
+        point.y *= self.imageSize.height;
+
         [args
             addObject:
                 [NSString stringWithFormat: @"%lf", scale * point.x]];
         [args
             addObject:
-                [NSString
-                    stringWithFormat:
-                        @"%lf",
-                        scale * (self.imageSize.height - point.y)]];
+                [NSString stringWithFormat: @"%lf", scale * point.y]];
     
-        [args addObject: [NSString stringWithFormat: @"%lf", GCP.lon]];
-        [args addObject: [NSString stringWithFormat: @"%lf", GCP.lat]];
+        [args addObject: [NSString stringWithFormat: @"%lf", GCP.longitude]];
+        [args addObject: [NSString stringWithFormat: @"%lf", GCP.latitude]];
     }
 
     // Add metadata.
@@ -1374,51 +1132,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     // max and min longitude positions. If they are out of order, then this
     // image is a western hemisphere image without the proper directional
     // indicators on the coordinates. If so, fix 'em.
-    BOOL haveMin = NO;
-    double minX = 0;
-    double minLong = 0;
-  
-    bool haveMax = NO;
-    double maxX = 0;
-    double maxLong = 0;
-  
-    double maxY = 0;
-  
-    for(GeoMapGCP * GCP in self.GCPs)
-    {
-        double latitude;
-    
-        if([self parseLatitude: GCP.latitude to: & latitude])
-            GCP.lat = latitude;
-
-        double longitude;
-
-        if([self parseLongitude: GCP.longitude to: & longitude])
-            GCP.lon = longitude;
-    
-        if(!haveMin || (GCP.previewPoint.x < minX))
-        {
-            minX = GCP.previewPoint.x;
-            minLong = GCP.lon;
-
-            haveMin = YES;
-        }
-    
-        if(!haveMax || (GCP.previewPoint.x > maxX))
-        {
-            maxX = GCP.previewPoint.x;
-            maxLong = GCP.lon;
-        
-            haveMax = YES;
-        }
-    
-        if(GCP.previewPoint.y > maxY)
-            maxY = GCP.previewPoint.y;
-    }
-  
-    if(minLong > maxLong)
-        for(GeoMapGCP * GCP in self.GCPs)
-            GCP.lon *= -1.0;
+    [self fixLongitude];
   
     // See what the scale would be if I were previewing this projection.
     double scaleX = 1.0;
@@ -1434,20 +1148,20 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     {
         [args addObject: @"-gcp"];
     
-        NSPoint point = GCP.imagePoint;
+        NSPoint point = GCP.normalizedImagePoint;
+    
+        point.x *= self.imageSize.width;
+        point.y *= self.imageSize.height;
     
         [args
             addObject:
                 [NSString stringWithFormat: @"%lf", scale * point.x]];
         [args
             addObject:
-                [NSString
-                    stringWithFormat:
-                        @"%lf",
-                        scale * (self.imageSize.height - point.y)]];
+                [NSString stringWithFormat: @"%lf", scale * point.y]];
     
-        [args addObject: [NSString stringWithFormat: @"%lf", GCP.lon]];
-        [args addObject: [NSString stringWithFormat: @"%lf", GCP.lat]];
+        [args addObject: [NSString stringWithFormat: @"%lf", GCP.longitude]];
+        [args addObject: [NSString stringWithFormat: @"%lf", GCP.latitude]];
     }
 
     // Add metadata.
@@ -1614,6 +1328,51 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     
         found = [scanner scanInt: & progress];
     }
+}
+
+// Fix the east-west hemisphere problems.
+- (void) fixLongitude
+{
+    // Users may not add the Longitude coordinates correctly and they really
+    // shouldn't have to. Calculate the max and min GCP X positions and the
+    // max and min longitude positions. If they are out of order, then this
+    // image is a western hemisphere image without the proper directional
+    // indicators on the coordinates. If so, fix 'em.
+    BOOL haveMin = NO;
+    double minX = 0;
+    double minLong = 0;
+  
+    bool haveMax = NO;
+    double maxX = 0;
+    double maxLong = 0;
+  
+    double maxY = 0;
+  
+    for(GeoMapGCP * GCP in self.GCPs)
+    {
+        if(!haveMin || (GCP.normalizedImagePoint.x < minX))
+        {
+            minX = GCP.normalizedImagePoint.x;
+            minLong = GCP.longitude;
+
+            haveMin = YES;
+        }
+    
+        if(!haveMax || (GCP.normalizedImagePoint.x > maxX))
+        {
+            maxX = GCP.normalizedImagePoint.x;
+            maxLong = GCP.longitude;
+        
+            haveMax = YES;
+        }
+    
+        if(GCP.normalizedImagePoint.y > maxY)
+            maxY = GCP.normalizedImagePoint.y;
+    }
+  
+    if(minLong > maxLong)
+        for(GeoMapGCP * GCP in self.GCPs)
+            GCP.longitude *= -1.0;
 }
 
 @end

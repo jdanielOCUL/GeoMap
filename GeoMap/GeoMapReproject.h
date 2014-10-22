@@ -33,6 +33,9 @@ int reproject(const char * input, const char * output, int gcpc, GCP * gcpv);
 // XPC.
 NSArray * getCoordinates(NSString * path);
 
+// Get GCPs from a file.
+NSArray * getGCPs(NSString * path);
+
 #ifdef __cplusplus
 }
 #endif

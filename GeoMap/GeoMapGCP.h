@@ -12,12 +12,9 @@
 // format and actual corresponding latitude and longitude coordinates.
 @interface GeoMapGCP : NSObject
 
-@property (assign) NSPoint imagePoint;
-@property (assign) NSPoint previewPoint;
-@property (assign) double lat;
-@property (assign) double lon;
-@property (strong) NSString * latitude;
-@property (strong) NSString * longitude;
+@property (assign) NSPoint normalizedImagePoint;
+@property (assign) double latitude;
+@property (assign) double longitude;
 @property (strong) NSImageView * view;
 
 @end

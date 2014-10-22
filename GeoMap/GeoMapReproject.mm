@@ -18,6 +18,7 @@
 #include "GDAL/cpl_string.h"
 #include "GDAL/cpl_conv.h"
 #include "GDAL/cpl_multiproc.h"
+#import "GeoMapGCP.h"
 
 // Reproject an image. This part isn't working yet. I am just feeding
 // coordinates to gdal_translate and gdalwarp for now.
@@ -270,4 +271,44 @@ static void GDALInfoReportCorner(
     }
 }
 
+// Get GCPs from a file.
+NSArray * getGCPs(NSString * path)
+{
+    GDALAllRegister();
 
+    GDALDatasetH hDataset =
+        GDALOpen([path fileSystemRepresentation], GA_ReadOnly);
+
+    if(!hDataset)
+        return nil;
+
+    NSMutableArray * result = [NSMutableArray array];
+  
+    int GCPCount = GDALGetGCPCount(hDataset);
+  
+    const GDAL_GCP * GCPs = GDALGetGCPs(hDataset);
+  
+    double width = GDALGetRasterXSize(hDataset);
+    double height = GDALGetRasterYSize(hDataset);
+  
+    for(int i = 0; i < GCPCount; ++i)
+    {
+        GeoMapGCP * GCP = [GeoMapGCP new];
+    
+        GCP.normalizedImagePoint =
+            NSMakePoint(GCPs[i].dfGCPPixel / width, GCPs[i].dfGCPLine / height);
+        GCP.latitude = GCPs[i].dfGCPY;
+        GCP.longitude = GCPs[i].dfGCPX;
+    
+        [result addObject: GCP];
+    }
+  
+    GDALClose(hDataset);
+    
+    GDALDestroyDriverManager();
+
+    CPLDumpSharedList(NULL);
+    CPLCleanupTLS();
+  
+    return result;
+}

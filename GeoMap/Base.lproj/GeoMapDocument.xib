@@ -129,7 +129,11 @@
                                                                         </textFieldCell>
                                                                         <connections>
                                                                             <action selector="commitLatitude:" target="-2" id="7MW-qK-40a"/>
-                                                                            <binding destination="xUL-Sf-yb4" name="value" keyPath="objectValue.latitude" id="dOL-ZC-g6Z"/>
+                                                                            <binding destination="xUL-Sf-yb4" name="value" keyPath="objectValue.latitude" id="gN7-45-VF4">
+                                                                                <dictionary key="options">
+                                                                                    <string key="NSValueTransformerName">GeoMapCoordinateValueTransformer</string>
+                                                                                </dictionary>
+                                                                            </binding>
                                                                             <outlet property="nextKeyView" destination="GwY-MV-PyU" id="hVn-AT-kKP"/>
                                                                         </connections>
                                                                     </textField>
@@ -143,7 +147,11 @@
                                                                         </textFieldCell>
                                                                         <connections>
                                                                             <action selector="commitLongitude:" target="-2" id="tGo-Bp-ifO"/>
-                                                                            <binding destination="xUL-Sf-yb4" name="value" keyPath="objectValue.longitude" id="A6E-Tx-qYa"/>
+                                                                            <binding destination="xUL-Sf-yb4" name="value" keyPath="objectValue.longitude" id="bdt-re-PCM">
+                                                                                <dictionary key="options">
+                                                                                    <string key="NSValueTransformerName">GeoMapCoordinateValueTransformer</string>
+                                                                                </dictionary>
+                                                                            </binding>
                                                                         </connections>
                                                                     </textField>
                                                                 </subviews>
@@ -463,8 +471,8 @@ Gw
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                         <connections>
-                            <binding destination="-2" name="enabled" keyPath="self.srsEnabled" id="ECh-Sa-7Ks"/>
                             <binding destination="-2" name="value" keyPath="self.srs" id="MvL-xK-kjg"/>
+                            <binding destination="-2" name="enabled" keyPath="self.srsEnabled" id="ECh-Sa-7Ks"/>
                         </connections>
                     </textField>
                 </subviews>

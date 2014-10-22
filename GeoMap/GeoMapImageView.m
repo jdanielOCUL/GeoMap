@@ -69,13 +69,15 @@
 // Add a GCP.
 - (void) addGCP: (GeoMapGCP *) GCP
 {
-    double imageSize =
-        self.document.GCPImage.size.height / 6 / magnification * self.scale;
+    double imageSize = self.document.GCPImage.size.height;
 
+    double x = (GCP.normalizedImagePoint.x * self.image.size.width);
+    double y = ((1.0 - GCP.normalizedImagePoint.y) * self.image.size.height);
+  
     NSRect GCPRect =
         NSMakeRect(
-            (GCP.previewPoint.x / self.scale) - imageSize/2,
-            (GCP.previewPoint.y / self.scale) - imageSize/2,
+            (x / self.scale) - imageSize/2,
+            (y / self.scale) - imageSize/2,
             imageSize,
             imageSize);
 
@@ -93,10 +95,13 @@
 
     NSSize size = clipView.bounds.size;
   
+    double x = (GCP.normalizedImagePoint.x * self.image.size.width);
+    double y = ((1.0 - GCP.normalizedImagePoint.y) * self.image.size.height);
+  
     NSPoint zoomPoint =
         NSMakePoint(
-            (GCP.previewPoint.x / self.scale) - (size.width / 2),
-            (GCP.previewPoint.y / self.scale) - (size.height / 2));
+            (x / self.scale) - (size.width / 2),
+            (y / self.scale) - (size.height / 2));
   
     [self scrollPoint: zoomPoint];
 }
@@ -105,6 +110,31 @@
 - (void) removeGCP: (GeoMapGCP *) GCP
 {
     [GCP.view removeFromSuperview];
+}
+
+// If the frame changes, I will need to reposition any GCPs.
+- (void) setFrame: (NSRect) aRect
+{
+    [super setFrame: aRect];
+
+    [self updateScale];
+  
+    double imageSize = self.document.GCPImage.size.height;
+
+    for(GeoMapGCP * GCP in self.document.GCPs)
+    {
+        double x = (GCP.normalizedImagePoint.x * self.image.size.width);
+        double y = ((1.0 - GCP.normalizedImagePoint.y) * self.image.size.height);
+      
+        NSRect GCPRect =
+            NSMakeRect(
+                (x / self.scale) - imageSize/2,
+                (y / self.scale) - imageSize/2,
+                imageSize,
+                imageSize);
+
+        GCP.view.frame = GCPRect;
+    }
 }
 
 // Handle a mouse down event.
@@ -230,10 +260,11 @@
 
     NSPoint imagePosition = clipPosition;
   
-    [self updateScale];
-    
     imagePosition.x *= self.scale;
     imagePosition.y *= self.scale;
+  
+    imagePosition.x /= self.image.size.width;
+    imagePosition.y = 1.0 - (imagePosition.y / self.image.size.height);
 
     // Take the appropriate action for the current tool.
     switch(self.document.toolMode)
