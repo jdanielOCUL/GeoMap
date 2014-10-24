@@ -45,6 +45,8 @@
     self.selectionFillColor =
         [NSColor colorWithCalibratedRed: .5 green: .5 blue: .5 alpha: .4];
   
+    // Keep track of the difference between the proportionally scaled image
+    // and the frame which probably has a different aspect ratio.
     [self updateScale];
 }
 
@@ -69,18 +71,22 @@
 // Add a GCP.
 - (void) addGCP: (GeoMapGCP *) GCP
 {
+    // The size of the GCP marker.
+    // TODO: Scale this to the image so the size is always apparently the same.
     double imageSize = self.document.GCPImage.size.height;
 
-    double x = (GCP.normalizedImagePoint.x * self.image.size.width);
-    double y = ((1.0 - GCP.normalizedImagePoint.y) * self.image.size.height);
+    // Do-normalize the GCP coordinates relative to the image size.
+    NSPoint point = [self denormalizeGCP: GCP];
   
+    // Position the view centered at the GCP location.
     NSRect GCPRect =
         NSMakeRect(
-            (x / self.scale) - imageSize/2,
-            (y / self.scale) - imageSize/2,
+            (point.x / self.scale) - imageSize/2,
+            (point.y / self.scale) - imageSize/2,
             imageSize,
             imageSize);
 
+    // Create the GCP view and add it to the parent image view.
     GCP.view = [[NSImageView alloc] initWithFrame: GCPRect];
   
     GCP.view.image = self.document.GCPImage;
@@ -91,18 +97,21 @@
 // Pan around to the given GCP.
 - (void) selectGCP: (GeoMapGCP *) GCP
 {
+    // I want to center the GCP in the clip view.
     NSClipView * clipView = [self.scrollView contentView];
 
     NSSize size = clipView.bounds.size;
   
-    double x = (GCP.normalizedImagePoint.x * self.image.size.width);
-    double y = ((1.0 - GCP.normalizedImagePoint.y) * self.image.size.height);
+    // De-normalizet the GCP coordinates relative to the image size.
+    NSPoint point = [self denormalizeGCP: GCP];
   
+    // Now find the new bounds rect for the clipview.
     NSPoint zoomPoint =
         NSMakePoint(
-            (x / self.scale) - (size.width / 2),
-            (y / self.scale) - (size.height / 2));
+            (point.x / self.scale) - (size.width / 2),
+            (point.y / self.scale) - (size.height / 2));
   
+    // Scroll the clipview.
     [self scrollPoint: zoomPoint];
 }
 
@@ -117,23 +126,23 @@
 {
     [super setFrame: aRect];
 
+    // Keep track of the difference between the proportionally scaled image
+    // and the frame which probably has a different aspect ratio.
     [self updateScale];
   
     double imageSize = self.document.GCPImage.size.height;
 
     for(GeoMapGCP * GCP in self.document.GCPs)
     {
-        double x = (GCP.normalizedImagePoint.x * self.image.size.width);
-        double y = ((1.0 - GCP.normalizedImagePoint.y) * self.image.size.height);
-      
-        NSRect GCPRect =
+        // De-normalizet the GCP coordinates relative to the image size.
+        NSPoint point = [self denormalizeGCP: GCP];
+    
+        GCP.view.frame =
             NSMakeRect(
-                (x / self.scale) - imageSize/2,
-                (y / self.scale) - imageSize/2,
+                (point.x / self.scale) - imageSize/2,
+                (point.y / self.scale) - imageSize/2,
                 imageSize,
                 imageSize);
-
-        GCP.view.frame = GCPRect;
     }
 }
 
@@ -374,6 +383,15 @@
     // at the top and bottom, or none at all.
     else
         self.scale = self.image.size.width / self.bounds.size.width;
+}
+
+// De-normalizet the GCP coordinates relative to the image size.
+- (NSPoint) denormalizeGCP: (GeoMapGCP *) GCP
+{
+    return
+        NSMakePoint(
+            GCP.normalizedImagePoint.x * self.image.size.width,
+            (1.0 - GCP.normalizedImagePoint.y) * self.image.size.height);
 }
 
 @end

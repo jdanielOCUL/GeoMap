@@ -308,11 +308,14 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
 - (BOOL) readFromURL: (NSURL *) url
     ofType: (NSString *) typeName error: (NSError * __autoreleasing *) outError
 {
+    // Save the original path.
     self.input = [url path];
   
+    // Load the image.
     self.image =
         [[NSImage alloc] initWithData: [NSData dataWithContentsOfURL: url]];
-    
+  
+    // Find the largest sized representation in teh image.
     for(NSImageRep * rep in [self.image representations])
       {
       NSSize size;
@@ -326,8 +329,10 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
         self.imageSize = size;
       }
   
+    // Initialize with GCPs from the image, if any.
     [self.GCPs addObjectsFromArray: getGCPs(self.input)];
-    
+  
+    // If necessary, perform all work on an image preview for responsiveness.
     self.previewScale = 1.0;
   
     NSSize maxSize = self.imageSize;
@@ -369,6 +374,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
 
 #pragma mark - NSToolbarDelegate conformance
 
+// Create toolbar items.
 - (NSToolbarItem *) toolbar: (NSToolbar *) toolbar
   itemForItemIdentifier: (NSString *) itemIdentifier
   willBeInsertedIntoToolbar: (BOOL) flag
@@ -408,6 +414,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
   return nil;
   }
 
+// Setup toolbars.
 - (NSArray *) toolbarDefaultItemIdentifiers: (NSToolbar *) toolbar
   {
   return
@@ -423,6 +430,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
   // the "default" list of items.
   }
 
+// Set allowed toolbars.
 - (NSArray *) toolbarAllowedItemIdentifiers: (NSToolbar *) toolbar
   {
   return
@@ -440,6 +448,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
 
 #pragma - Setup
 
+// Load from Interface Builder.
 - (void) awakeFromNib
 {
     [self setup];
@@ -618,6 +627,8 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
 
     self.opacity = 0.75;
   
+    // These already have their alpha values set to zero. Unhide them and
+    // fade them in.
     [self.exportButton setHidden: NO];
     [self.cancelExportButton setHidden: NO];
     [self.opacityLabel setHidden: NO];
@@ -641,6 +652,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     self.toolMode = kPanTool;
     self.previewing = YES;
   
+    // Make sure the views are layered the way I want them.
     [[self.windowForSheet contentView]
         sortSubviewsUsingFunction: sortViews context: (__bridge void *)(self)];
 }
@@ -665,8 +677,11 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     dispatch_async(
         dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0),
         ^{
+            // If I am using GCPs, just export.
             if(self.datumIndex == kDatumGCP)
               [self exportMapTo: [self.savePanel.URL path]];
+          
+            // Otherwise, reproject.
             else
               [self projectMapTo: [self.savePanel.URL path]];
            
@@ -695,7 +710,8 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
             ^(NSAnimationContext * context)
             {
                 context.allowsImplicitAnimation = YES;
-                
+            
+                // Fade out.
                 self.mapView.alphaValue = 0.0;
                 self.exportButton.alphaValue = 0.0;
                 self.cancelExportButton.alphaValue = 0.0;
@@ -705,6 +721,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
             }
         completionHandler:
             ^{
+                // And hide.
                 [self.exportButton setHidden: YES];
                 [self.cancelExportButton setHidden: YES];
                 [self.opacityLabel setHidden: YES];
@@ -714,19 +731,25 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     // Re-order the views.
     self.previewing = NO;
   
+    // Make sure the right view is on top.
     [[self.windowForSheet contentView]
         sortSubviewsUsingFunction: sortViews context: (__bridge void *)(self)];
 }
 
-// Add a new GCP. This UI still needs work.
+// Add a new GCP. 
 - (void) addGCP: (NSPoint) point
 {
+    // Create a new GCP.
     GeoMapGCP * GCP = [GeoMapGCP new];
   
+    // The point is being passed in from the GeoMapImageView and is already
+    // normalized.
     GCP.normalizedImagePoint = point;
   
+    // Turn off any existing selection.
     [self.GCPController setSelectedObjects: nil];
   
+    // Add the GCP.
     [self.GCPController addObject: GCP];
   
     // Update the preview button in case I have enough points now.
@@ -744,8 +767,10 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     [self.imageView addGCP: GCP];
     self.currentGCP = GCP;
   
+    // Fade the marker a bit so it doesn't obscure text while the user needs
+    // to read it.
     dispatch_after(
-      dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.0 * NSEC_PER_SEC)),
+      dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)),
       dispatch_get_main_queue(),
       ^{
           [[GCP.view animator] setAlphaValue: 0.5];

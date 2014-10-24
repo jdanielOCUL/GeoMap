@@ -11,6 +11,7 @@
 
 @implementation GeoMapGCPTableView
 
+// Delete table rows if any "delete" key gets pressed.
 - (void) keyDown: (NSEvent *) theEvent
 {
     unichar key = [[theEvent charactersIgnoringModifiers] characterAtIndex: 0];
