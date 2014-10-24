@@ -6,8 +6,8 @@
 //  Copyright (c) 2014 John Daniel. All rights reserved.
 //
 
-#ifndef __GeoMap__GeoMapReproject__
-#define __GeoMap__GeoMapReproject__
+#ifndef __GeoMap__GeoMapGDAL__
+#define __GeoMap__GeoMapGDAL__
 
 #ifdef __cplusplus
 extern "C" {
@@ -36,8 +36,14 @@ NSArray * getCoordinates(NSString * path);
 // Get GCPs from a file.
 NSArray * getGCPs(NSString * path);
 
+// Get metadata from a file.
+NSArray * getMetadata(NSString * path);
+
+// Set metadata in a file.
+void setMetadata(NSString * path, NSArray * metadataList);
+
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* defined(__GeoMap__GeoMapReproject__) */
+#endif /* defined(__GeoMap__GeoMapGDAL__) */

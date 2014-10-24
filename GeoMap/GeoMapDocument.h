@@ -21,11 +21,13 @@
 @class GeoMapScrollView;
 @class GeoMapImageView;
 @class GeoMapGCP;
+@class GeoMapMetadataViewController;
 
 // A document type for georeferencing an image.
 @interface GeoMapDocument : NSDocument
     <NSToolbarDelegate,
-    NSTableViewDelegate>
+    NSTableViewDelegate,
+    NSPopoverDelegate>
 
 // The input file.
 @property (strong) NSString * input;
@@ -68,7 +70,12 @@
 @property (assign) BOOL saveable;
 
 // Metadata.
-@property (strong) NSMutableDictionary * metadata;
+@property (strong) NSMutableArray * metadata;
+@property (strong) IBOutlet NSArrayController * metadataController;
+@property (strong) IBOutlet NSTableView * metadataTableView;
+@property (readonly) NSPopover * metadataPopover;
+@property (strong) IBOutlet
+    GeoMapMetadataViewController * metadataViewController;
 
 // Preview/Export.
 @property (strong) IBOutlet WebView * mapView;
@@ -105,10 +112,16 @@
 - (IBAction) cancelExportMap: (id) sender;
 
 - (void) addGCP: (NSPoint) point;
-- (IBAction) remove: (id) sender;
+- (IBAction) removeGCP: (id) sender;
 - (void) selectGCPAt: (NSPoint) point;
 
 - (IBAction) commitLatitude: (id) sender;
 - (IBAction) commitLongitude: (id) sender;
+
+- (IBAction) addMetadata: (id) sender;
+- (IBAction) removeMetadata: (id) sender;
+
+// Show the metadata popover.
+- (void) showMetadataPopover;
 
 @end

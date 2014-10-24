@@ -6,10 +6,10 @@
 //  Copyright (c) 2014 John Daniel. All rights reserved.
 //
 
-#import "GeoMapGCPTableView.h"
+#import "GeoMapMetadataTableView.h"
 #import "GeoMapDocument.h"
 
-@implementation GeoMapGCPTableView
+@implementation GeoMapMetadataTableView
 
 // Delete table rows if any "delete" key gets pressed.
 - (void) keyDown: (NSEvent *) theEvent
@@ -21,9 +21,15 @@
         case NSDeleteCharacter:
         case NSBackspaceCharacter:
         case NSDeleteFunctionKey:
-          [self.document removeGCP: nil];
+          [self.document removeMetadata: nil];
           return;
     
+        case NSRightArrowFunctionKey:
+        case NSEnterCharacter:
+        case 13:
+          [self.document showMetadataPopover];
+          break;
+          
         default:
           break;
     }

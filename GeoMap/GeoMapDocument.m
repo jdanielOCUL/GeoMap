@@ -12,8 +12,10 @@
 #import "GeoMapImageView.h"
 #import "GeoMapGCPTableCellView.h"
 #import "GeoMapGCP.h"
-#import "GeoMapReproject.h"
+#import "GeoMapGDAL.h"
 #import <AudioToolbox/AudioToolbox.h>
+#import "GeoMapMetadataViewController.h"
+#import "GeoMapMetadata.h"
 
 // Toolbar items.
 #define kImageControlsToolbarItemID @"imagecontrolstoolbaritem"
@@ -40,6 +42,10 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
 @synthesize toolMode = myToolMode;
 
 @synthesize GCPs = myGCPs;
+
+@synthesize metadata = myMetadata;
+@synthesize metadataPopover = myMetadataPopover;
+@synthesize metadataViewController = myMetadataViewController;
 
 @synthesize canPreview = myCanPreview;
 
@@ -246,6 +252,22 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     }
 }
 
+// Get the metadata popover.
+- (NSPopover *) metadataPopover
+{
+    if(!myMetadataPopover)
+    {
+        myMetadataPopover = [NSPopover new];
+    
+        myMetadataPopover.contentViewController = myMetadataViewController;
+        myMetadataViewController.metadataPopover = myMetadataPopover;
+        myMetadataPopover.behavior = NSPopoverBehaviorTransient;
+        myMetadataPopover.delegate = self;
+    }
+  
+    return myMetadataPopover;
+}
+
 // Constructor.
 - (id) init
 {
@@ -257,6 +279,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
         // actually sets the initial cursor.
         myToolMode = kZoomInTool;
         myGCPs = [NSMutableArray new];
+        myMetadata = [NSMutableArray new];
     }
   
     return self;
@@ -328,6 +351,9 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
       if((size.height > imageSize.height) && (size.width > imageSize.width))
         self.imageSize = size;
       }
+  
+    // Initialize with Metadata from the image, if any.
+    [self.metadata addObjectsFromArray: getMetadata(self.input)];
   
     // Initialize with GCPs from the image, if any.
     [self.GCPs addObjectsFromArray: getGCPs(self.input)];
@@ -532,6 +558,9 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     for(GeoMapGCP * GCP in self.GCPs)
         [self.imageView addGCP: GCP];
 
+    [self.metadataTableView setTarget: self];
+    [self.metadataTableView setDoubleAction: @selector(showMetadataPopover)];
+  
     self.isSetup = YES;
 }
 
@@ -778,7 +807,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
 }
 
 // Remove the selected GCP.
-- (void) remove: (id) sender
+- (void) removeGCP: (id) sender
 {
     for(GeoMapGCP * GCP in self.GCPController.selectedObjects)
         [self.imageView removeGCP: GCP];
@@ -812,6 +841,16 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
         [self.GCPController setSelectedObjects: @[closest]];
 }
 
+- (IBAction) addMetadata: (id) sender
+{
+    [self.metadataController add: sender];
+}
+
+- (IBAction) removeMetadata: (id) sender
+{
+    [self.metadataController remove: sender];
+}
+
 #pragma mark - NSTableViewDelegate conformance.
 
 - (NSView *) tableView: (NSTableView *) tableView
@@ -832,6 +871,15 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
         return GCPCellView;
     }
     
+    else if([tableColumn.identifier isEqualToString: @"Metadata"])
+    {
+        NSTableCellView * metadataCellView =
+            [tableView
+                makeViewWithIdentifier: tableColumn.identifier owner: self];
+    
+        return metadataCellView;
+    }
+
     return nil;
 }
 
@@ -1091,16 +1139,6 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
         [args addObject: [NSString stringWithFormat: @"%lf", GCP.latitude]];
     }
 
-    // Add metadata.
-    for(NSString * tag in self.metadata)
-    {
-        [args addObject: @"-mo"];
-        [args
-            addObject:
-                [NSString
-                    stringWithFormat: @"\"%@=%@\"", tag, self.metadata[tag]]];
-    }
-  
     // If previewing, scale the output.
     [args addObject: @"-outsize"];
 
@@ -1242,16 +1280,6 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
         [args addObject: [NSString stringWithFormat: @"%lf", GCP.latitude]];
     }
 
-    // Add metadata.
-    for(NSString * tag in self.metadata)
-    {
-        [args addObject: @"-mo"];
-        [args
-            addObject:
-                [NSString
-                    stringWithFormat: @"\"%@=%@\"", tag, self.metadata[tag]]];
-    }
-  
     [args addObject: @"-of"];
     [args addObject: self.format];
   
@@ -1281,6 +1309,8 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
 
     [translate launch];
     [translate waitUntilExit];
+  
+    setMetadata(output, self.metadata);
   
     [self hideProgress];
 }
@@ -1340,16 +1370,6 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
         [args addObject: [NSString stringWithFormat: @"%lf", GCP.latitude]];
     }
 
-    // Add metadata.
-    for(NSString * tag in self.metadata)
-    {
-        [args addObject: @"-mo"];
-        [args
-            addObject:
-                [NSString
-                    stringWithFormat: @"\"%@=%@\"", tag, self.metadata[tag]]];
-    }
-  
     // Now use gdal_translate to create a TIFF file with GCPs.
     NSString * tempName =
       [[[[self.input lastPathComponent]
@@ -1386,6 +1406,8 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
 
     [translate launch];
     [translate waitUntilExit];
+  
+    setMetadata(tempPath, self.metadata);
   
     // Now do a true projection and create a GeoTiff.
     NSTask * warp = [NSTask new];
@@ -1549,6 +1571,17 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     if(minLong > maxLong)
         for(GeoMapGCP * GCP in self.GCPs)
             GCP.longitude *= -1.0;
+}
+
+// Show the metadata popover.
+- (void) showMetadataPopover
+{
+    [self.metadataPopover
+        showRelativeToRect:
+            [self.metadataTableView
+                rectOfRow: self.metadataController.selectionIndex]
+        ofView: self.metadataTableView
+        preferredEdge: NSMaxXEdge];
 }
 
 @end

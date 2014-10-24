@@ -6,7 +6,7 @@
 //  Copyright (c) 2014 John Daniel. All rights reserved.
 //
 
-#include "GeoMapReproject.h"
+#include "GeoMapGDAL.h"
 #include <stdio.h>
 
 #include "GDAL/gdalwarper.h"
@@ -19,6 +19,7 @@
 #include "GDAL/cpl_conv.h"
 #include "GDAL/cpl_multiproc.h"
 #import "GeoMapGCP.h"
+#import "GeoMapMetadata.h"
 
 // Reproject an image. This part isn't working yet. I am just feeding
 // coordinates to gdal_translate and gdalwarp for now.
@@ -312,3 +313,90 @@ NSArray * getGCPs(NSString * path)
   
     return result;
 }
+
+// Get metadata from a file.
+NSArray * getMetadata(NSString * path)
+{
+    GDALAllRegister();
+
+    GDALDatasetH hDataset =
+        GDALOpen([path fileSystemRepresentation], GA_ReadOnly);
+
+    if(!hDataset)
+        return nil;
+
+    NSMutableArray * result = [NSMutableArray array];
+  
+    char ** domains = GDALGetMetadataDomainList(hDataset);
+  
+    while(char * domain = *domains++)
+    {
+        char ** metadata = GDALGetMetadata(hDataset, domain);
+    
+        while(char * keyValue = *metadata++)
+        {
+            NSString * keyValueString =
+              [NSString stringWithUTF8String: keyValue];
+        
+            NSMutableArray * parts =
+              [NSMutableArray
+                  arrayWithArray:
+                      [keyValueString componentsSeparatedByString: @"="]];
+        
+            if(parts.count >= 2)
+            {
+                NSString * key = [parts firstObject];
+            
+                [parts removeObjectAtIndex: 0];
+            
+                NSString * value = [parts componentsJoinedByString: @"="];
+            
+                GeoMapMetadata * metadata = [GeoMapMetadata new];
+            
+                metadata.domain = [NSString stringWithUTF8String: domain];
+                metadata.key = key;
+                metadata.value = value;
+            
+                [result addObject: metadata];
+            }
+        }
+    }
+  
+    GDALClose(hDataset);
+    
+    GDALDestroyDriverManager();
+
+    CPLDumpSharedList(NULL);
+    CPLCleanupTLS();
+  
+    return result;
+}
+
+// Set metadata in a file.
+void setMetadata(NSString * path, NSArray * metadataList)
+{
+    GDALAllRegister();
+
+    GDALDatasetH hDataset =
+        GDALOpen([path fileSystemRepresentation], GA_ReadOnly);
+
+    if(!hDataset)
+        return;
+
+    for(GeoMapMetadata * metadata in metadataList)
+    {
+        GDALSetMetadataItem(
+            hDataset,
+            [metadata.key UTF8String],
+            [metadata.value UTF8String],
+            [metadata.domain UTF8String]);
+    }
+  
+    GDALClose(hDataset);
+    
+    GDALDestroyDriverManager();
+
+    CPLDumpSharedList(NULL);
+    CPLCleanupTLS();
+}
+
