@@ -6,8 +6,8 @@
   Copyright (c) 2014 John Daniel. All rights reserved.
 */
 
-"Image controls" = "Contrôle des images";
-"GCP controls" = "Contrôle des points au sol";
+"Pan and zoom image" = "Déplacer et aggradir l’image";
+"Ground Control Points" = "Points de Contrôle au sol";
 "Previewing..." = "Aperçu...";
 "Exporting..." = "Exportation...";
 "Custom" = "Autre";

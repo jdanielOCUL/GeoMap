@@ -73,7 +73,7 @@
 {
     // The size of the GCP marker.
     // TODO: Scale this to the image so the size is always apparently the same.
-    double imageSize = self.document.GCPImage.size.height;
+    double imageSize = self.document.GCPToolbarImage.size.height;
 
     // Do-normalize the GCP coordinates relative to the image size.
     NSPoint point = [self denormalizeGCP: GCP];
@@ -89,7 +89,8 @@
     // Create the GCP view and add it to the parent image view.
     GCP.view = [[NSImageView alloc] initWithFrame: GCPRect];
   
-    GCP.view.image = self.document.GCPImage;
+    GCP.view.image = self.document.GCPToolbarImage;
+    GCP.view.alphaValue = 0.35;
   
     [self addSubview: GCP.view];
 }

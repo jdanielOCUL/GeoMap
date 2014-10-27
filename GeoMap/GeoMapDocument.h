@@ -66,6 +66,7 @@
 @property (strong) IBOutlet NSArrayController * GCPController;
 @property (strong) IBOutlet NSTableView * GCPTableView;
 @property (strong) NSImage * GCPImage;
+@property (strong) NSImage * GCPToolbarImage;
 @property (strong) GeoMapGCP * currentGCP;
 @property (assign) BOOL saveable;
 

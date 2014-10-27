@@ -412,8 +412,8 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
       [[GeoMapToolbarItem alloc]
         initWithItemIdentifier: itemIdentifier];
     
-    [item setLabel: NSLocalizedString(@"Image controls", nil)];
-    [item setPaletteLabel: NSLocalizedString(@"Image controls", nil)];
+    [item setLabel: NSLocalizedString(@"Pan and zoom image", nil)];
+    [item setPaletteLabel: NSLocalizedString(@"Pan and zoom image", nil)];
     [item setTarget: self];
     [item setAction: nil];
     [item setView: self.imageControlsToolbarItemView];
@@ -428,8 +428,8 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
       [[GeoMapToolbarItem alloc]
         initWithItemIdentifier: itemIdentifier];
     
-    [item setLabel: NSLocalizedString(@"GCP controls", nil)];
-    [item setPaletteLabel: NSLocalizedString(@"GCP controls", nil)];
+    [item setLabel: NSLocalizedString(@"Ground Control Points", nil)];
+    [item setPaletteLabel: NSLocalizedString(@"Ground Control Points", nil)];
     [item setTarget: self];
     [item setAction: nil];
     [item setView: self.GCPControlsToolbarItemView];
@@ -491,6 +491,7 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     NSImage * zoomIn = [NSImage imageNamed: @"ZoomIn"];
     NSImage * zoomOut = [NSImage imageNamed: @"ZoomOut"];
     self.GCPImage = [NSImage imageNamed: @"GCP"];
+    self.GCPToolbarImage = [NSImage imageNamed: @"GCPToolbar"];
   
     // Setup tools and cursors.
     self.toolMode = kPanTool;
@@ -506,12 +507,11 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
   
     // Get some more images.
     NSImage * zoomInToolbar = [NSImage imageNamed: @"ZoomInToolbar"];
-    NSImage * GCPToolbar = [NSImage imageNamed: @"GCPToolbar"];
 
     // Setup toolbar buttons.
     [self.panModeButton setImage: [[NSCursor openHandCursor] image]];
     [self.zoomModeButton setImage: zoomInToolbar];
-    [self.addGCPModeButton setImage: GCPToolbar];
+    [self.addGCPModeButton setImage: self.GCPToolbarImage];
     
     [self.selectGCPModeButton setImage: [[NSCursor arrowCursor] image]];
 
@@ -795,15 +795,6 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     self.toolMode = kEditGCPTool;
     [self.imageView addGCP: GCP];
     self.currentGCP = GCP;
-  
-    // Fade the marker a bit so it doesn't obscure text while the user needs
-    // to read it.
-    dispatch_after(
-      dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1.5 * NSEC_PER_SEC)),
-      dispatch_get_main_queue(),
-      ^{
-          [[GCP.view animator] setAlphaValue: 0.5];
-      });
 }
 
 // Remove the selected GCP.
@@ -937,8 +928,6 @@ NSComparisonResult sortViews(id v1, id v2, void * context);
     self.currentGCP.longitude = longitude;
 
     self.toolMode = kAddGCPTool;
-
-    [[self.currentGCP.view animator] setAlphaValue: 1.0];
 }
 
 // Parse a coordinate in various formats.
